@@ -276,3 +276,24 @@ describe('AuthService.resetPassword', () => {
     ).rejects.toMatchObject({ statusCode: 400, code: 'AUTH_TOKEN_EXPIRED' });
   });
 });
+
+// ── getMe ─────────────────────────────────────────────────────────────────────
+
+describe('AuthService.getMe', () => {
+  it('returns the full user profile for a valid user UUID', async () => {
+    prismaMock.user.findUnique.mockResolvedValue(mockUser);
+    const result = await service.getMe('user-uuid-1');
+    expect(prismaMock.user.findUnique).toHaveBeenCalledWith({ where: { id: 'user-uuid-1' } });
+    expect(result.id).toBe('user-uuid-1');
+    expect(result.email).toBe('ada@test.com');
+    expect(result.name).toBe('Ada Lovelace');
+  });
+
+  it('throws 404 when user UUID does not exist', async () => {
+    prismaMock.user.findUnique.mockResolvedValue(null);
+    await expect(service.getMe('nonexistent')).rejects.toMatchObject({
+      statusCode: 404,
+      code: 'RESOURCE_NOT_FOUND',
+    });
+  });
+});

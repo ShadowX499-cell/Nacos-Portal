@@ -68,3 +68,10 @@ export const resetPassword = asyncHandler(async (req: Request, res: Response) =>
   const result = await authService.resetPassword(req.body);
   sendSuccess(res, {}, result.message, 200);
 });
+
+/** GET /api/v1/auth/me */
+export const getMe = asyncHandler(async (req: Request, res: Response) => {
+  const { sub } = (req as import('../../types').AuthRequest).user;
+  const user = await authService.getMe(sub);
+  sendSuccess(res, user, 'Profile retrieved');
+});

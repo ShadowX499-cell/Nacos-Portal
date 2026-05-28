@@ -199,6 +199,27 @@ export class AuthService {
     return { message: 'Password reset successfully. You can now log in.' };
   }
 
+  // ── Get current user profile ───────────────────────────────────────────────
+
+  async getMe(userId: string): Promise<UserPublic> {
+    const user = await this.db.user.findUnique({ where: { id: userId } });
+    if (!user) throw new AppError(404, 'RESOURCE_NOT_FOUND', 'User not found');
+    return {
+      id: user.id,
+      userId: user.userId,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      program: user.program,
+      level: user.level,
+      role: user.role,
+      status: user.status,
+      departmentId: user.departmentId,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
+  }
+
   // ── Private helpers ───────────────────────────────────────────────────────
 
   private async issueTokens(user: {

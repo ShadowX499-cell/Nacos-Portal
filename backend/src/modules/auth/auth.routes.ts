@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authRateLimit } from '../../middleware/rate-limit.middleware';
 import { validate } from '../../middleware/validate.middleware';
+import { authenticate } from '../../middleware/auth.middleware';
 import {
   validateAccountRules,
   loginRules,
@@ -14,6 +15,7 @@ import {
   logout,
   forgotPassword,
   resetPassword,
+  getMe,
 } from './auth.controller';
 
 const router = Router();
@@ -35,5 +37,8 @@ router.post('/forgot-password', authRateLimit, validate(forgotPasswordRules), fo
 
 /** POST /api/v1/auth/reset-password */
 router.post('/reset-password', authRateLimit, validate(resetPasswordRules), resetPassword);
+
+/** GET /api/v1/auth/me */
+router.get('/me', authenticate, getMe);
 
 export default router;

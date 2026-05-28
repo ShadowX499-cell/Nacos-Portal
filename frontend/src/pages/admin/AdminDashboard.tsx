@@ -140,7 +140,7 @@ export default function AdminDashboard() {
             {[
               { label: 'Add Student', icon: '👤', href: '/admin/users/new' },
               { label: 'View Students', icon: '📋', href: '/admin/users' },
-              { label: 'Gradebooks', icon: '📚', href: '#', disabled: true },
+              { label: 'Gradebooks', icon: '📚', href: '/admin/gradebooks' },
               { label: 'Elections', icon: '🗳️', href: '#', disabled: true },
             ].map((action) =>
               action.disabled ? (

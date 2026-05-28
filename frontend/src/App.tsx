@@ -11,6 +11,13 @@ import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import CreateUserPage from './pages/admin/CreateUserPage';
 import UserListPage from './pages/admin/UserListPage';
+import GradebookListPage from './pages/admin/GradebookListPage';
+import CreateGradebookPage from './pages/admin/CreateGradebookPage';
+import GradebookDetailPage from './pages/admin/GradebookDetailPage';
+import GradeEntryPage from './pages/admin/GradeEntryPage';
+import ResultsHomePage from './pages/student/ResultsHomePage';
+import ResultDetailPage from './pages/student/ResultDetailPage';
+import PaymentVerifyPage from './pages/student/PaymentVerifyPage';
 
 export default function App() {
   return (
@@ -28,15 +35,18 @@ export default function App() {
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<UserListPage />} />
           <Route path="/admin/users/new" element={<CreateUserPage />} />
+          <Route path="/admin/gradebooks" element={<GradebookListPage />} />
+          <Route path="/admin/gradebooks/new" element={<CreateGradebookPage />} />
+          <Route path="/admin/gradebooks/:id" element={<GradebookDetailPage />} />
+          <Route path="/admin/gradebooks/:id/courses/:courseId/grades" element={<GradeEntryPage />} />
         </Route>
 
         {/* ── Student (requires student role) ─────────────────────────── */}
         <Route element={<ProtectedRoute roles={['student']} />}>
-          <Route path="/student/dashboard" element={
-            <div className="p-8 text-center text-gray-500">
-              Student dashboard — Phase 2
-            </div>
-          } />
+          <Route path="/student/dashboard" element={<ResultsHomePage />} />
+          <Route path="/student/results" element={<ResultsHomePage />} />
+          <Route path="/student/results/verify" element={<PaymentVerifyPage />} />
+          <Route path="/student/results/:gradebookId" element={<ResultDetailPage />} />
         </Route>
 
         {/* ── Fallback ─────────────────────────────────────────────────── */}

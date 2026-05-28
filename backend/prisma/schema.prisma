@@ -105,6 +105,12 @@ enum CsvJobStatus {
   failed
 }
 
+enum RegistrationStatus {
+  pending
+  verified
+  rejected
+}
+
 // ────────────────────────────────────────────────────────────────────────────
 // MODELS
 // ────────────────────────────────────────────────────────────────────────────
@@ -169,6 +175,8 @@ model User {
   auditLogs           AuditLog[]
   csvUploadJobs       CsvUploadJob[]
   registeredBiometrics Biometric[]        @relation("RegisteredBy")
+  courseRegistrations   CourseRegistration[] @relation("UserRegistrations")
+  reviewedRegistrations CourseRegistration[] @relation("ReviewedRegistrations")
 
   @@map("users")
 }
@@ -448,4 +456,23 @@ model CsvUploadJob {
   uploadedBy User      @relation(fields: [uploadedById], references: [id])
 
   @@map("csv_upload_jobs")
+}
+
+model CourseRegistration {
+  id           String             @id @default(uuid())
+  userId       String             @map("user_id")
+  session      String             @db.VarChar(20)
+  semester     Semester
+  fileUrl      String?            @map("file_url") @db.VarChar(500)
+  status       RegistrationStatus @default(pending)
+  reviewedById String?            @map("reviewed_by")
+  reviewNote   String?            @map("review_note") @db.VarChar(500)
+  submittedAt  DateTime           @default(now()) @map("submitted_at")
+  reviewedAt   DateTime?          @map("reviewed_at")
+
+  user       User  @relation("UserRegistrations", fields: [userId], references: [id])
+  reviewedBy User? @relation("ReviewedRegistrations", fields: [reviewedById], references: [id])
+
+  @@unique([userId, session, semester])
+  @@map("course_registrations")
 }

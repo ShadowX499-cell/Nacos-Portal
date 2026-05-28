@@ -6,7 +6,9 @@ export default function PaymentVerifyPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [status, setStatus] = useState<'verifying' | 'success' | 'failed'>('verifying');
+
   const reference = searchParams.get('reference');
+  const returnTo = searchParams.get('returnTo') ?? '/student/results';
 
   useEffect(() => {
     if (!reference) { setStatus('failed'); return; }
@@ -15,13 +17,13 @@ export default function PaymentVerifyPage() {
       .then((res) => {
         if (res.data.data.status === 'success') {
           setStatus('success');
-          setTimeout(() => navigate('/student/results', { replace: true }), 2000);
+          setTimeout(() => navigate(returnTo, { replace: true }), 2000);
         } else {
           setStatus('failed');
         }
       })
       .catch(() => setStatus('failed'));
-  }, [reference, navigate]);
+  }, [reference, navigate, returnTo]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -37,19 +39,17 @@ export default function PaymentVerifyPage() {
           <>
             <div className="text-5xl mb-4">✅</div>
             <p className="text-gray-900 font-semibold text-lg">Payment successful!</p>
-            <p className="text-sm text-gray-500 mt-1">Redirecting you to your results…</p>
+            <p className="text-sm text-gray-500 mt-1">Redirecting you…</p>
           </>
         )}
         {status === 'failed' && (
           <>
             <div className="text-5xl mb-4">❌</div>
-            <p className="text-gray-900 font-semibold text-lg">Payment could not be verified</p>
+            <p className="text-gray-900 font-semibold text-lg">Could not verify payment</p>
             <p className="text-sm text-gray-500 mt-1 mb-4">
-              If you completed the payment, your result will be unlocked shortly.
+              If you completed payment, your access will be unlocked shortly.
             </p>
-            <Link to="/student/results" className="btn-primary">
-              Back to Results
-            </Link>
+            <Link to={returnTo} className="btn-primary">Go back</Link>
           </>
         )}
       </div>

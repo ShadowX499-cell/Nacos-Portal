@@ -1,13 +1,16 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import StudentLayout from './components/StudentLayout';
 
-// Pages
+// Auth pages
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/auth/LoginPage';
 import ValidatePage from './pages/auth/ValidatePage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+
+// Admin pages
 import AdminDashboard from './pages/admin/AdminDashboard';
 import CreateUserPage from './pages/admin/CreateUserPage';
 import UserListPage from './pages/admin/UserListPage';
@@ -15,8 +18,18 @@ import GradebookListPage from './pages/admin/GradebookListPage';
 import CreateGradebookPage from './pages/admin/CreateGradebookPage';
 import GradebookDetailPage from './pages/admin/GradebookDetailPage';
 import GradeEntryPage from './pages/admin/GradeEntryPage';
+
+// Student pages
+import StudentDashboard from './pages/student/StudentDashboard';
 import ResultsHomePage from './pages/student/ResultsHomePage';
 import ResultDetailPage from './pages/student/ResultDetailPage';
+import TranscriptPage from './pages/student/TranscriptPage';
+import SchoolFeesPage from './pages/student/SchoolFeesPage';
+import PaymentsPage from './pages/student/PaymentsPage';
+import RegistrationPage from './pages/student/RegistrationPage';
+import ElectionsPage from './pages/student/ElectionsPage';
+import NotificationsPage from './pages/student/NotificationsPage';
+import ProfilePage from './pages/student/ProfilePage';
 import PaymentVerifyPage from './pages/student/PaymentVerifyPage';
 
 export default function App() {
@@ -30,7 +43,7 @@ export default function App() {
         <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
 
-        {/* ── Admin (requires admin or super_admin role) ───────────────── */}
+        {/* ── Admin ────────────────────────────────────────────────────── */}
         <Route element={<ProtectedRoute roles={['admin', 'super_admin']} />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<UserListPage />} />
@@ -41,12 +54,24 @@ export default function App() {
           <Route path="/admin/gradebooks/:id/courses/:courseId/grades" element={<GradeEntryPage />} />
         </Route>
 
-        {/* ── Student (requires student role) ─────────────────────────── */}
+        {/* ── Student ──────────────────────────────────────────────────── */}
         <Route element={<ProtectedRoute roles={['student']} />}>
-          <Route path="/student/dashboard" element={<ResultsHomePage />} />
-          <Route path="/student/results" element={<ResultsHomePage />} />
-          <Route path="/student/results/verify" element={<PaymentVerifyPage />} />
-          <Route path="/student/results/:gradebookId" element={<ResultDetailPage />} />
+          {/* Shell routes — sidebar + topbar */}
+          <Route element={<StudentLayout />}>
+            <Route path="/student/dashboard"             element={<StudentDashboard />} />
+            <Route path="/student/results"               element={<ResultsHomePage />} />
+            <Route path="/student/results/:gradebookId"  element={<ResultDetailPage />} />
+            <Route path="/student/transcript"            element={<TranscriptPage />} />
+            <Route path="/student/school-fees"           element={<SchoolFeesPage />} />
+            <Route path="/student/payments"              element={<PaymentsPage />} />
+            <Route path="/student/registration"          element={<RegistrationPage />} />
+            <Route path="/student/elections"             element={<ElectionsPage />} />
+            <Route path="/student/notifications"         element={<NotificationsPage />} />
+            <Route path="/student/profile"               element={<ProfilePage />} />
+          </Route>
+          {/* Full-screen — no shell */}
+          <Route path="/student/results/verify"          element={<PaymentVerifyPage />} />
+          <Route path="/student/school-fees/verify"      element={<PaymentVerifyPage />} />
         </Route>
 
         {/* ── Fallback ─────────────────────────────────────────────────── */}

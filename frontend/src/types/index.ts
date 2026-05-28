@@ -80,3 +80,154 @@ export interface DashboardStats {
   activeElections: number;
   unpublishedResults: number;
 }
+
+// ── Gradebooks ────────────────────────────────────────────────────────────────
+
+export type GradebookStatus = 'draft' | 'published' | 'locked';
+export type Semester = 'first' | 'second';
+
+export interface Gradebook {
+  id: string;
+  name: string;
+  level: Level;
+  session: string;
+  semester: Semester;
+  status: GradebookStatus;
+  departmentId: string;
+  publishedAt: string | null;
+  createdAt: string;
+  courses?: Course[];
+}
+
+export interface Course {
+  id: string;
+  gradebookId: string;
+  courseCode: string;
+  courseTitle: string;
+  creditUnits: number;
+  gradeCount?: number;
+}
+
+export interface Grade {
+  id: string;
+  courseId: string;
+  userId: string;
+  studentName: string;
+  studentUserId: string;
+  caScore: number | null;
+  examScore: number | null;
+  total: number | null;
+  grade: string | null;
+  gradePoint: number | null;
+}
+
+export interface CsvJob {
+  id: string;
+  gradebookId: string;
+  courseId: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  totalRows: number | null;
+  processedRows: number;
+  errorLog: Array<{ row: number; field: string; message: string }> | null;
+  createdAt: string;
+  completedAt: string | null;
+}
+
+// ── Results ───────────────────────────────────────────────────────────────────
+
+export interface ResultListItem {
+  gradebookId: string;
+  gradebookName: string;
+  level: string;
+  session: string;
+  semester: string;
+  publishedAt: string;
+  hasPaid: boolean;
+}
+
+export interface StudentResultView {
+  gradebookId: string;
+  gradebookName: string;
+  level: string;
+  session: string;
+  semester: string;
+  publishedAt: string;
+  courses: Array<{
+    courseCode: string;
+    courseTitle: string;
+    creditUnits: number;
+    caScore: number | null;
+    examScore: number | null;
+    total: number | null;
+    grade: string | null;
+    gradePoint: number | null;
+  }>;
+  sgpa: number;
+  totalCredits: number;
+}
+
+export interface GpaSummary {
+  semesters: Array<{
+    gradebookId: string;
+    gradebookName: string;
+    session: string;
+    semester: string;
+    sgpa: number;
+    totalCredits: number;
+  }>;
+  cgpa: number;
+  totalCreditsEarned: number;
+}
+
+// ── Payments ──────────────────────────────────────────────────────────────────
+
+export interface Payment {
+  id: string;
+  type: string;
+  amount: number;
+  currency: string;
+  reference: string;
+  status: string;
+  sessionYear: string | null;
+  semester: string | null;
+  paidAt: string | null;
+  createdAt: string;
+}
+
+// ── Notifications ─────────────────────────────────────────────────────────────
+
+export interface Notification {
+  id: string;
+  title: string;
+  body: string;
+  type: 'general' | 'result' | 'election' | 'payment' | 'system';
+  target: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
+// ── Registration ──────────────────────────────────────────────────────────────
+
+export type RegistrationStatus = 'pending' | 'verified' | 'rejected';
+
+export interface Registration {
+  id: string;
+  userId: string;
+  session: string;
+  semester: string;
+  fileUrl: string | null;
+  status: RegistrationStatus;
+  reviewNote: string | null;
+  submittedAt: string;
+  reviewedAt: string | null;
+}
+
+// ── School Fees ───────────────────────────────────────────────────────────────
+
+export interface SchoolFeesStatus {
+  currentSession: string;
+  status: 'not_initiated' | 'pending' | 'success' | 'failed';
+  amount: number;
+  paidAt: string | null;
+  reference: string | null;
+}

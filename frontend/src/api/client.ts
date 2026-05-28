@@ -150,3 +150,123 @@ export const adminApi = {
   updateUser: (id: string, body: Partial<import('../types').User>) =>
     api.patch<{ success: true; data: import('../types').User }>(`/admin/users/${id}`, body),
 };
+
+// ── Gradebook API (admin) ─────────────────────────────────────────────────────
+
+export const gradebookApi = {
+  list: (params?: Record<string, string>) =>
+    api.get<{ success: true; data: import('../types').Gradebook[] }>('/gradebooks', { params }),
+
+  create: (body: { name: string; level: string; session: string; semester: string }) =>
+    api.post<{ success: true; data: import('../types').Gradebook }>('/gradebooks', body),
+
+  get: (id: string) =>
+    api.get<{ success: true; data: import('../types').Gradebook & { courses: import('../types').Course[] } }>(`/gradebooks/${id}`),
+
+  publish: (id: string) =>
+    api.post<{ success: true; data: import('../types').Gradebook }>(`/gradebooks/${id}/publish`),
+
+  addCourse: (id: string, body: { courseCode: string; courseTitle: string; creditUnits: number }) =>
+    api.post<{ success: true; data: import('../types').Course }>(`/gradebooks/${id}/courses`, body),
+
+  removeCourse: (id: string, courseId: string) =>
+    api.delete(`/gradebooks/${id}/courses/${courseId}`),
+
+  getGrades: (id: string, courseId: string) =>
+    api.get<{ success: true; data: import('../types').Grade[] }>(`/gradebooks/${id}/courses/${courseId}/grades`),
+
+  upsertGrades: (id: string, courseId: string, grades: Array<{ userId: string; caScore: number | null; examScore: number | null }>) =>
+    api.put(`/gradebooks/${id}/courses/${courseId}/grades`, { grades }),
+
+  uploadCsv: (id: string, courseId: string, file: File) => {
+    const form = new FormData();
+    form.append('file', file);
+    return api.post<{ success: true; data: { jobId: string } }>(`/gradebooks/${id}/courses/${courseId}/csv`, form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+
+  listCsvJobs: (id: string) =>
+    api.get<{ success: true; data: import('../types').CsvJob[] }>(`/gradebooks/${id}/csv-jobs`),
+
+  getCsvJob: (id: string, jobId: string) =>
+    api.get<{ success: true; data: import('../types').CsvJob }>(`/gradebooks/${id}/csv-jobs/${jobId}`),
+};
+
+// ── Results API (student) ─────────────────────────────────────────────────────
+
+export const resultsApi = {
+  list: () =>
+    api.get<{ success: true; data: import('../types').ResultListItem[] }>('/results'),
+
+  get: (gradebookId: string) =>
+    api.get<{ success: true; data: import('../types').StudentResultView }>(`/results/${gradebookId}`),
+
+  getGpa: () =>
+    api.get<{ success: true; data: import('../types').GpaSummary }>('/results/gpa'),
+};
+
+// ── Payments API ──────────────────────────────────────────────────────────────
+
+export const paymentsApi = {
+  initiate: (gradebookId: string) =>
+    api.post<{ success: true; data: { authorization_url: string; reference: string } }>('/payments/initiate', { gradebookId }),
+
+  verify: (reference: string) =>
+    api.get<{ success: true; data: import('../types').Payment }>(`/payments/verify/${reference}`),
+
+  history: () =>
+    api.get<{ success: true; data: import('../types').Payment[] }>('/payments'),
+};
+
+// ── Notifications API ─────────────────────────────────────────────────────────
+
+export const notificationsApi = {
+  list: () =>
+    api.get<{ success: true; data: import('../types').Notification[] }>('/notifications'),
+
+  markRead: (id: string) =>
+    api.post(`/notifications/${id}/read`),
+
+  markAllRead: () =>
+    api.post('/notifications/read-all'),
+
+  getUnreadCount: () =>
+    api.get<{ success: true; data: { count: number } }>('/notifications/unread-count'),
+};
+
+// ── Registration API ──────────────────────────────────────────────────────────
+
+export const registrationApi = {
+  list: () =>
+    api.get<{ success: true; data: import('../types').Registration[] }>('/registration'),
+
+  submit: (session: string, semester: string, file: File) => {
+    const form = new FormData();
+    form.append('file', file);
+    form.append('session', session);
+    form.append('semester', semester);
+    return api.post<{ success: true; data: import('../types').Registration }>('/registration', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+};
+
+// ── School Fees API ───────────────────────────────────────────────────────────
+
+export const schoolFeesApi = {
+  getStatus: () =>
+    api.get<{ success: true; data: import('../types').SchoolFeesStatus }>('/payments/school-fees/status'),
+
+  initiate: (sessionYear: string) =>
+    api.post<{ success: true; data: { authorization_url: string; reference: string } }>(
+      '/payments/school-fees/initiate', { sessionYear }
+    ),
+};
+
+// ── Auth /me ──────────────────────────────────────────────────────────────────
+
+export const profileApi = {
+  getMe: () =>
+    api.get<{ success: true; data: import('../types').User }>('/auth/me'),
+};

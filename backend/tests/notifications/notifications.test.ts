@@ -24,6 +24,10 @@ const prismaMock = {
     findMany: vi.fn(),
     count: vi.fn(),
   },
+  $transaction: vi.fn(),
+  user: {
+    findUnique: vi.fn(),
+  },
 };
 
 let service: NotificationsService;
@@ -69,5 +73,17 @@ describe('NotificationsService.getUnreadCount', () => {
     prismaMock.notificationRead.count.mockResolvedValue(2);
     const result = await service.getUnreadCount('user-1', 'dept-1', 'L200');
     expect(result.count).toBe(3);
+  });
+});
+
+describe('NotificationsService.markAllRead', () => {
+  it('runs a transaction upsert for all visible notifications', async () => {
+    prismaMock.notification.findMany.mockResolvedValue([{ id: 'notif-1' }, { id: 'notif-2' }]);
+    prismaMock.$transaction.mockResolvedValue([]);
+    prismaMock.notificationRead.upsert.mockResolvedValue({});
+
+    await service.markAllRead('user-1', 'dept-1', 'L200');
+    expect(prismaMock.notification.findMany).toHaveBeenCalled();
+    expect(prismaMock.$transaction).toHaveBeenCalled();
   });
 });

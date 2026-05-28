@@ -14,6 +14,11 @@ export interface NotificationPublic {
 export class NotificationsService {
   constructor(private readonly db: PrismaClient = defaultPrisma) {}
 
+  async getUserLevel(userId: string): Promise<string> {
+    const user = await this.db.user.findUnique({ where: { id: userId }, select: { level: true } });
+    return user?.level ?? 'L100';
+  }
+
   async listNotifications(
     userId: string,
     departmentId: string,
@@ -99,7 +104,20 @@ export class NotificationsService {
       },
     });
 
-    const readCount = await this.db.notificationRead.count({ where: { userId } });
+    const readCount = await this.db.notificationRead.count({
+      where: {
+        userId,
+        notification: {
+          departmentId,
+          isSent: true,
+          OR: [
+            { target: 'all' },
+            { target: 'level', targetLevel: level as import('@prisma/client').Level },
+            { target: 'individual', targetUserId: userId },
+          ],
+        },
+      },
+    });
     return { count: Math.max(0, total - readCount) };
   }
 }

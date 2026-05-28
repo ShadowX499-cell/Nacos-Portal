@@ -17,3 +17,7 @@ process.env.SMTP_PORT = '1025';
 process.env.SMTP_USER = 'test';
 process.env.SMTP_PASS = 'test';
 process.env.EMAIL_FROM = 'test@test.com';
+process.env.PAYSTACK_SECRET_KEY = 'sk_test_dummy';
+process.env.PAYSTACK_PUBLIC_KEY = 'pk_test_dummy';
+process.env.RESULT_SUBSCRIPTION_AMOUNT_KOBO = '50000';
+process.env.SCHOOL_FEES_AMOUNT_KOBO = '150000';

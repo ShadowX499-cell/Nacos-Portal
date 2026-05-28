@@ -7,6 +7,10 @@ import { env } from './config/env';
 import { errorHandler } from './middleware/error.middleware';
 import authRoutes from './modules/auth/auth.routes';
 import adminRoutes from './modules/admin/admin.routes';
+import gradebookRoutes from './modules/gradebooks/gradebook.routes';
+import resultsRoutes from './modules/results/results.routes';
+import paymentsRoutes from './modules/payments/payments.routes';
+import notificationsRoutes from './modules/notifications/notifications.routes';
 
 const app: Application = express();
 
@@ -26,6 +30,9 @@ app.use(
 // ── Cookie parsing ────────────────────────────────────────────────────────────
 app.use(cookieParser());
 
+// ── Raw body for Paystack webhook (must be before express.json) ───────────────
+app.use('/api/v1/payments/webhook', express.raw({ type: 'application/json' }));
+
 // ── Body parsing ──────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -43,6 +50,10 @@ app.get('/health', (_req, res) => {
 // ── API Routes ────────────────────────────────────────────────────────────────
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/gradebooks', gradebookRoutes);
+app.use('/api/v1/results', resultsRoutes);
+app.use('/api/v1/payments', paymentsRoutes);
+app.use('/api/v1/notifications', notificationsRoutes);
 
 // ── 404 handler ───────────────────────────────────────────────────────────────
 app.use((_req, res) => {

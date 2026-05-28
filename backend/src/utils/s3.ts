@@ -1,6 +1,7 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import { env } from '../config/env';
+import { AppError } from './response';
 
 const s3 = new S3Client({
   region: env.AWS_REGION,
@@ -15,13 +16,10 @@ const MAX_BYTES = 5 * 1024 * 1024;
 
 export function validateUpload(file: Express.Multer.File): void {
   if (file.size > MAX_BYTES) {
-    throw Object.assign(new Error('File exceeds 5 MB'), { code: 'FILE_TOO_LARGE', status: 413 });
+    throw new AppError(413, 'FILE_TOO_LARGE', 'File exceeds 5 MB');
   }
   if (!ALLOWED_MIME.includes(file.mimetype)) {
-    throw Object.assign(new Error('Only PDF, JPG, or PNG files are allowed'), {
-      code: 'INVALID_FILE_TYPE',
-      status: 400,
-    });
+    throw new AppError(400, 'INVALID_FILE_TYPE', 'Only PDF, JPG, or PNG files are allowed');
   }
 }
 

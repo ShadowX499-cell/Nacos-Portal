@@ -152,29 +152,29 @@ model User {
   createdBy  User?      @relation("CreatedBy", fields: [createdById], references: [id])
 
   // Reverse relations
-  createdUsers        User[]              @relation("CreatedBy")
-  biometric           Biometric?
-  studentGrades       StudentGrade[]      @relation("StudentGrades")
-  enteredGrades       StudentGrade[]      @relation("EnteredBy")
-  modifiedGrades      StudentGrade[]      @relation("ModifiedBy")
-  publishedGradebooks Gradebook[]         @relation("PublishedBy")
-  createdGradebooks   Gradebook[]         @relation("CreatedGradebooks")
-  resultSnapshots     ResultSnapshot[]    @relation("PublishedSnapshots")
-  createdElections    Election[]          @relation("CreatedElections")
-  finalizedElections  Election[]          @relation("FinalizedElections")
-  candidateProfiles   Candidate[]         @relation("UserCandidates")
-  approvedCandidates  Candidate[]         @relation("ApprovedCandidates")
-  votes               Vote[]
-  createdSessions     AttendanceSession[] @relation("CreatedSessions")
-  studentAttendance   AttendanceRecord[]  @relation("StudentAttendance")
-  verifiedAttendance  AttendanceRecord[]  @relation("VerifiedBy")
-  payments            Payment[]
-  createdNotifications Notification[]     @relation("CreatedNotifications")
-  targetNotifications  Notification[]     @relation("TargetUser")
-  notificationReads   NotificationRead[]
-  auditLogs           AuditLog[]
-  csvUploadJobs       CsvUploadJob[]
-  registeredBiometrics Biometric[]        @relation("RegisteredBy")
+  createdUsers          User[]               @relation("CreatedBy")
+  biometric             Biometric?
+  studentGrades         StudentGrade[]       @relation("StudentGrades")
+  enteredGrades         StudentGrade[]       @relation("EnteredBy")
+  modifiedGrades        StudentGrade[]       @relation("ModifiedBy")
+  publishedGradebooks   Gradebook[]          @relation("PublishedBy")
+  createdGradebooks     Gradebook[]          @relation("CreatedGradebooks")
+  resultSnapshots       ResultSnapshot[]     @relation("PublishedSnapshots")
+  createdElections      Election[]           @relation("CreatedElections")
+  finalizedElections    Election[]           @relation("FinalizedElections")
+  candidateProfiles     Candidate[]          @relation("UserCandidates")
+  approvedCandidates    Candidate[]          @relation("ApprovedCandidates")
+  votes                 Vote[]
+  createdSessions       AttendanceSession[]  @relation("CreatedSessions")
+  studentAttendance     AttendanceRecord[]   @relation("StudentAttendance")
+  verifiedAttendance    AttendanceRecord[]   @relation("VerifiedBy")
+  payments              Payment[]
+  createdNotifications  Notification[]       @relation("CreatedNotifications")
+  targetNotifications   Notification[]       @relation("TargetUser")
+  notificationReads     NotificationRead[]
+  auditLogs             AuditLog[]
+  csvUploadJobs         CsvUploadJob[]
+  registeredBiometrics  Biometric[]          @relation("RegisteredBy")
   courseRegistrations   CourseRegistration[] @relation("UserRegistrations")
   reviewedRegistrations CourseRegistration[] @relation("ReviewedRegistrations")
 
@@ -400,10 +400,10 @@ model Notification {
   createdById  String             @map("created_by")
   createdAt    DateTime           @default(now()) @map("created_at")
 
-  department   Department         @relation(fields: [departmentId], references: [id])
-  createdBy    User               @relation("CreatedNotifications", fields: [createdById], references: [id])
-  targetUser   User?              @relation("TargetUser", fields: [targetUserId], references: [id])
-  reads        NotificationRead[]
+  department Department         @relation(fields: [departmentId], references: [id])
+  createdBy  User               @relation("CreatedNotifications", fields: [createdById], references: [id])
+  targetUser User?              @relation("TargetUser", fields: [targetUserId], references: [id])
+  reads      NotificationRead[]
 
   @@map("notifications")
 }

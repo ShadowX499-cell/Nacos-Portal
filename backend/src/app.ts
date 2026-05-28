@@ -11,6 +11,7 @@ import gradebookRoutes from './modules/gradebooks/gradebook.routes';
 import resultsRoutes from './modules/results/results.routes';
 import paymentsRoutes from './modules/payments/payments.routes';
 import notificationsRoutes from './modules/notifications/notifications.routes';
+import registrationRoutes from './modules/registration/registration.routes';
 
 const app: Application = express();
 
@@ -54,6 +55,7 @@ app.use('/api/v1/gradebooks', gradebookRoutes);
 app.use('/api/v1/results', resultsRoutes);
 app.use('/api/v1/payments', paymentsRoutes);
 app.use('/api/v1/notifications', notificationsRoutes);
+app.use('/api/v1/registration', registrationRoutes);
 
 // ── 404 handler ───────────────────────────────────────────────────────────────
 app.use((_req, res) => {

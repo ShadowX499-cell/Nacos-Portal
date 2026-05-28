@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(d['version']\\)\")",
+      "Bash(node -e \"const p=require\\('/c/Users/princ/nacos-portal/node_modules/@babel/types/package.json'\\); console.log\\(p.version\\)\")",
+      "Bash(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\princ\\\\nacos-portal\\\\docs\\\\superpowers\\\\plans\")"
+    ]
+  }
+}

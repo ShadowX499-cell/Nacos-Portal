@@ -1,0 +1,451 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// ENUMS
+// ────────────────────────────────────────────────────────────────────────────
+
+enum Program {
+  ICT
+  CSC
+  CRE
+}
+
+enum Level {
+  L100 @map("100")
+  L200 @map("200")
+  L300 @map("300")
+  L400 @map("400")
+}
+
+enum UserRole {
+  student
+  admin
+  super_admin
+}
+
+enum UserStatus {
+  pending
+  validated
+  suspended
+}
+
+enum GradebookStatus {
+  draft
+  published
+  locked
+}
+
+enum Semester {
+  first
+  second
+}
+
+enum UploadMethod {
+  manual
+  csv
+}
+
+enum ElectionStatus {
+  draft
+  active
+  closed
+  results_published
+}
+
+enum AttendanceSessionType {
+  exam
+  lecture
+  lab
+}
+
+enum AttendanceMethod {
+  biometric
+  manual
+}
+
+enum PaymentType {
+  result_subscription
+  nacos_dues
+  school_fees
+  other
+}
+
+enum PaymentStatus {
+  pending
+  success
+  failed
+  refunded
+}
+
+enum NotificationType {
+  general
+  result
+  election
+  payment
+  system
+}
+
+enum NotificationTarget {
+  all
+  level
+  individual
+}
+
+enum CsvJobStatus {
+  pending
+  processing
+  completed
+  failed
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// MODELS
+// ────────────────────────────────────────────────────────────────────────────
+
+model Department {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(100)
+  code      String   @unique @db.VarChar(20)
+  faculty   String?  @db.VarChar(100)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  users              User[]
+  gradebooks         Gradebook[]
+  elections          Election[]
+  attendanceSessions AttendanceSession[]
+  notifications      Notification[]
+
+  @@map("departments")
+}
+
+model User {
+  id           String     @id @default(uuid())
+  userId       String     @unique @map("user_id") @db.VarChar(30)
+  departmentId String     @map("department_id")
+  name         String     @db.VarChar(100)
+  email        String     @unique @db.VarChar(150)
+  phone        String?    @db.VarChar(20)
+  program      Program
+  level        Level
+  role         UserRole   @default(student)
+  passwordHash String?    @map("password_hash") @db.VarChar(255)
+  status       UserStatus @default(pending)
+  createdById  String?    @map("created_by")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  department Department @relation(fields: [departmentId], references: [id])
+  createdBy  User?      @relation("CreatedBy", fields: [createdById], references: [id])
+
+  // Reverse relations
+  createdUsers        User[]              @relation("CreatedBy")
+  biometric           Biometric?
+  studentGrades       StudentGrade[]      @relation("StudentGrades")
+  enteredGrades       StudentGrade[]      @relation("EnteredBy")
+  modifiedGrades      StudentGrade[]      @relation("ModifiedBy")
+  publishedGradebooks Gradebook[]         @relation("PublishedBy")
+  createdGradebooks   Gradebook[]         @relation("CreatedGradebooks")
+  resultSnapshots     ResultSnapshot[]    @relation("PublishedSnapshots")
+  createdElections    Election[]          @relation("CreatedElections")
+  finalizedElections  Election[]          @relation("FinalizedElections")
+  candidateProfiles   Candidate[]         @relation("UserCandidates")
+  approvedCandidates  Candidate[]         @relation("ApprovedCandidates")
+  votes               Vote[]
+  createdSessions     AttendanceSession[] @relation("CreatedSessions")
+  studentAttendance   AttendanceRecord[]  @relation("StudentAttendance")
+  verifiedAttendance  AttendanceRecord[]  @relation("VerifiedBy")
+  payments            Payment[]
+  createdNotifications Notification[]     @relation("CreatedNotifications")
+  targetNotifications  Notification[]     @relation("TargetUser")
+  notificationReads   NotificationRead[]
+  auditLogs           AuditLog[]
+  csvUploadJobs       CsvUploadJob[]
+  registeredBiometrics Biometric[]        @relation("RegisteredBy")
+
+  @@map("users")
+}
+
+model Biometric {
+  id                 String   @id @default(uuid())
+  userId             String   @unique @map("user_id")
+  rightThumbTemplate Bytes?   @map("right_thumb_template")
+  leftThumbTemplate  Bytes?   @map("left_thumb_template")
+  registeredAt       DateTime @default(now()) @map("registered_at")
+  registeredById     String   @map("registered_by")
+
+  user         User @relation(fields: [userId], references: [id])
+  registeredBy User @relation("RegisteredBy", fields: [registeredById], references: [id])
+
+  @@map("biometrics")
+}
+
+model Gradebook {
+  id            String          @id @default(uuid())
+  departmentId  String          @map("department_id")
+  name          String          @db.VarChar(150)
+  level         Level
+  session       String          @db.VarChar(20)
+  semester      Semester
+  status        GradebookStatus @default(draft)
+  publishedAt   DateTime?       @map("published_at")
+  publishedById String?         @map("published_by")
+  createdById   String          @map("created_by")
+  createdAt     DateTime        @default(now()) @map("created_at")
+
+  department      Department       @relation(fields: [departmentId], references: [id])
+  publishedBy     User?            @relation("PublishedBy", fields: [publishedById], references: [id])
+  createdBy       User             @relation("CreatedGradebooks", fields: [createdById], references: [id])
+  courses         Course[]
+  resultSnapshots ResultSnapshot[]
+  csvUploadJobs   CsvUploadJob[]
+
+  @@map("gradebooks")
+}
+
+model Course {
+  id          String   @id @default(uuid())
+  gradebookId String   @map("gradebook_id")
+  courseCode  String   @map("course_code") @db.VarChar(20)
+  courseTitle String   @map("course_title") @db.VarChar(150)
+  level       Level
+  creditUnits Int      @default(3) @map("credit_units")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  gradebook     Gradebook      @relation(fields: [gradebookId], references: [id])
+  studentGrades StudentGrade[]
+  csvUploadJobs CsvUploadJob[]
+
+  @@map("courses")
+}
+
+model StudentGrade {
+  id               String       @id @default(uuid())
+  courseId         String       @map("course_id")
+  userId           String       @map("user_id")
+  caScore          Decimal?     @map("ca_score") @db.Decimal(5, 2)
+  examScore        Decimal?     @map("exam_score") @db.Decimal(5, 2)
+  total            Decimal?     @db.Decimal(5, 2)
+  grade            String?      @db.VarChar(3)
+  gradePoint       Decimal?     @map("grade_point") @db.Decimal(3, 1)
+  uploadMethod     UploadMethod @default(manual) @map("upload_method")
+  enteredById      String       @map("entered_by")
+  enteredAt        DateTime     @default(now()) @map("entered_at")
+  lastModifiedById String?      @map("last_modified_by")
+  lastModifiedAt   DateTime?    @map("last_modified_at")
+
+  course         Course @relation(fields: [courseId], references: [id])
+  student        User   @relation("StudentGrades", fields: [userId], references: [id])
+  enteredBy      User   @relation("EnteredBy", fields: [enteredById], references: [id])
+  lastModifiedBy User?  @relation("ModifiedBy", fields: [lastModifiedById], references: [id])
+
+  @@unique([courseId, userId])
+  @@map("student_grades")
+}
+
+model ResultSnapshot {
+  id            String   @id @default(uuid())
+  gradebookId   String   @map("gradebook_id")
+  snapshotJson  Json     @map("snapshot_json")
+  checksum      String   @db.VarChar(64)
+  publishedById String   @map("published_by")
+  publishedAt   DateTime @default(now()) @map("published_at")
+
+  gradebook   Gradebook @relation(fields: [gradebookId], references: [id])
+  publishedBy User      @relation("PublishedSnapshots", fields: [publishedById], references: [id])
+
+  @@map("result_snapshots")
+}
+
+model Election {
+  id             String         @id @default(uuid())
+  departmentId   String         @map("department_id")
+  title          String         @db.VarChar(200)
+  description    String?
+  startTime      DateTime       @map("start_time")
+  endTime        DateTime       @map("end_time")
+  status         ElectionStatus @default(draft)
+  eligibleLevels String[]       @map("eligible_levels")
+  createdById    String         @map("created_by")
+  finalizedById  String?        @map("finalized_by")
+  finalizedAt    DateTime?      @map("finalized_at")
+  createdAt      DateTime       @default(now()) @map("created_at")
+
+  department  Department  @relation(fields: [departmentId], references: [id])
+  createdBy   User        @relation("CreatedElections", fields: [createdById], references: [id])
+  finalizedBy User?       @relation("FinalizedElections", fields: [finalizedById], references: [id])
+  candidates  Candidate[]
+  votes       Vote[]
+
+  @@map("elections")
+}
+
+model Candidate {
+  id           String   @id @default(uuid())
+  electionId   String   @map("election_id")
+  userId       String   @map("user_id")
+  position     String   @db.VarChar(100)
+  manifesto    String?
+  photoUrl     String?  @map("photo_url") @db.VarChar(500)
+  isApproved   Boolean  @default(false) @map("is_approved")
+  approvedById String?  @map("approved_by")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  election   Election @relation(fields: [electionId], references: [id])
+  user       User     @relation("UserCandidates", fields: [userId], references: [id])
+  approvedBy User?    @relation("ApprovedCandidates", fields: [approvedById], references: [id])
+  votes      Vote[]
+
+  @@map("candidates")
+}
+
+model Vote {
+  id          String   @id @default(uuid())
+  electionId  String   @map("election_id")
+  voterId     String   @map("voter_id")
+  candidateId String   @map("candidate_id")
+  position    String   @db.VarChar(100)
+  voteToken   String   @unique @map("vote_token") @db.VarChar(64)
+  castAt      DateTime @default(now()) @map("cast_at")
+  ipAddress   String?  @map("ip_address")
+
+  election  Election  @relation(fields: [electionId], references: [id])
+  voter     User      @relation(fields: [voterId], references: [id])
+  candidate Candidate @relation(fields: [candidateId], references: [id])
+
+  @@unique([electionId, voterId, position])
+  @@map("votes")
+}
+
+model AttendanceSession {
+  id           String                @id @default(uuid())
+  departmentId String                @map("department_id")
+  name         String                @db.VarChar(150)
+  level        Level
+  type         AttendanceSessionType @default(exam)
+  date         DateTime              @db.Date
+  createdById  String                @map("created_by")
+  createdAt    DateTime              @default(now()) @map("created_at")
+  closedAt     DateTime?             @map("closed_at")
+
+  department        Department         @relation(fields: [departmentId], references: [id])
+  createdBy         User               @relation("CreatedSessions", fields: [createdById], references: [id])
+  attendanceRecords AttendanceRecord[]
+
+  @@map("attendance_sessions")
+}
+
+model AttendanceRecord {
+  id           String           @id @default(uuid())
+  sessionId    String           @map("session_id")
+  userId       String           @map("user_id")
+  verifiedAt   DateTime         @default(now()) @map("verified_at")
+  method       AttendanceMethod @default(biometric)
+  verifiedById String           @map("verified_by")
+
+  session    AttendanceSession @relation(fields: [sessionId], references: [id])
+  student    User              @relation("StudentAttendance", fields: [userId], references: [id])
+  verifiedBy User              @relation("VerifiedBy", fields: [verifiedById], references: [id])
+
+  @@unique([sessionId, userId])
+  @@map("attendance_records")
+}
+
+model Payment {
+  id          String        @id @default(uuid())
+  userId      String        @map("user_id")
+  type        PaymentType
+  amount      Decimal       @db.Decimal(12, 2)
+  currency    String        @default("NGN") @db.VarChar(5)
+  reference   String        @unique @db.VarChar(100)
+  gatewayRef  String?       @map("gateway_ref") @db.VarChar(100)
+  status      PaymentStatus @default(pending)
+  sessionYear String?       @map("session_year") @db.VarChar(20)
+  semester    Semester?
+  receiptUrl  String?       @map("receipt_url") @db.VarChar(500)
+  paidAt      DateTime?     @map("paid_at")
+  createdAt   DateTime      @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("payments")
+}
+
+model Notification {
+  id           String             @id @default(uuid())
+  departmentId String             @map("department_id")
+  title        String             @db.VarChar(200)
+  body         String
+  type         NotificationType
+  target       NotificationTarget
+  targetLevel  Level?             @map("target_level")
+  targetUserId String?            @map("target_user_id")
+  isSent       Boolean            @default(false) @map("is_sent")
+  sentAt       DateTime?          @map("sent_at")
+  createdById  String             @map("created_by")
+  createdAt    DateTime           @default(now()) @map("created_at")
+
+  department   Department         @relation(fields: [departmentId], references: [id])
+  createdBy    User               @relation("CreatedNotifications", fields: [createdById], references: [id])
+  targetUser   User?              @relation("TargetUser", fields: [targetUserId], references: [id])
+  reads        NotificationRead[]
+
+  @@map("notifications")
+}
+
+model NotificationRead {
+  id             String   @id @default(uuid())
+  notificationId String   @map("notification_id")
+  userId         String   @map("user_id")
+  readAt         DateTime @default(now()) @map("read_at")
+
+  notification Notification @relation(fields: [notificationId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+
+  @@unique([notificationId, userId])
+  @@map("notification_reads")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String   @map("actor_id")
+  action     String   @db.VarChar(100)
+  entityType String?  @map("entity_type") @db.VarChar(50)
+  entityId   String?  @map("entity_id")
+  oldValue   Json?    @map("old_value")
+  newValue   Json?    @map("new_value")
+  ipAddress  String?  @map("ip_address")
+  userAgent  String?  @map("user_agent")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  actor User @relation(fields: [actorId], references: [id])
+
+  @@map("audit_logs")
+}
+
+model CsvUploadJob {
+  id            String       @id @default(uuid())
+  gradebookId   String       @map("gradebook_id")
+  courseId      String       @map("course_id")
+  uploadedById  String       @map("uploaded_by")
+  fileUrl       String?      @map("file_url") @db.VarChar(500)
+  status        CsvJobStatus @default(pending)
+  totalRows     Int?         @map("total_rows")
+  processedRows Int          @default(0) @map("processed_rows")
+  errorLog      Json?        @map("error_log")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  completedAt   DateTime?    @map("completed_at")
+
+  gradebook  Gradebook @relation(fields: [gradebookId], references: [id])
+  course     Course    @relation(fields: [courseId], references: [id])
+  uploadedBy User      @relation(fields: [uploadedById], references: [id])
+
+  @@map("csv_upload_jobs")
+}

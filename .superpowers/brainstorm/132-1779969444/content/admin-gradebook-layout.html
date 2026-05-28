@@ -1,0 +1,126 @@
+<h2>Admin Gradebook Management — Layout Options</h2>
+<p class="subtitle">How should the gradebook detail page be structured?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">Option A — Tabbed Detail Page</div>
+        <div class="mockup-body" style="font-size:11px; padding:10px;">
+          <div class="mock-nav" style="font-size:10px; padding:4px 8px; background:#1e3a5f; color:white;">NACOS-AIFUE Admin &nbsp;|&nbsp; Gradebooks &nbsp;›&nbsp; CSC 200 — 2024/25 S1</div>
+          <div style="display:flex; gap:4px; padding:6px 8px; border-bottom:1px solid #e5e7eb; background:#f9fafb;">
+            <span style="background:#1e3a5f;color:white;padding:3px 10px;border-radius:4px;font-size:10px;">Courses &amp; Grades</span>
+            <span style="padding:3px 10px;border-radius:4px;font-size:10px;color:#6b7280;">CSV Upload</span>
+            <span style="padding:3px 10px;border-radius:4px;font-size:10px;color:#6b7280;">Publish</span>
+          </div>
+          <div style="padding:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span style="font-weight:600;font-size:10px;">Courses (3)</span>
+              <span style="background:#e8f0fe;color:#1e3a5f;padding:2px 8px;border-radius:4px;font-size:9px;">+ Add Course</span>
+            </div>
+            <div style="border:1px solid #e5e7eb;border-radius:4px;overflow:hidden;font-size:9px;">
+              <div style="display:grid;grid-template-columns:3fr 1fr 1fr 1fr;background:#f3f4f6;padding:4px 8px;font-weight:600;color:#374151;">
+                <span>Course</span><span>Credit</span><span>Grades</span><span>Action</span>
+              </div>
+              <div style="display:grid;grid-template-columns:3fr 1fr 1fr 1fr;padding:4px 8px;border-top:1px solid #f3f4f6;">
+                <span>CSC 201 – Data Structures</span><span>3</span><span style="color:#16a34a;">45/45</span><span style="color:#1e3a5f;">Edit</span>
+              </div>
+              <div style="display:grid;grid-template-columns:3fr 1fr 1fr 1fr;padding:4px 8px;border-top:1px solid #f3f4f6;">
+                <span>CSC 203 – Algorithms</span><span>3</span><span style="color:#d97706;">30/45</span><span style="color:#1e3a5f;">Edit</span>
+              </div>
+              <div style="display:grid;grid-template-columns:3fr 1fr 1fr 1fr;padding:4px 8px;border-top:1px solid #f3f4f6;">
+                <span>MTH 201 – Statistics</span><span>2</span><span style="color:#dc2626;">0/45</span><span style="color:#1e3a5f;">Edit</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Tabbed detail page</h3>
+      <p>Courses &amp; Grades / CSV Upload / Publish as tabs on one page. Clean and focused.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">Option B — Sidebar + main panel</div>
+        <div class="mockup-body" style="font-size:11px; padding:8px;">
+          <div class="mock-nav" style="font-size:10px; padding:4px 8px; background:#1e3a5f; color:white;">NACOS-AIFUE Admin</div>
+          <div style="display:flex; gap:0; height:120px;">
+            <div style="width:120px; background:#f3f4f6; border-right:1px solid #e5e7eb; padding:8px; font-size:9px; flex-shrink:0;">
+              <div style="font-weight:600; margin-bottom:6px; color:#374151;">Gradebooks</div>
+              <div style="background:#e8f0fe;color:#1e3a5f;padding:2px 6px;border-radius:3px;margin-bottom:3px;">CSC 200 S1 24/25</div>
+              <div style="color:#6b7280;padding:2px 6px;margin-bottom:3px;">CSC 200 S2 23/24</div>
+              <div style="color:#6b7280;padding:2px 6px;margin-bottom:3px;">ICT 100 S1 24/25</div>
+              <div style="color:#6b7280;padding:2px 6px;">+ New</div>
+            </div>
+            <div style="flex:1; padding:8px;">
+              <div style="font-weight:600; font-size:10px; margin-bottom:4px;">CSC 200 — 2024/25 Sem 1 <span style="background:#fef3c7;color:#92400e;font-size:8px;padding:1px 5px;border-radius:3px;margin-left:4px;">draft</span></div>
+              <div style="font-size:9px; color:#6b7280; margin-bottom:6px;">3 courses &nbsp;·&nbsp; 45 students</div>
+              <div style="display:flex; gap:4px; font-size:9px;">
+                <span style="padding:2px 8px;border:1px solid #e5e7eb;border-radius:3px;">Courses</span>
+                <span style="padding:2px 8px;border:1px solid #e5e7eb;border-radius:3px;">CSV Jobs</span>
+                <span style="padding:2px 8px;background:#1e3a5f;color:white;border-radius:3px;">Publish</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Sidebar list + main panel</h3>
+      <p>Gradebook list always visible in sidebar. Quick switching between gradebooks. Better for admins managing many gradebooks.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">Option C — Step-by-step stepper</div>
+        <div class="mockup-body" style="font-size:11px; padding:10px;">
+          <div class="mock-nav" style="font-size:10px; padding:4px 8px; background:#1e3a5f; color:white;">NACOS-AIFUE Admin &nbsp;·&nbsp; New Gradebook</div>
+          <div style="padding:8px;">
+            <div style="display:flex; align-items:center; gap:0; margin-bottom:10px; font-size:9px;">
+              <div style="display:flex;align-items:center;gap:4px;">
+                <div style="width:18px;height:18px;border-radius:50%;background:#1e3a5f;color:white;display:flex;align-items:center;justify-content:center;font-size:8px;">✓</div>
+                <span style="color:#1e3a5f;font-weight:600;">Details</span>
+              </div>
+              <div style="flex:1;height:1px;background:#e5e7eb;margin:0 4px;"></div>
+              <div style="display:flex;align-items:center;gap:4px;">
+                <div style="width:18px;height:18px;border-radius:50%;background:#1e3a5f;color:white;display:flex;align-items:center;justify-content:center;font-size:8px;">2</div>
+                <span style="color:#1e3a5f;font-weight:600;">Courses</span>
+              </div>
+              <div style="flex:1;height:1px;background:#e5e7eb;margin:0 4px;"></div>
+              <div style="display:flex;align-items:center;gap:4px;">
+                <div style="width:18px;height:18px;border-radius:50%;border:1px solid #d1d5db;color:#9ca3af;display:flex;align-items:center;justify-content:center;font-size:8px;">3</div>
+                <span style="color:#9ca3af;">Grades</span>
+              </div>
+              <div style="flex:1;height:1px;background:#e5e7eb;margin:0 4px;"></div>
+              <div style="display:flex;align-items:center;gap:4px;">
+                <div style="width:18px;height:18px;border-radius:50%;border:1px solid #d1d5db;color:#9ca3af;display:flex;align-items:center;justify-content:center;font-size:8px;">4</div>
+                <span style="color:#9ca3af;">Publish</span>
+              </div>
+            </div>
+            <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:4px;padding:8px;font-size:9px;">
+              <div style="font-weight:600;margin-bottom:4px;">Step 2: Add Courses</div>
+              <div style="display:flex;gap:4px;margin-bottom:4px;">
+                <input class="mock-input" style="flex:1;font-size:9px;padding:3px 6px;" placeholder="Course code (e.g. CSC 201)" readonly>
+                <input class="mock-input" style="flex:2;font-size:9px;padding:3px 6px;" placeholder="Course title" readonly>
+                <input class="mock-input" style="width:40px;font-size:9px;padding:3px 6px;" placeholder="Units" readonly>
+                <button class="mock-button" style="font-size:9px;padding:3px 8px;">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Step-by-step stepper</h3>
+      <p>Guided wizard: Details → Courses → Grades → Publish. Good for first-time setup but less flexible for going back to edit.</p>
+    </div>
+  </div>
+
+</div>

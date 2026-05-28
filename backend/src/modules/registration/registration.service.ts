@@ -22,7 +22,7 @@ export class RegistrationService {
       where: { userId },
       orderBy: { submittedAt: 'desc' },
     });
-    return regs.map(this.toPublic);
+    return regs.map((r) => this.toPublic(r));
   }
 
   async submitRegistration(
@@ -66,8 +66,14 @@ export class RegistrationService {
     status: 'verified' | 'rejected',
     reviewNote: string | null
   ): Promise<RegistrationPublic> {
-    const reg = await this.db.courseRegistration.findUnique({ where: { id } });
+    const reg = await this.db.courseRegistration.findUnique({
+      where: { id },
+      include: { user: { select: { departmentId: true } } },
+    });
     if (!reg) throw new AppError(404, 'RESOURCE_NOT_FOUND', 'Registration not found');
+    if (reg.user.departmentId !== departmentId) {
+      throw new AppError(403, 'AUTH_FORBIDDEN', 'Registration does not belong to your department');
+    }
 
     const updated = await this.db.courseRegistration.update({
       where: { id },

@@ -8,6 +8,7 @@ const mockReg = {
   semester: Semester.first, fileUrl: 'https://s3.url/file.pdf',
   status: RegistrationStatus.pending, reviewedById: null, reviewNote: null,
   submittedAt: new Date(), reviewedAt: null,
+  user: { departmentId: 'dept-1' },
 };
 
 const prismaMock = {

@@ -151,7 +151,7 @@ export class PaymentsService {
       where: { userId: studentId },
       orderBy: { createdAt: 'desc' },
     });
-    return payments.map(this.toPublic);
+    return payments.map((p) => this.toPublic(p));
   }
 
   async initiateSchoolFees(

@@ -2,9 +2,14 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import StudentLayout from './components/StudentLayout';
+import PublicLayout from './components/PublicLayout';
 
-// Auth pages
+// Public website pages
 import LandingPage from './pages/LandingPage';
+import AboutPage from './pages/public/AboutPage';
+import ExecutivesPage from './pages/public/ExecutivesPage';
+import EventsPage from './pages/public/EventsPage';
+import ContactPage from './pages/public/ContactPage';
 import LoginPage from './pages/auth/LoginPage';
 import ValidatePage from './pages/auth/ValidatePage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
@@ -36,7 +41,13 @@ export default function App() {
   return (
     <AuthProvider>
       <Routes>
-        {/* ── Public ──────────────────────────────────────────────────── */}
+        {/* ── Public website ──────────────────────────────────────────── */}
+        <Route element={<PublicLayout />}>
+          <Route path="/about"      element={<AboutPage />} />
+          <Route path="/executives" element={<ExecutivesPage />} />
+          <Route path="/events"     element={<EventsPage />} />
+          <Route path="/contact"    element={<ContactPage />} />
+        </Route>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth/login" element={<LoginPage />} />
         <Route path="/auth/validate" element={<ValidatePage />} />

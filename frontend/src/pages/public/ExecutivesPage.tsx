@@ -9,6 +9,7 @@ const EXECUTIVES = [
     bio: 'Passionate about artificial intelligence and machine learning. Led multiple successful hackathons and has interned at top tech companies. Committed to advancing NACOS-AIFUE to new heights.',
     email: 'president@nacos-aifue.org',
     initials: 'UVC',
+    photo: '/nacos-president.jpg',
   },
   {
     name: 'Comr. Egboh Miracle Chiamaka',
@@ -17,6 +18,7 @@ const EXECUTIVES = [
     bio: 'Full-stack developer with expertise in React and Node.js. Organises technical workshops and mentorship programs. Advocates for women in tech and diversity in computing.',
     email: 'vp@nacos-aifue.org',
     initials: 'EMC',
+    photo: '/nacos-vp.jpg',
   },
   {
     name: 'Comr. Innocent Lilian Chinonye',
@@ -25,6 +27,7 @@ const EXECUTIVES = [
     bio: 'Detail-oriented leader with excellent organisational skills. Manages all chapter documentation and communications. Active in open-source projects and community building.',
     email: 'secretary@nacos-aifue.org',
     initials: 'ILC',
+    photo: null,
   },
   {
     name: 'Comr. Opara Christian Ugonna',
@@ -33,6 +36,7 @@ const EXECUTIVES = [
     bio: 'Expert in financial management and budgeting. Ensures transparent handling of chapter funds and coordinates fundraising activities. Background in fintech development.',
     email: 'finance@nacos-aifue.org',
     initials: 'OCU',
+    photo: null,
   },
   {
     name: 'Comr. Okezue Akachukwu Favour',
@@ -41,6 +45,7 @@ const EXECUTIVES = [
     bio: 'Expert in cloud computing and DevOps practices. Leads technical training sessions and manages chapter IT infrastructure. AWS certified solutions architect.',
     email: 'tech@nacos-aifue.org',
     initials: 'OAF',
+    photo: null,
   },
   {
     name: 'Comr. Oparanozie Franklyn',
@@ -49,6 +54,7 @@ const EXECUTIVES = [
     bio: 'Creative communicator and social media strategist. Manages chapter branding and external communications. Passionate about digital marketing and content creation.',
     email: 'pro@nacos-aifue.org',
     initials: 'OF',
+    photo: '/nacos-doi.jpg',
   },
   {
     name: 'Comr. Ohabunwa Favour Mmesoma',
@@ -57,6 +63,7 @@ const EXECUTIVES = [
     bio: 'Event planning specialist who organises memorable social activities and networking events. Focuses on building strong community bonds among members.',
     email: 'social@nacos-aifue.org',
     initials: 'OFM',
+    photo: '/nacos-asg.jpg',
   },
   {
     name: 'Comr. Dike Stephen Amarachukwu',
@@ -65,6 +72,7 @@ const EXECUTIVES = [
     bio: 'Promotes physical fitness and wellness among members. Organises inter-departmental competitions and recreational activities. Believes in work-life balance.',
     email: 'sports@nacos-aifue.org',
     initials: 'DSA',
+    photo: '/nacos-dosport.jpg',
   },
 ];
 
@@ -86,8 +94,14 @@ const ORG_STRUCTURE = [
   { num: 4, title: 'Community & Wellness',  desc: 'Assistant Secretary General and Director of Sports focus on member engagement and well-being.' },
 ];
 
-function Avatar({ initials, size = 'md' }: { initials: string; size?: 'md' | 'lg' }) {
+function Avatar({ initials, photo, size = 'md' }: { initials: string; photo?: string | null; size?: 'md' | 'lg' }) {
   const sz = size === 'lg' ? 'w-20 h-20 text-xl' : 'w-14 h-14 text-sm';
+  if (photo) {
+    return (
+      <img src={photo} alt={initials} className={`${sz} rounded-2xl object-cover object-top flex-shrink-0 shadow-md`}
+        onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+    );
+  }
   return (
     <div className={`${sz} rounded-2xl bg-gradient-to-br from-brand-700 to-brand-900 flex items-center justify-center text-white font-bold flex-shrink-0`}>
       {initials}
@@ -141,7 +155,7 @@ export default function ExecutivesPage() {
             {EXECUTIVES.map((exec) => (
               <div key={exec.name}
                 className="bg-white rounded-2xl border border-gray-200 p-6 hover:border-brand-300 hover:shadow-md transition-all">
-                <Avatar initials={exec.initials} size="lg" />
+                <Avatar initials={exec.initials} photo={exec.photo} size="lg" />
                 <div className="mt-4">
                   <h3 className="font-bold text-gray-900 text-sm leading-tight">{exec.name}</h3>
                   <p className="text-brand-700 font-semibold text-xs mt-1">{exec.position}</p>

@@ -38,6 +38,10 @@ export default function AboutPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Hero */}
       <section className="bg-brand-900 text-white py-24 px-6 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <img src="/IMG_0982.jpg" alt="" className="w-full h-full object-cover object-center opacity-20" />
+          <div className="absolute inset-0 bg-gradient-to-b from-brand-900/60 to-brand-900/90" />
+        </div>
         <div className="absolute inset-0 opacity-10">
           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
             <defs><pattern id="g" width="60" height="60" patternUnits="userSpaceOnUse">

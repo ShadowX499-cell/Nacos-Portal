@@ -9,6 +9,51 @@ const GALLERY_ITEMS = [
     featured: true,
   },
   {
+    src: '/nacos-event-mr-miss.jpg',
+    alt: 'Mr & Miss NACOS AIFUE 2025 — celebrating excellence and campus royalty',
+    category: 'Events',
+  },
+  {
+    src: '/nacos-ticket-1.jpg',
+    alt: 'NACOS AIFUE event poster — join us for an unforgettable evening',
+    category: 'Events',
+  },
+  {
+    src: '/nacos-ticket-2.jpg',
+    alt: 'NACOS AIFUE event — a night to remember with the best of computing students',
+    category: 'Events',
+  },
+  {
+    src: '/nacos-prototype.jpg',
+    alt: 'NACOS AIFUE portal prototype showcase — student innovation in action',
+    category: 'Workshop',
+  },
+  {
+    src: '/nacos-president.jpg',
+    alt: 'Comr. Uzoma Victor Chukwuemeka — NACOS AIFUE President addressing members',
+    category: 'Leadership',
+  },
+  {
+    src: '/nacos-vp.jpg',
+    alt: 'Comr. Egboh Miracle Chiamaka — NACOS AIFUE Vice President',
+    category: 'Leadership',
+  },
+  {
+    src: '/nacos-doi.jpg',
+    alt: 'Comr. Oparanozie Franklyn — NACOS AIFUE Director of Information',
+    category: 'Leadership',
+  },
+  {
+    src: '/nacos-asg.jpg',
+    alt: 'Comr. Ohabunwa Favour Mmesoma — NACOS AIFUE Assistant Secretary General',
+    category: 'Leadership',
+  },
+  {
+    src: '/nacos-dosport.jpg',
+    alt: 'Comr. Dike Stephen Amarachukwu — NACOS AIFUE Director of Sports',
+    category: 'Leadership',
+  },
+  {
     src: 'https://images.pexels.com/photos/7369237/pexels-photo-7369237.jpeg?auto=compress&cs=tinysrgb&w=800',
     alt: 'NACOS hackathon participants collaborating on AI solutions',
     category: 'Hackathon',
@@ -18,54 +63,9 @@ const GALLERY_ITEMS = [
     alt: 'Web development workshop — students learning React and Node.js',
     category: 'Workshop',
   },
-  {
-    src: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'NACOS executive council meeting and planning session',
-    category: 'Leadership',
-  },
-  {
-    src: 'https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'Students presenting tech projects at the NACOS showcase',
-    category: 'Events',
-  },
-  {
-    src: 'https://images.pexels.com/photos/5940841/pexels-photo-5940841.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'NACOS AIFUE orientation and welcome ceremony for new students',
-    category: 'Events',
-  },
-  {
-    src: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'Cybersecurity seminar — understanding modern threats and defense',
-    category: 'Seminar',
-  },
-  {
-    src: 'https://images.pexels.com/photos/1181396/pexels-photo-1181396.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'Students during NACOS career fair, connecting with industry professionals',
-    category: 'Career',
-  },
-  {
-    src: 'https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'NACOS chapter team photo at the annual departmental gathering',
-    category: 'Events',
-  },
-  {
-    src: 'https://images.pexels.com/photos/1181533/pexels-photo-1181533.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'Python bootcamp — hands-on coding session for 100L students',
-    category: 'Workshop',
-  },
-  {
-    src: 'https://images.pexels.com/photos/7108177/pexels-photo-7108177.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'AI/ML hackathon team working through the night on their solution',
-    category: 'Hackathon',
-  },
-  {
-    src: 'https://images.pexels.com/photos/3861943/pexels-photo-3861943.jpeg?auto=compress&cs=tinysrgb&w=800',
-    alt: 'NACOS mentorship session — industry professionals sharing experience',
-    category: 'Career',
-  },
 ];
 
-const CATEGORIES = ['All', 'Events', 'Workshop', 'Hackathon', 'Seminar', 'Career', 'Leadership'];
+const CATEGORIES = ['All', 'Events', 'Leadership', 'Workshop', 'Hackathon', 'Seminar', 'Career'];
 
 export default function GalleryPage() {
   const [active, setActive] = useState('All');
@@ -84,7 +84,7 @@ export default function GalleryPage() {
         </div>
         {/* Featured hero image */}
         <div className="absolute inset-0 overflow-hidden">
-          <img src="/IMG_0982.jpg" alt="NACOS events" className="w-full h-full object-cover object-center opacity-20" />
+          <img src="/nacos-event-mr-miss.jpg" alt="NACOS events" className="w-full h-full object-cover object-center opacity-25" />
         </div>
         <div className="relative max-w-4xl mx-auto text-center">
           <span className="inline-block text-brand-300 text-xs font-bold uppercase tracking-widest mb-4">Gallery</span>

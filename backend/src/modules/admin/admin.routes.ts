@@ -8,6 +8,7 @@ import { createUserRules, listUsersRules, updateUserRules } from './admin.valida
 import { listSuperAdmins, assignSuperAdmin, revokeSuperAdmin } from './super-admins.controller';
 import { listAuditLogs, listOwnAuditLogs, getAuditLogById } from './audit-logs.controller';
 import { previewAdvance, advanceSemester, listTransitions } from './academic.controller';
+import { getRevenue, exportRevenue } from './revenue.controller';
 import {
   getDashboard,
   createUser,
@@ -84,6 +85,14 @@ router.patch(
   ]),
   updateDepartmentSettings
 );
+
+// ── Revenue (HOD only) ───────────────────────────────────────────────────────
+
+/** GET  /api/v1/admin/revenue */
+router.get('/revenue', requirePermission('view_revenue'), getRevenue);
+
+/** GET  /api/v1/admin/revenue/export */
+router.get('/revenue/export', requirePermission('view_revenue'), exportRevenue);
 
 // ── Academic Calendar (HOD only) ─────────────────────────────────────────────
 

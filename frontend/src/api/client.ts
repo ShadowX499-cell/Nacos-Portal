@@ -156,6 +156,32 @@ export const adminApi = {
     api.patch<{ success: true; data: import('../types').User }>(`/admin/users/${id}`, body),
 };
 
+// ── Revenue API (HOD) ─────────────────────────────────────────────────────────
+
+export interface RevenueSummary {
+  totalRevenue: number;
+  collectionRate: number;
+  byType: { type: string; amount: number; count: number }[];
+  byProgram: { program: string; amount: number }[];
+  byLevel: { level: string; amount: number }[];
+  monthlyTrend: { month: string; total: number }[];
+  recentPayments: Array<{
+    id: string; type: string; amount: number; currency: string; reference: string;
+    status: string; sessionYear: string | null; semester: string | null;
+    paidAt: string | null; createdAt: string; studentName: string; studentUserId: string;
+  }>;
+  meta: import('../types').PaginationMeta;
+}
+
+export const revenueApi = {
+  getSummary: (params?: Record<string, string | number>) =>
+    api.get<{ success: true; data: RevenueSummary }>('/admin/revenue', { params }),
+  exportCsv: (params?: Record<string, string>) => {
+    const qs = params ? '?' + new URLSearchParams(params).toString() : '';
+    window.open(`${api.defaults.baseURL}/admin/revenue/export${qs}`, '_blank');
+  },
+};
+
 // ── Academic API (HOD) ────────────────────────────────────────────────────────
 
 export const academicApi = {

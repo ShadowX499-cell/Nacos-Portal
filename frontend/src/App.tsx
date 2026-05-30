@@ -35,6 +35,7 @@ import AdminSettingsPage from './pages/admin/AdminSettingsPage';
 import SuperAdminsPage from './pages/admin/SuperAdminsPage';
 import AuditLogsPage from './pages/admin/AuditLogsPage';
 import AcademicCalendarPage from './pages/admin/AcademicCalendarPage';
+import RevenuePage from './pages/admin/RevenuePage';
 
 // Student pages
 import StudentDashboard from './pages/student/StudentDashboard';
@@ -87,6 +88,7 @@ export default function App() {
             <Route path="/admin/super-admins"   element={<SuperAdminsPage />} />
             <Route path="/admin/audit-logs"     element={<AuditLogsPage />} />
             <Route path="/admin/academic"       element={<AcademicCalendarPage />} />
+            <Route path="/admin/revenue"        element={<RevenuePage />} />
           </Route>
         </Route>
 

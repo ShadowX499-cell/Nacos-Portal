@@ -4,6 +4,8 @@ export type Program = 'ICT' | 'CSC' | 'CRE';
 export type Level = 'L100' | 'L200' | 'L300' | 'L400';
 export type UserRole = 'student' | 'admin' | 'super_admin';
 export type UserStatus = 'pending' | 'validated' | 'suspended';
+export type StudentStatus = 'active' | 'carryover' | 'graduated' | 'suspended';
+export type SuperAdminType = 'course_adviser' | 'hod' | 'result_exam_officer';
 export type PaymentStatus = 'pending' | 'success' | 'failed' | 'refunded';
 
 // ── User ──────────────────────────────────────────────────────────────────────
@@ -18,6 +20,13 @@ export interface User {
   level: Level;
   role: UserRole;
   status: UserStatus;
+  studentStatus: StudentStatus;
+  superAdminType: SuperAdminType | null;
+  profilePhotoUrl: string | null;
+  dateOfBirth: string | null;
+  stateOfOrigin: string | null;
+  lga: string | null;
+  homeAddress: string | null;
   departmentId: string;
   createdAt: string;
   updatedAt: string;
@@ -70,6 +79,10 @@ export interface CreateUserForm {
   phone: string;
   program: Program;
   level: Level;
+  dateOfBirth?: string;
+  stateOfOrigin?: string;
+  lga?: string;
+  homeAddress?: string;
 }
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────

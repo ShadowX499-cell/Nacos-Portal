@@ -131,11 +131,16 @@ export const adminApi = {
   getDashboard: () =>
     api.get<{ success: true; data: import('../types').DashboardStats }>('/admin/dashboard'),
 
-  createUser: (body: import('../types').CreateUserForm) =>
-    api.post<{ success: true; data: { user: import('../types').User; userId: string } }>(
+  createUser: (body: import('../types').CreateUserForm, photo?: File | null) => {
+    const form = new FormData();
+    Object.entries(body).forEach(([k, v]) => { if (v !== undefined && v !== '') form.append(k, v as string); });
+    if (photo) form.append('photo', photo);
+    return api.post<{ success: true; data: { user: import('../types').User; userId: string } }>(
       '/admin/users',
-      body
-    ),
+      form,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
+  },
 
   listUsers: (params?: Record<string, string | number>) =>
     api.get<{

@@ -282,7 +282,9 @@ export default function LandingPage() {
           <Link to="/" className="flex items-center gap-3 group">
             <div className="relative">
               <div className="absolute inset-0 bg-brand-400/20 rounded-full blur-md group-hover:bg-brand-400/30 transition-all" />
-              <NacosLogo size={42} className="relative drop-shadow-md" />
+              <div className={`relative w-11 h-11 rounded-full flex items-center justify-center transition-colors ${scrolled ? 'bg-white/80' : 'bg-white/90'} shadow-md`}>
+                <NacosLogo size={32} />
+              </div>
             </div>
             <div>
               <p className={`font-bold text-sm leading-tight transition-colors ${scrolled ? 'text-brand-900' : 'text-white'}`}>
@@ -342,12 +344,14 @@ export default function LandingPage() {
       </header>
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-10"
         style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 35%, #166534 65%, #15803d 100%)' }}>
 
-        {/* Photo overlay — adds texture when IMG_0982.jpg is present */}
-        <div className="absolute inset-0 bg-cover bg-center opacity-20 mix-blend-luminosity"
-          style={{ backgroundImage: 'url(/IMG_0982.jpg)' }} />
+        {/* Photo overlay — real image showing through */}
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: 'url(/IMG_0982.jpg)', opacity: 0.38 }} />
+        {/* Tinted gradient so text stays legible */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#052e16]/55 via-[#14532d]/40 to-[#052e16]/70" />
 
         {/* Grid pattern */}
         <div className="absolute inset-0 opacity-[0.07]">
@@ -366,7 +370,7 @@ export default function LandingPage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-10 blur-3xl pointer-events-none"
           style={{ background: 'radial-gradient(circle, #f59e0b, transparent 70%)' }} />
 
-        <div className="relative max-w-5xl mx-auto px-6 text-center z-10">
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 text-center z-10">
           {/* Logo + badge row */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -374,13 +378,17 @@ export default function LandingPage() {
             transition={{ duration: 0.7 }}
             className="flex flex-col items-center gap-4 mb-8"
           >
-            <div className="relative inline-block">
-              <div className="absolute inset-0 bg-brand-400/30 rounded-full blur-xl" />
-              <NacosLogo size={72} className="relative drop-shadow-2xl" />
+            <div className="relative inline-flex items-center justify-center">
+              {/* Glow ring */}
+              <div className="absolute -inset-4 bg-white/20 rounded-full blur-2xl" />
+              {/* White circle background */}
+              <div className="relative w-28 h-28 bg-white rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(255,255,255,0.4)] ring-4 ring-white/30">
+                <NacosLogo size={76} />
+              </div>
             </div>
-            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-brand-200 text-xs font-semibold px-5 py-2 rounded-full backdrop-blur-sm">
-              <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
-              National Association of Computing Students · AIFUE Chapter · Est. 2010
+            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-brand-200 text-[11px] sm:text-xs font-semibold px-3 sm:px-5 py-2 rounded-full backdrop-blur-sm text-center">
+              <Star className="w-3 h-3 text-yellow-400 fill-yellow-400 flex-shrink-0" />
+              <span>National Association of Computing Students · AIFUE Chapter · Est. 2010</span>
             </div>
           </motion.div>
 
@@ -389,10 +397,10 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.15 }}
-            className="font-display text-6xl md:text-8xl font-bold text-white leading-[1.05] mb-5"
+            className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white leading-[1.05] mb-5"
           >
             Towards Advanced
-            <span className="block bg-gradient-to-r from-brand-300 via-green-300 to-emerald-200 bg-clip-text text-transparent italic">
+            <span className="block bg-gradient-to-r from-green-400 via-lime-300 to-emerald-400 bg-clip-text text-transparent italic drop-shadow-[0_0_30px_rgba(74,222,128,0.5)]">
               Computing
             </span>
           </motion.h1>
@@ -423,15 +431,15 @@ export default function LandingPage() {
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             <Link to="/auth/login"
-              className="group relative inline-flex items-center gap-2.5 bg-white text-brand-900 font-bold px-9 py-4 rounded-2xl hover:bg-brand-50 transition-all shadow-2xl hover:-translate-y-1 text-base overflow-hidden">
+              className="group relative inline-flex items-center justify-center gap-2.5 bg-white text-brand-900 font-bold px-7 sm:px-9 py-3.5 sm:py-4 rounded-2xl hover:bg-brand-50 transition-all shadow-2xl hover:-translate-y-1 text-sm sm:text-base overflow-hidden w-full sm:w-auto">
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500" />
               Access Student Portal
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link to="/auth/validate"
-              className="inline-flex items-center gap-2.5 border-2 border-white/30 text-white font-semibold px-9 py-4 rounded-2xl hover:bg-white/10 hover:border-white/50 transition-all text-base backdrop-blur-sm">
+              className="inline-flex items-center justify-center gap-2.5 border-2 border-white/30 text-white font-semibold px-7 sm:px-9 py-3.5 sm:py-4 rounded-2xl hover:bg-white/10 hover:border-white/50 transition-all text-sm sm:text-base backdrop-blur-sm w-full sm:w-auto">
               Activate Account
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
             </Link>
           </motion.div>
         </div>
@@ -445,7 +453,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── MISSION PILLARS ───────────────────────────────────────────────────── */}
-      <section className="py-24 px-6 bg-white relative overflow-hidden">
+      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-white relative overflow-hidden">
         {/* Subtle background gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-50/30 to-transparent pointer-events-none" />
 
@@ -453,7 +461,7 @@ export default function LandingPage() {
           <div className="text-center mb-16">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
               <span className="inline-block bg-brand-50 text-brand-700 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-brand-200 mb-5">Our Purpose</span>
-              <h2 className="font-display text-5xl md:text-6xl font-bold text-gray-900 mb-5">
+              <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-5">
                 What Drives Us
               </h2>
               <p className="text-gray-500 max-w-xl mx-auto text-lg leading-relaxed">
@@ -503,7 +511,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── PORTAL PREVIEW ───────────────────────────────────────────────────── */}
-      <section className="py-24 px-6 relative overflow-hidden"
+      <section className="py-16 sm:py-24 px-4 sm:px-6 relative overflow-hidden"
         style={{ background: 'linear-gradient(135deg, #0a0f1e 0%, #0d1a0d 50%, #0a1a0a 100%)' }}>
         {/* Dot pattern */}
         <div className="absolute inset-0 opacity-[0.04]">
@@ -517,7 +525,7 @@ export default function LandingPage() {
         {/* Gradient accent */}
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-500/50 to-transparent" />
 
-        <div className="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Text side */}
           <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} viewport={{ once: true }}>
             <span className="inline-block bg-brand-500/10 border border-brand-500/30 text-brand-400 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-6">
@@ -555,9 +563,12 @@ export default function LandingPage() {
             </Link>
           </motion.div>
 
-          {/* Mockup side */}
-          <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.1 }} viewport={{ once: true }}>
-            <PortalMockup />
+          {/* Mockup side — scrollable on mobile */}
+          <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.1 }} viewport={{ once: true }}
+            className="w-full overflow-x-auto -mx-2 px-2 sm:mx-0 sm:px-0 sm:overflow-visible">
+            <div className="min-w-[580px] sm:min-w-0">
+              <PortalMockup />
+            </div>
           </motion.div>
         </div>
 
@@ -565,7 +576,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── EXPLORE OUR PAGES ─────────────────────────────────────────────────── */}
-      <section className="py-24 px-6 bg-white">
+      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <motion.div className="text-center mb-14"
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
@@ -601,7 +612,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── PROGRAMS ─────────────────────────────────────────────────────────── */}
-      <section className="py-20 px-6 relative overflow-hidden"
+      <section className="py-16 sm:py-20 px-4 sm:px-6 relative overflow-hidden"
         style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%)' }}>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
@@ -626,7 +637,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── PORTAL FEATURES (DARK) ───────────────────────────────────────────── */}
-      <section className="py-24 px-6 relative overflow-hidden bg-brand-900">
+      <section className="py-16 sm:py-24 px-4 sm:px-6 relative overflow-hidden bg-brand-900">
         <div className="absolute inset-0 opacity-[0.04]">
           <svg width="100%" height="100%"><defs>
             <pattern id="dots2" width="36" height="36" patternUnits="userSpaceOnUse">
@@ -641,7 +652,7 @@ export default function LandingPage() {
           <motion.div className="text-center mb-14"
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
             <span className="inline-block bg-brand-800 text-brand-300 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-brand-700 mb-5">Features</span>
-            <h2 className="font-display text-5xl font-bold text-white mb-4">Everything in One Place</h2>
+            <h2 className="font-display text-3xl sm:text-5xl font-bold text-white mb-4">Everything in One Place</h2>
             <p className="text-brand-300 max-w-lg mx-auto leading-relaxed">
               One secure platform for your entire academic life at AIFUE.
             </p>
@@ -685,9 +696,9 @@ export default function LandingPage() {
       </section>
 
       {/* ── UPCOMING EVENTS ───────────────────────────────────────────────────── */}
-      <section className="py-24 px-6 bg-white">
+      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-white">
         <div className="max-w-5xl mx-auto">
-          <div className="flex items-end justify-between mb-12 gap-4">
+          <div className="flex items-end justify-between mb-8 sm:mb-12 gap-4 flex-wrap">
             <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }} viewport={{ once: true }}>
               <span className="inline-block bg-brand-50 text-brand-700 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-brand-200 mb-3">Calendar</span>
               <h2 className="font-display text-4xl font-bold text-gray-900">Upcoming Events</h2>
@@ -702,7 +713,7 @@ export default function LandingPage() {
               <motion.div key={ev.title}
                 initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.45, delay: i * 0.1 }} viewport={{ once: true }}
-                className="group flex gap-5 bg-white rounded-2xl p-6 border border-gray-200 hover:border-brand-300 hover:shadow-xl hover:shadow-brand-900/5 transition-all">
+                className="group flex gap-3 sm:gap-5 bg-white rounded-2xl p-4 sm:p-6 border border-gray-200 hover:border-brand-300 hover:shadow-xl hover:shadow-brand-900/5 transition-all">
                 <div className="flex-shrink-0 text-center bg-gradient-to-br from-brand-50 to-green-100 border border-brand-200 rounded-2xl px-4 py-3 min-w-[72px]">
                   <div className="text-xs font-bold text-brand-600 uppercase tracking-wide">{ev.date.month}</div>
                   <div className="font-display text-3xl font-bold text-brand-900 leading-none">{ev.date.day}</div>
@@ -726,13 +737,13 @@ export default function LandingPage() {
       </section>
 
       {/* ── ANIMATED TESTIMONIALS ─────────────────────────────────────────────── */}
-      <section className="py-24 px-6 relative overflow-hidden"
+      <section className="py-16 sm:py-24 px-4 sm:px-6 relative overflow-hidden"
         style={{ background: 'linear-gradient(180deg, #f8fafb 0%, #f0fdf4 100%)' }}>
         <div className="max-w-6xl mx-auto">
           <motion.div className="flex flex-col items-center max-w-2xl mx-auto mb-14 text-center"
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
             <span className="inline-block bg-white text-brand-700 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-brand-200 mb-5">Member Stories</span>
-            <h2 className="font-display text-5xl font-bold text-gray-900 tracking-tight mb-4">
+            <h2 className="font-display text-3xl sm:text-5xl font-bold text-gray-900 tracking-tight mb-4">
               What Our Members Say
             </h2>
             <p className="text-gray-500 max-w-md leading-relaxed">
@@ -749,11 +760,11 @@ export default function LandingPage() {
       </section>
 
       {/* ── CONTACT CTA ───────────────────────────────────────────────────────── */}
-      <section className="py-20 px-6 bg-white">
+      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} viewport={{ once: true }}
-            className="relative rounded-3xl p-10 md:p-14 overflow-hidden"
+            className="relative rounded-3xl p-6 sm:p-10 md:p-14 overflow-hidden"
             style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 50%, #166534 100%)' }}
           >
             {/* Decorative orbs */}
@@ -764,7 +775,7 @@ export default function LandingPage() {
 
             <div className="relative grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="font-display text-4xl font-bold text-white mb-4">
+                <h2 className="font-display text-3xl sm:text-4xl font-bold text-white mb-4">
                   Ready to join the NACOS family?
                 </h2>
                 <p className="text-brand-200 leading-relaxed mb-7">
@@ -804,10 +815,10 @@ export default function LandingPage() {
       </section>
 
       {/* ── FOOTER ────────────────────────────────────────────────────────────── */}
-      <footer className="text-brand-300 py-14 px-6" style={{ background: 'linear-gradient(180deg, #052e16 0%, #030f09 100%)' }}>
+      <footer className="text-brand-300 py-12 sm:py-14 px-4 sm:px-6" style={{ background: 'linear-gradient(180deg, #052e16 0%, #030f09 100%)' }}>
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
-            <div className="md:col-span-2">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 mb-10">
+            <div className="col-span-2 md:col-span-2">
               <div className="flex items-center gap-3 mb-5">
                 <NacosLogo size={44} className="drop-shadow-lg" />
                 <div>
@@ -840,7 +851,7 @@ export default function LandingPage() {
               </ul>
             </div>
           </div>
-          <div className="border-t border-brand-900 pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-brand-600">
+          <div className="border-t border-brand-900 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-brand-600 text-center sm:text-left">
             <p>© {year} NACOS-AIFUE. All rights reserved. Computer Science Dept, AIFUE, Owerri.</p>
             <p>We Develop · We Create · We Build Capacity</p>
           </div>

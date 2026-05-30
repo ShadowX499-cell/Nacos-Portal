@@ -306,3 +306,38 @@ export interface CreateElectionForm {
 export interface VoteBallot {
   votes: { position: string; candidateId: string }[];
 }
+
+// ── Admin Notifications ───────────────────────────────────────────────────────
+
+export interface AdminNotification {
+  id: string;
+  title: string;
+  body: string;
+  type: string;
+  target: string;
+  targetLevel: string | null;
+  isSent: boolean;
+  recipientCount: number;
+  createdAt: string;
+  sentAt: string | null;
+}
+
+export interface CreateAdminNotificationForm {
+  title: string;
+  body: string;
+  type: 'general' | 'result' | 'election' | 'payment' | 'system';
+  target: 'all' | 'level';
+  targetLevel?: string;
+  send: boolean;
+}
+
+// ── Department Settings ───────────────────────────────────────────────────────
+
+export interface DepartmentSettings {
+  id: string;
+  name: string;
+  code: string;
+  faculty: string | null;
+  currentSession: string | null;
+  currentSemester: string | null;
+}

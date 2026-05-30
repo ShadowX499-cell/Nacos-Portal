@@ -29,6 +29,9 @@ import GradeEntryPage from './pages/admin/GradeEntryPage';
 import ElectionListPage from './pages/admin/ElectionListPage';
 import CreateElectionPage from './pages/admin/CreateElectionPage';
 import ElectionDetailPage from './pages/admin/ElectionDetailPage';
+import AdminProfilePage from './pages/admin/AdminProfilePage';
+import AdminNotificationsPage from './pages/admin/AdminNotificationsPage';
+import AdminSettingsPage from './pages/admin/AdminSettingsPage';
 
 // Student pages
 import StudentDashboard from './pages/student/StudentDashboard';
@@ -75,6 +78,9 @@ export default function App() {
             <Route path="/admin/elections"     element={<ElectionListPage />} />
             <Route path="/admin/elections/new" element={<CreateElectionPage />} />
             <Route path="/admin/elections/:id" element={<ElectionDetailPage />} />
+            <Route path="/admin/profile"        element={<AdminProfilePage />} />
+            <Route path="/admin/notifications"  element={<AdminNotificationsPage />} />
+            <Route path="/admin/settings"       element={<AdminSettingsPage />} />
           </Route>
         </Route>
 

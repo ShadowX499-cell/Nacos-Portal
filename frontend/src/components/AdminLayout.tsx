@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Link, Outlet, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { Menu, X, Lock, LayoutDashboard, Users, BookOpen, Vote, Fingerprint, Bell, Settings } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -111,7 +111,8 @@ export default function AdminLayout() {
 
       {/* Footer */}
       <div className="p-2 border-t border-white/10 flex-shrink-0">
-        <div className="flex items-center gap-2 px-2 py-2 rounded-xl bg-white/5 mb-1">
+        <Link to="/admin/profile" onClick={() => setSidebarOpen(false)}
+          className="flex items-center gap-2 px-2 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors mb-1">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0 shadow-md">
             {initials}
           </div>
@@ -119,7 +120,7 @@ export default function AdminLayout() {
             <p className="text-white text-sm font-semibold truncate">{user?.name || 'Admin'}</p>
             <p className="text-white/50 text-xs truncate">{user?.userId}</p>
           </div>
-        </div>
+        </Link>
         <button
           onClick={() => void logout()}
           className="w-full text-left px-3 py-1.5 text-white/40 hover:text-white text-xs rounded-lg hover:bg-white/8 transition-colors"

@@ -311,3 +311,42 @@ export const electionsStudentApi = {
   vote: (id: string, body: import('../types').VoteBallot) =>
     api.post<{ success: true; data: null }>(`/elections/${id}/vote`, body),
 };
+
+// ── Admin Notifications API ───────────────────────────────────────────────────
+
+export const adminNotificationsApi = {
+  list: (status?: 'sent' | 'draft') =>
+    api.get<{ success: true; data: import('../types').AdminNotification[] }>(
+      '/admin/notifications',
+      { params: status ? { status } : {} }
+    ),
+
+  create: (body: import('../types').CreateAdminNotificationForm) =>
+    api.post<{ success: true; data: import('../types').AdminNotification }>(
+      '/admin/notifications',
+      body
+    ),
+
+  send: (id: string) =>
+    api.patch<{ success: true; data: import('../types').AdminNotification }>(
+      `/admin/notifications/${id}/send`
+    ),
+
+  delete: (id: string) =>
+    api.delete(`/admin/notifications/${id}`),
+};
+
+// ── Admin Settings API ────────────────────────────────────────────────────────
+
+export const adminSettingsApi = {
+  getDepartment: () =>
+    api.get<{ success: true; data: import('../types').DepartmentSettings }>(
+      '/admin/settings/department'
+    ),
+
+  updateDepartment: (body: { currentSession?: string; currentSemester?: string }) =>
+    api.patch<{ success: true; data: import('../types').DepartmentSettings }>(
+      '/admin/settings/department',
+      body
+    ),
+};

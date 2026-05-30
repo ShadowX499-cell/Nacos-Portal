@@ -10,6 +10,8 @@ import AboutPage from './pages/public/AboutPage';
 import ExecutivesPage from './pages/public/ExecutivesPage';
 import EventsPage from './pages/public/EventsPage';
 import ContactPage from './pages/public/ContactPage';
+import GalleryPage from './pages/public/GalleryPage';
+import BlogPage from './pages/public/BlogPage';
 import LoginPage from './pages/auth/LoginPage';
 import ValidatePage from './pages/auth/ValidatePage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
@@ -46,6 +48,8 @@ export default function App() {
           <Route path="/about"      element={<AboutPage />} />
           <Route path="/executives" element={<ExecutivesPage />} />
           <Route path="/events"     element={<EventsPage />} />
+          <Route path="/gallery"    element={<GalleryPage />} />
+          <Route path="/blog"       element={<BlogPage />} />
           <Route path="/contact"    element={<ContactPage />} />
         </Route>
         <Route path="/" element={<LandingPage />} />

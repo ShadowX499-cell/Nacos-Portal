@@ -1,0 +1,80 @@
+<h2>Design — Section 2 of 4: API & Service Layer</h2>
+<p class="subtitle">New endpoints grouped by sub-project. All follow existing conventions: asyncHandler, response helpers, audit log on every mutation.</p>
+
+<div class="section">
+  <h3>Sub-project E — Profile & Registration</h3>
+  <div style="background:#0f172a;color:#e2e8f0;border-radius:12px;padding:18px;font-family:monospace;font-size:12px;line-height:2;">
+    <span style="color:#4ade80">POST</span>   /api/v1/admin/users &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">← multipart/form-data (adds photo + bio fields)</span><br>
+    <span style="color:#4ade80">PATCH</span>  /api/v1/admin/users/:id &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">← update bio fields, replace photo</span><br>
+    <span style="color:#4ade80">GET</span> &nbsp;&nbsp; /api/v1/admin/users?program=CSC <span style="color:#94a3b8">← filter by program (new query param)</span><br>
+    <span style="color:#4ade80">GET</span> &nbsp;&nbsp; /api/v1/uploads/:filename &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">← Express static served from uploads/</span><br>
+    <span style="color:#4ade80">GET</span> &nbsp;&nbsp; /api/v1/profile/me &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">← extended to include new bio fields</span>
+  </div>
+  <p style="font-size:12px;color:#6b7280;margin-top:8px;">ID generation: <code>NACOS/[PROGRAM]/[YEAR]/[5-digit random]</code> — uses <code>crypto.randomInt(10000, 99999)</code> with collision retry (max 5 attempts).</p>
+</div>
+
+<div class="section">
+  <h3>Sub-project F — Super Admin RBAC & Audit Logs</h3>
+  <div style="background:#0f172a;color:#e2e8f0;border-radius:12px;padding:18px;font-family:monospace;font-size:12px;line-height:2;">
+    <span style="color:#4ade80">POST</span>   /api/v1/admin/super-admins &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">← HOD only: create course_adviser / result_exam_officer</span><br>
+    <span style="color:#4ade80">GET</span> &nbsp;&nbsp; /api/v1/admin/super-admins &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">← list all super admins + their role</span><br>
+    <span style="color:#4ade80">DELETE</span> /api/v1/admin/super-admins/:id &nbsp;&nbsp;<span style="color:#94a3b8">← HOD only: revoke super admin</span><br><br>
+    <span style="color:#4ade80">GET</span> &nbsp;&nbsp; /api/v1/admin/audit-logs &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">← HOD only, filters: actorId, role, action, entity, dateFrom, dateTo</span><br>
+    <span style="color:#4ade80">GET</span> &nbsp;&nbsp; /api/v1/admin/audit-logs/me &nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">← any super admin: own trail only</span><br>
+    <span style="color:#4ade80">GET</span> &nbsp;&nbsp; /api/v1/admin/audit-logs/:id &nbsp;&nbsp;<span style="color:#94a3b8">← full before/after diff for one entry</span>
+  </div>
+  <p style="font-size:12px;color:#6b7280;margin-top:8px;">Permission middleware: <code>requirePermission('publish_results')</code> — a thin wrapper that reads <code>role + superAdminType</code> against a static permission map. Used on every protected route.</p>
+</div>
+
+<div class="section">
+  <h3>Sub-project D — Academic Enrollment</h3>
+  <div style="background:#0f172a;color:#e2e8f0;border-radius:12px;padding:18px;font-family:monospace;font-size:12px;line-height:2;">
+    <span style="color:#4ade80">GET</span> &nbsp;&nbsp; /api/v1/admin/dashboard &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">← adds studentsByProgram[] to existing response</span><br>
+    <span style="color:#4ade80">GET</span> &nbsp;&nbsp; /api/v1/admin/users?program=ICT &nbsp;&nbsp;<span style="color:#94a3b8">← same endpoint, new filter param</span><br><br>
+    <span style="color:#fbbf24">POST</span>   /api/v1/admin/academic/advance &nbsp;&nbsp;<span style="color:#94a3b8">← HOD only: advance semester or session</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">&nbsp; body: { type: "semester" | "session", confirm: true }</span><br>
+    <span style="color:#4ade80">GET</span> &nbsp;&nbsp; /api/v1/admin/academic/transitions <span style="color:#94a3b8">← history of past advances</span><br>
+    <span style="color:#4ade80">GET</span> &nbsp;&nbsp; /api/v1/admin/academic/preview &nbsp;&nbsp;<span style="color:#94a3b8">← HOD: dry-run showing how many students will advance/graduate</span><br><br>
+    <span style="color:#4ade80">GET</span> &nbsp;&nbsp; /api/v1/student/carryovers &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">← student: list own carry-over courses</span>
+  </div>
+  <p style="font-size:12px;color:#6b7280;margin-top:8px;"><strong>Publish-results side effect:</strong> When a gradebook is published, the results service scans every StudentGrade in that gradebook. Any grade = F sets <code>isCarryover = true</code> on that row and updates the student's <code>studentStatus</code> to <code>carryover</code>. If a student later passes the course in a subsequent gradebook, <code>resolvedAt</code> is stamped and status recalculated.</p>
+</div>
+
+<div class="section">
+  <h3>Sub-project G — Revenue Dashboard</h3>
+  <div style="background:#0f172a;color:#e2e8f0;border-radius:12px;padding:18px;font-family:monospace;font-size:12px;line-height:2;">
+    <span style="color:#4ade80">GET</span> /api/v1/admin/revenue &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">← HOD only</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">query: dateFrom, dateTo, session, semester,</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;program, level, type (nacos_dues|school_fees|…)</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">returns: { totalRevenue, byType[], byProgram[], byLevel[],</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;monthlyTrend[], recentPayments[], collectionRate }</span><br><br>
+    <span style="color:#4ade80">GET</span> /api/v1/admin/revenue/export &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">← CSV download, same filters</span>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Sub-project H — Student Dashboard Badges (small)</h3>
+  <div style="background:#0f172a;color:#e2e8f0;border-radius:12px;padding:18px;font-family:monospace;font-size:12px;line-height:2;">
+    <span style="color:#4ade80">GET</span> /api/v1/student/compliance &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">← new endpoint</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">returns: { nacosDue: { paid: 2, total: 8 },</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;schoolFees: { paid: 1, total: 8 },</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;courseForm: { verified: 1, total: 8 } }</span>
+  </div>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="approve" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>API design looks good — next section</h3>
+      <p>Proceed to Section 3: Frontend pages & components</p>
+    </div>
+  </div>
+  <div class="option" data-choice="change" onclick="toggleSelect(this)">
+    <div class="letter">✎</div>
+    <div class="content">
+      <h3>I want to change something</h3>
+      <p>Tell me in the terminal what to adjust</p>
+    </div>
+  </div>
+</div>

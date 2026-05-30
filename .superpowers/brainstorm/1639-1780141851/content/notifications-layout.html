@@ -1,0 +1,71 @@
+<h2>Admin Notifications — Page Layout</h2>
+<p class="subtitle">Admins create and send announcements to students. Which layout works best?</p>
+
+<div class="options">
+
+  <div class="option" data-choice="list-plus-compose" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>List + Compose button (2 pages)</h3>
+      <p><strong>/admin/notifications</strong> — sent notifications list. "New Notification" button → <strong>/admin/notifications/new</strong> compose form. Simple, mirrors the Elections pattern.</p>
+      <div style="margin-top:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden">
+        <div style="background:#14532d;color:white;font-size:11px;font-weight:700;padding:6px 12px">Notifications</div>
+        <div style="padding:10px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f1f5f9">
+          <span style="font-size:11px;font-weight:600;color:#334155">📣 NACOS Week reminder</span>
+          <span style="font-size:10px;background:#dcfce7;color:#15803d;padding:2px 7px;border-radius:20px;font-weight:700">Sent · All</span>
+        </div>
+        <div style="padding:10px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f1f5f9">
+          <span style="font-size:11px;font-weight:600;color:#334155">📋 Results now available</span>
+          <span style="font-size:10px;background:#dcfce7;color:#15803d;padding:2px 7px;border-radius:20px;font-weight:700">Sent · L300</span>
+        </div>
+        <div style="padding:8px 12px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:11px;color:#94a3b8">Draft — exam schedule</span>
+          <span style="font-size:10px;background:#fef9c3;color:#a16207;padding:2px 7px;border-radius:20px;font-weight:700">Draft</span>
+        </div>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+        <span style="font-size:10px;background:#f0fdf4;color:#15803d;padding:2px 8px;border-radius:20px;font-weight:600">Familiar pattern</span>
+        <span style="font-size:10px;background:#f0fdf4;color:#15803d;padding:2px 8px;border-radius:20px;font-weight:600">Recommended</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="split-panel" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Split panel (1 page)</h3>
+      <p>Left: scrollable list of notifications. Right: compose form always visible. Select a sent notification to preview it on the right. Gmail-like.</p>
+      <div style="margin-top:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden">
+        <div style="display:grid;grid-template-columns:1fr 1fr;min-height:80px">
+          <div style="border-right:1px solid #e2e8f0;padding:8px">
+            <div style="font-size:10px;font-weight:700;color:#64748b;margin-bottom:4px">SENT</div>
+            <div style="font-size:10px;color:#334155;padding:4px;background:white;border-radius:5px;margin-bottom:2px">📣 NACOS Week reminder</div>
+            <div style="font-size:10px;color:#334155;padding:4px;margin-bottom:2px">📋 Results available</div>
+          </div>
+          <div style="padding:8px">
+            <div style="font-size:10px;font-weight:700;color:#64748b;margin-bottom:4px">COMPOSE</div>
+            <div style="background:white;border:1px solid #e2e8f0;border-radius:5px;padding:5px;font-size:9px;color:#94a3b8">Title…</div>
+            <div style="background:white;border:1px solid #e2e8f0;border-radius:5px;padding:5px;font-size:9px;color:#94a3b8;margin-top:3px;height:20px">Message…</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+        <span style="font-size:10px;background:#fef9c3;color:#92400e;padding:2px 8px;border-radius:20px;font-weight:600">Compact, all-in-one</span>
+        <span style="font-size:10px;background:#fef9c3;color:#92400e;padding:2px 8px;border-radius:20px;font-weight:600">Tighter on mobile</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:20px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:14px">
+  <div style="font-size:11px;font-weight:700;color:#0369a1;margin-bottom:8px">📬 Either way, these features are included:</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;color:#0c4a6e">
+    <div>✓ Target: All / Level / Individual</div>
+    <div>✓ Type tag: general, result, election, system</div>
+    <div>✓ Save as draft or send immediately</div>
+    <div>✓ List shows sent count &amp; target</div>
+    <div>✓ Delete unsent drafts</div>
+    <div>✓ Backend: new admin-only endpoints</div>
+  </div>
+</div>

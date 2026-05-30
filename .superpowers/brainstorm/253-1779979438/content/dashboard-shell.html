@@ -1,0 +1,195 @@
+<h2>Student Dashboard — Shell Layout</h2>
+<p class="subtitle">The navigation structure affects every page. Which feels right for a university portal?</p>
+
+<div class="cards">
+
+  <!-- Option A: Sidebar -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">Option A — Fixed Sidebar</div>
+        <div class="mockup-body" style="padding:0;display:flex;height:180px;">
+          <!-- Sidebar -->
+          <div style="width:110px;background:#1e3a5f;padding:10px 8px;display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
+            <div style="display:flex;align-items:center;gap:6px;padding:6px 4px;margin-bottom:6px;">
+              <div style="width:22px;height:22px;background:white;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#1e3a5f;flex-shrink:0;">N</div>
+              <span style="color:white;font-size:9px;font-weight:600;line-height:1.2;">NACOS<br>Portal</span>
+            </div>
+            <div style="background:rgba(255,255,255,0.15);border-radius:5px;padding:5px 7px;display:flex;align-items:center;gap:5px;">
+              <span style="font-size:10px;">🏠</span><span style="color:white;font-size:9px;font-weight:600;">Dashboard</span>
+            </div>
+            <div style="border-radius:5px;padding:5px 7px;display:flex;align-items:center;gap:5px;">
+              <span style="font-size:10px;">📋</span><span style="color:rgba(255,255,255,0.7);font-size:9px;">Results</span>
+            </div>
+            <div style="border-radius:5px;padding:5px 7px;display:flex;align-items:center;gap:5px;">
+              <span style="font-size:10px;">📈</span><span style="color:rgba(255,255,255,0.7);font-size:9px;">Transcript</span>
+            </div>
+            <div style="border-radius:5px;padding:5px 7px;display:flex;align-items:center;gap:5px;">
+              <span style="font-size:10px;">💳</span><span style="color:rgba(255,255,255,0.7);font-size:9px;">Payments</span>
+            </div>
+            <div style="border-radius:5px;padding:5px 7px;display:flex;align-items:center;gap:5px;">
+              <span style="font-size:10px;">👤</span><span style="color:rgba(255,255,255,0.7);font-size:9px;">Profile</span>
+            </div>
+          </div>
+          <!-- Main content -->
+          <div style="flex:1;background:#f9fafb;padding:12px;overflow:hidden;">
+            <div style="font-weight:700;font-size:11px;color:#111;margin-bottom:3px;">Welcome back, Chidi 👋</div>
+            <div style="font-size:8px;color:#6b7280;margin-bottom:8px;">CSC · 200L · 2024/2025</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:8px;">
+              <div style="background:white;border-radius:5px;padding:5px;border:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:13px;font-weight:700;color:#1e3a5f;">3.72</div>
+                <div style="font-size:7px;color:#6b7280;">CGPA</div>
+              </div>
+              <div style="background:white;border-radius:5px;padding:5px;border:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:13px;font-weight:700;color:#15803d;">48</div>
+                <div style="font-size:7px;color:#6b7280;">Credits</div>
+              </div>
+              <div style="background:white;border-radius:5px;padding:5px;border:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:13px;font-weight:700;color:#92400e;">200L</div>
+                <div style="font-size:7px;color:#6b7280;">Level</div>
+              </div>
+            </div>
+            <div style="background:white;border-radius:5px;padding:6px;border:1px solid #e5e7eb;font-size:8px;color:#374151;">
+              <div style="font-weight:600;margin-bottom:3px;font-size:8px;">Recent Results</div>
+              <div style="display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid #f3f4f6;">
+                <span>2024/25 Sem 1</span><span style="color:#15803d;font-weight:600;">3.85 GPA</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:2px 0;">
+                <span>2023/24 Sem 2</span><span style="color:#1e3a5f;font-weight:600;">3.60 GPA</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Fixed Sidebar</h3>
+      <p>Permanent left navigation visible on all pages. Standard for university portals (e.g. JAMB, institution portals). Best on desktop.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Top Nav + content -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">Option B — Top Nav Bar</div>
+        <div class="mockup-body" style="padding:0;height:180px;overflow:hidden;">
+          <!-- Top nav -->
+          <div style="background:#1e3a5f;display:flex;align-items:center;justify-content:space-between;padding:6px 12px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div style="width:20px;height:20px;background:white;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#1e3a5f;">N</div>
+              <span style="color:white;font-size:9px;font-weight:600;">NACOS Portal</span>
+            </div>
+            <div style="display:flex;gap:10px;font-size:8px;">
+              <span style="color:white;font-weight:600;border-bottom:2px solid white;padding-bottom:2px;">Home</span>
+              <span style="color:rgba(255,255,255,0.6);">Results</span>
+              <span style="color:rgba(255,255,255,0.6);">Transcript</span>
+              <span style="color:rgba(255,255,255,0.6);">Payments</span>
+              <span style="color:rgba(255,255,255,0.6);">Profile</span>
+            </div>
+            <span style="color:rgba(255,255,255,0.7);font-size:8px;">Chidi ▾</span>
+          </div>
+          <!-- Content -->
+          <div style="padding:10px 12px;background:#f9fafb;">
+            <div style="font-weight:700;font-size:11px;color:#111;margin-bottom:3px;">Dashboard</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:8px;">
+              <div style="background:white;border-radius:5px;padding:5px 4px;border:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:12px;font-weight:700;color:#1e3a5f;">3.72</div>
+                <div style="font-size:7px;color:#6b7280;">CGPA</div>
+              </div>
+              <div style="background:white;border-radius:5px;padding:5px 4px;border:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:12px;font-weight:700;color:#15803d;">48</div>
+                <div style="font-size:7px;color:#6b7280;">Credits</div>
+              </div>
+              <div style="background:white;border-radius:5px;padding:5px 4px;border:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:12px;font-weight:700;color:#d97706;">200L</div>
+                <div style="font-size:7px;color:#6b7280;">Level</div>
+              </div>
+              <div style="background:white;border-radius:5px;padding:5px 4px;border:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:12px;font-weight:700;color:#7c3aed;">CSC</div>
+                <div style="font-size:7px;color:#6b7280;">Program</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+              <div style="background:white;border-radius:5px;padding:6px;border:1px solid #e5e7eb;font-size:7.5px;">
+                <div style="font-weight:600;margin-bottom:3px;">Recent Results</div>
+                <div style="color:#15803d;">2024/25 S1 · SGPA 3.85</div>
+                <div style="color:#6b7280;">2023/24 S2 · SGPA 3.60</div>
+              </div>
+              <div style="background:white;border-radius:5px;padding:6px;border:1px solid #e5e7eb;font-size:7.5px;">
+                <div style="font-weight:600;margin-bottom:3px;">Pending Payments</div>
+                <div style="color:#d97706;">2024/25 S2 not paid</div>
+                <div style="color:#6b7280;">₦500 due</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Top Navigation</h3>
+      <p>Horizontal nav bar at the top, full-width content below. More horizontal real estate. Familiar to web app users. Compact on mobile.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Sidebar + collapsible on mobile -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">Option C — Sidebar + Top Bar Hybrid</div>
+        <div class="mockup-body" style="padding:0;display:flex;height:180px;">
+          <!-- Sidebar -->
+          <div style="width:42px;background:#1e3a5f;padding:8px 6px;display:flex;flex-direction:column;gap:6px;align-items:center;flex-shrink:0;">
+            <div style="width:24px;height:24px;background:white;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#1e3a5f;margin-bottom:4px;">N</div>
+            <div style="background:rgba(255,255,255,0.15);border-radius:4px;padding:5px;font-size:12px;" title="Dashboard">🏠</div>
+            <div style="border-radius:4px;padding:5px;font-size:12px;opacity:0.6;" title="Results">📋</div>
+            <div style="border-radius:4px;padding:5px;font-size:12px;opacity:0.6;" title="Transcript">📈</div>
+            <div style="border-radius:4px;padding:5px;font-size:12px;opacity:0.6;" title="Payments">💳</div>
+            <div style="border-radius:4px;padding:5px;font-size:12px;opacity:0.6;" title="Profile">👤</div>
+          </div>
+          <!-- Main area -->
+          <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+            <!-- Top bar -->
+            <div style="background:white;border-bottom:1px solid #e5e7eb;padding:6px 10px;display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-weight:600;font-size:9px;color:#111;">Dashboard</span>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <div style="width:6px;height:6px;background:#22c55e;border-radius:50%;"></div>
+                <span style="font-size:8px;color:#6b7280;">Chidi Okafor</span>
+              </div>
+            </div>
+            <!-- Content -->
+            <div style="flex:1;background:#f9fafb;padding:8px;overflow:hidden;">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:6px;">
+                <div style="background:white;border-radius:4px;padding:4px;border:1px solid #e5e7eb;text-align:center;">
+                  <div style="font-size:12px;font-weight:700;color:#1e3a5f;">3.72</div>
+                  <div style="font-size:6.5px;color:#6b7280;">CGPA</div>
+                </div>
+                <div style="background:white;border-radius:4px;padding:4px;border:1px solid #e5e7eb;text-align:center;">
+                  <div style="font-size:12px;font-weight:700;color:#15803d;">48</div>
+                  <div style="font-size:6.5px;color:#6b7280;">Credits</div>
+                </div>
+                <div style="background:white;border-radius:4px;padding:4px;border:1px solid #e5e7eb;text-align:center;">
+                  <div style="font-size:12px;font-weight:700;color:#d97706;">200L</div>
+                  <div style="font-size:6.5px;color:#6b7280;">Level</div>
+                </div>
+              </div>
+              <div style="background:white;border-radius:4px;padding:6px;border:1px solid #e5e7eb;font-size:7.5px;margin-bottom:4px;">
+                <div style="font-weight:600;margin-bottom:2px;">Quick Actions</div>
+                <div style="display:flex;gap:4px;">
+                  <span style="background:#e8f0fe;color:#1e3a5f;padding:2px 5px;border-radius:3px;font-size:7px;">View Results</span>
+                  <span style="background:#fef3c7;color:#92400e;padding:2px 5px;border-radius:3px;font-size:7px;">Pay ₦500</span>
+                  <span style="background:#f0fdf4;color:#15803d;padding:2px 5px;border-radius:3px;font-size:7px;">Transcript</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Icon Sidebar + Top Bar</h3>
+      <p>Slim icon-only sidebar with a top bar for breadcrumb/user info. Maximises content space. Clean, modern feel. Icons have tooltips.</p>
+    </div>
+  </div>
+
+</div>

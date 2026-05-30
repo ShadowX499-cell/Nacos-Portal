@@ -1,0 +1,94 @@
+<h2>Design — Section 3 of 4: Frontend Pages & Components</h2>
+<p class="subtitle">New pages and component changes across the admin and student portals.</p>
+
+<div class="section">
+  <h3>Admin Portal — New & Changed Pages</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;">
+      <div style="font-size:11px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">CHANGED — CreateUserPage</div>
+      <p style="font-size:12px;color:#374151;margin:0;">Add passport photo uploader (drag-and-drop + preview), Date of Birth picker, State dropdown (36 Nigerian states), LGA dropdown (filtered by state), Home Address textarea. All optional except photo — admin can skip and student updates later.</p>
+    </div>
+
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;">
+      <div style="font-size:11px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">CHANGED — UserListPage</div>
+      <p style="font-size:12px;color:#374151;margin:0;">Add <strong>Program</strong> tab row (All · ICT · CSC · CRE) beside the existing Level filter. Student rows show passport thumbnail. StudentStatus badge (Active / Carryover / Graduated / Suspended) shown beside name.</p>
+    </div>
+
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;">
+      <div style="font-size:11px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">CHANGED — AdminDashboard</div>
+      <p style="font-size:12px;color:#374151;margin:0;">"Students by Level" donut gains a sibling: <strong>"Students by Program"</strong> donut (ICT/CSC/CRE). Total Revenue KPI card becomes a clickable link → <code>/admin/revenue</code>. Dashboard shows current session/semester prominently with an "Advance" button for HOD.</p>
+    </div>
+
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px;">
+      <div style="font-size:11px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">NEW — RevenuePage <code>/admin/revenue</code></div>
+      <p style="font-size:12px;color:#374151;margin:0;">Filter bar (date range, session, semester, program, level, type). KPI row: Total · NACOS Dues · School Fees · Result Subscriptions · Collection Rate %. Bar chart by month. Breakdown donuts by type & program. Paginated payment table. CSV export button.</p>
+    </div>
+
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px;">
+      <div style="font-size:11px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">NEW — AuditLogPage <code>/admin/audit-logs</code></div>
+      <p style="font-size:12px;color:#374151;margin:0;">HOD only. Filter bar: actor name, role, action type, entity type, date range. Timeline table with actor avatar, action badge, entity link, timestamp. Click any row → expand before/after JSON diff. CSV export.</p>
+    </div>
+
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px;">
+      <div style="font-size:11px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">NEW — SuperAdminsPage <code>/admin/super-admins</code></div>
+      <p style="font-size:12px;color:#374151;margin:0;">HOD only. List of all super admins with role badge. "Add Super Admin" button — modal to pick an existing admin and assign role. Revoke button with confirmation. Role capabilities summary shown inline.</p>
+    </div>
+
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px;">
+      <div style="font-size:11px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">NEW — AcademicCalendarPage <code>/admin/academic</code></div>
+      <p style="font-size:12px;color:#374151;margin:0;">HOD only. Shows current session + semester. "Preview Advance" button → modal with dry-run numbers (X active, Y will graduate, Z carry-overs). Confirm button triggers the transition. History table of all past advances.</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>Student Portal — Changed Components</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px;">
+      <div style="font-size:11px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">CHANGED — StudentDashboard hero</div>
+      <p style="font-size:12px;color:#374151;margin:0;">Replace initials avatar with passport photo (falls back to initials if none). The 3 stat cards become 6: Credits Earned · Semesters · Results · NACOS Due (X/8) · School Fees (X/8) · Course Form (X/8). Carryover badge shown on profile line if applicable.</p>
+    </div>
+
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px;">
+      <div style="font-size:11px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">CHANGED — StudentProfilePage</div>
+      <p style="font-size:12px;color:#374151;margin:0;">Student can view and update their own passport photo, state, LGA, DOB, home address. Read-only fields: name, student ID, email, program, level, student status.</p>
+    </div>
+
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px;">
+      <div style="font-size:11px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">NEW — CarryoverSection on ResultsHomePage</div>
+      <p style="font-size:12px;color:#374151;margin:0;">If student has carry-over courses, a prominent banner lists them: course code, title, original session, status (Pending / Resolved). Links to the relevant gradebook result.</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>Sidebar navigation additions</h3>
+  <div style="background:#0f172a;color:#e2e8f0;border-radius:12px;padding:16px;font-family:monospace;font-size:12px;line-height:2;">
+    <span style="color:#94a3b8">// Admin sidebar — new items (shown based on role)</span><br>
+    🏛️  Academic Calendar &nbsp;<span style="color:#fbbf24">← HOD only</span><br>
+    💰  Revenue &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#fbbf24">← HOD only</span><br>
+    📋  Audit Logs &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#fbbf24">← HOD only (own trail for others)</span><br>
+    👑  Super Admins &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#fbbf24">← HOD only</span>
+  </div>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="approve" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Frontend design looks good — next section</h3>
+      <p>Proceed to Section 4: Error handling, edge cases & testing</p>
+    </div>
+  </div>
+  <div class="option" data-choice="change" onclick="toggleSelect(this)">
+    <div class="letter">✎</div>
+    <div class="content">
+      <h3>I want to change something</h3>
+      <p>Tell me in the terminal what to adjust</p>
+    </div>
+  </div>
+</div>

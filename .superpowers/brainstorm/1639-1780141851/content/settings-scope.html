@@ -1,0 +1,49 @@
+<h2>What does the Settings page contain?</h2>
+<p class="subtitle">Settings is currently a dead nav link. Pick what belongs there.</p>
+
+<div class="options">
+  <div class="option" data-choice="dept-config" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Department Configuration</h3>
+      <p>Academic session year (e.g. <strong>2024/2025</strong>), current semester, active levels (L100–L400), department name/code. Things that affect system-wide behaviour.</p>
+      <div style="margin-top:10px;background:#f8fafc;border-radius:10px;padding:12px;font-size:12px;color:#475569">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><span style="color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase">Current Session</span><br><strong>2024/2025</strong></div>
+          <div><span style="color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase">Semester</span><br><strong>First</strong></div>
+          <div><span style="color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase">Active Levels</span><br><strong>L100, L200, L300, L400</strong></div>
+          <div><span style="color:#94a3b8;font-size:10px;font-weight:700;text-transform:uppercase">Department</span><br><strong>CSC / ICT / CRE</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="simple-prefs" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Simple Admin Preferences</h3>
+      <p>Light settings: theme preference, notification email toggle, default gradebook view. Not department-wide config — just how this admin sees the portal.</p>
+      <div style="margin-top:10px;background:#f8fafc;border-radius:10px;padding:12px;font-size:12px;color:#475569">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between"><span>Email me on new nominations</span><span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700">ON</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Email me on payment received</span><span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700">OFF</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="both" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Both — tabbed Settings page</h3>
+      <p>Two tabs: <strong>Department</strong> (session/semester config) + <strong>Preferences</strong> (admin-specific toggles). More complete, slightly more work.</p>
+      <div style="margin-top:10px;background:#f8fafc;border-radius:10px;padding:10px;font-size:12px">
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <span style="background:#14532d;color:white;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700">Department</span>
+          <span style="background:#e2e8f0;color:#64748b;padding:3px 10px;border-radius:6px;font-size:11px">Preferences</span>
+        </div>
+        <div style="color:#64748b">Session year · Semester · Active levels…</div>
+      </div>
+    </div>
+  </div>
+</div>

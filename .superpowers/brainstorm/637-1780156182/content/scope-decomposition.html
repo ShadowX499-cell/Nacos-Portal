@@ -1,0 +1,70 @@
+<h2>8 Features → 5 Sub-Projects</h2>
+<p class="subtitle">This is a large scope. I've grouped the 8 requests into logical sub-projects that each get their own spec → plan → implementation cycle. Which order do you want to tackle them?</p>
+
+<div class="options" data-multiselect>
+
+  <div class="option" data-choice="A" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Sub-project D — Academic Enrollment</h3>
+      <p>
+        <strong>Students by Program</strong> view in admin dashboard ·
+        <strong>Carryover student logic</strong> when results are published (carry-forward flag, retained level) ·
+        <strong>Semester/Session transitions</strong> — admin advances the academic calendar, student statuses update automatically (active → carry-over → graduated → suspended)
+      </p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="B" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Sub-project E — Student Profile & Registration</h3>
+      <p>
+        <strong>Passport photo upload</strong> (profile image) during registration ·
+        Additional bio fields: <strong>State, LGA, Date of Birth, Home Address</strong> ·
+        Profile image displayed in student dashboard hero card and admin user list ·
+        Random <strong>5-digit ID suffix</strong> (replaces sequential sequence in NACOS/CSC/2024/XXXXX)
+      </p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="C" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Sub-project F — Super Admin RBAC & Audit Logs</h3>
+      <p>
+        3 distinct super-admin roles: <strong>Course Adviser, Head of Department, Result/Exam Officer</strong> — each with different permissions ·
+        <strong>Powerful Audit Log viewer</strong> — filterable by actor, role, action, date range, entity type; shows before/after diffs ·
+        Role-gated UI sections
+      </p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="D" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>Sub-project G — Revenue Dashboard</h3>
+      <p>
+        Clicking <strong>Total Revenue</strong> KPI card → dedicated revenue page ·
+        Breakdown by payment type (school fees, NACOS dues, result subscription) ·
+        <strong>Filters</strong>: date range, session, semester, program, level, payment type ·
+        Per-student payment history, downloadable reports
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:28px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px 20px;">
+  <p class="label">Also included in every sub-project</p>
+  <p style="margin-top:6px;font-size:13px;color:#166534;">
+    <strong>Sub-project H</strong> (Student Dashboard Receipts) is small — NACOS Due receipt badge, School Fees badge, Course Form badge on the dashboard hero stats — rolled into whichever sub-project you start first.
+  </p>
+</div>
+
+<div style="margin-top:16px;background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:16px 20px;">
+  <p class="label">Recommended order</p>
+  <p style="margin-top:6px;font-size:13px;color:#713f12;">
+    <strong>E → F → D → G</strong> — Start with profile/registration (foundational data), then lock down roles/permissions before building features that depend on them, then academic enrollment, then revenue analytics last.
+  </p>
+</div>

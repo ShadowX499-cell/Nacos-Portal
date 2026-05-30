@@ -1,0 +1,107 @@
+<h2>Admin Notifications — Combined Layout</h2>
+<p class="subtitle">Single page: compose expands inline at the top, list always below. Is this what you meant?</p>
+
+<div class="mockup">
+  <div class="mockup-header">📍 /admin/notifications</div>
+  <div class="mockup-body" style="padding:0;font-size:12px">
+
+    <!-- Header -->
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #f1f5f9">
+      <div>
+        <div style="font-weight:800;font-size:15px;color:#0f172a">Notifications</div>
+        <div style="color:#94a3b8;font-size:11px">Create and send announcements to students</div>
+      </div>
+      <div style="background:#14532d;color:white;font-size:11px;font-weight:700;padding:7px 14px;border-radius:10px;display:flex;align-items:center;gap:5px">
+        ✏️ New Notification
+      </div>
+    </div>
+
+    <!-- Compose panel (expanded) -->
+    <div style="margin:14px 16px;background:#f0fdf4;border:1.5px solid #86efac;border-radius:14px;overflow:hidden">
+      <div style="background:#14532d;color:white;font-size:11px;font-weight:700;padding:8px 14px;display:flex;justify-content:space-between">
+        <span>✏️ Compose Notification</span>
+        <span style="opacity:0.6;cursor:pointer">✕ Close</span>
+      </div>
+      <div style="padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="grid-column:1/-1">
+          <div style="font-size:10px;font-weight:700;color:#166534;margin-bottom:4px;text-transform:uppercase">Title</div>
+          <div style="background:white;border:1px solid #d1fae5;border-radius:8px;padding:7px 10px;color:#94a3b8;font-size:11px">e.g. NACOS Week — Important Announcement</div>
+        </div>
+        <div style="grid-column:1/-1">
+          <div style="font-size:10px;font-weight:700;color:#166534;margin-bottom:4px;text-transform:uppercase">Message</div>
+          <div style="background:white;border:1px solid #d1fae5;border-radius:8px;padding:7px 10px;color:#94a3b8;font-size:11px;min-height:40px">Write your announcement here…</div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;color:#166534;margin-bottom:4px;text-transform:uppercase">Type</div>
+          <div style="background:white;border:1px solid #d1fae5;border-radius:8px;padding:6px 10px;font-size:11px;color:#334155">📣 General ▾</div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;color:#166534;margin-bottom:4px;text-transform:uppercase">Target Audience</div>
+          <div style="background:white;border:1px solid #d1fae5;border-radius:8px;padding:6px 10px;font-size:11px;color:#334155">All Students ▾</div>
+        </div>
+        <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end">
+          <div style="background:white;border:1px solid #d1fae5;border-radius:8px;padding:6px 14px;font-size:11px;color:#166534;font-weight:700;cursor:pointer">Save Draft</div>
+          <div style="background:#14532d;color:white;border-radius:8px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer">Send Now →</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div style="display:flex;gap:0;border-bottom:1px solid #f1f5f9;padding:0 16px">
+      <div style="padding:8px 14px;font-size:11px;font-weight:700;color:#14532d;border-bottom:2px solid #14532d">Sent <span style="background:#dcfce7;color:#15803d;padding:1px 6px;border-radius:20px;font-size:9px;margin-left:3px">12</span></div>
+      <div style="padding:8px 14px;font-size:11px;color:#94a3b8">Drafts <span style="background:#fef9c3;color:#a16207;padding:1px 6px;border-radius:20px;font-size:9px;margin-left:3px">2</span></div>
+    </div>
+
+    <!-- List -->
+    <div style="padding:0 16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid #f8fafc">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:16px">📣</span>
+          <div>
+            <div style="font-weight:600;color:#0f172a;font-size:12px">NACOS Week 2025 Kick-off</div>
+            <div style="color:#94a3b8;font-size:10px">2h ago · All students · 248 delivered</div>
+          </div>
+        </div>
+        <span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700">Sent</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid #f8fafc">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:16px">📋</span>
+          <div>
+            <div style="font-weight:600;color:#0f172a;font-size:12px">Semester results now available</div>
+            <div style="color:#94a3b8;font-size:10px">Yesterday · L300 only · 62 delivered</div>
+          </div>
+        </div>
+        <span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700">Sent</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:16px">🗳️</span>
+          <div>
+            <div style="font-weight:600;color:#0f172a;font-size:12px">Election nominations now open</div>
+            <div style="color:#94a3b8;font-size:10px">3 days ago · All students · 248 delivered</div>
+          </div>
+        </div>
+        <span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700">Sent</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="options" style="margin-top:20px">
+  <div class="option" data-choice="yes" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Yes, this is what I meant</h3>
+      <p>Single page, compose expands/collapses inline, sent/drafts tabs below.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="no-two-pages" onclick="toggleSelect(this)">
+    <div class="letter">✕</div>
+    <div class="content">
+      <h3>No — I meant two separate pages</h3>
+      <p>List at <code>/admin/notifications</code> and a full compose page at <code>/admin/notifications/new</code>.</p>
+    </div>
+  </div>
+</div>

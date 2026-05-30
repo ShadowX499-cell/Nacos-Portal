@@ -1,0 +1,69 @@
+<h2>Design · Section 1 of 3 — Admin Profile</h2>
+<p class="subtitle"><code>/admin/profile</code> — view admin info, change password. No new backend needed (<code>profileApi.getMe()</code> already works for admins).</p>
+
+<div class="mockup">
+  <div class="mockup-header">📍 /admin/profile</div>
+  <div class="mockup-body" style="padding:20px;max-width:560px;font-size:12px">
+
+    <div style="font-weight:800;font-size:16px;color:#0f172a;margin-bottom:16px">My Profile</div>
+
+    <!-- Avatar card -->
+    <div style="background:white;border:1px solid #e2e8f0;border-radius:16px;padding:20px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:14px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid #f1f5f9">
+        <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#4ade80,#16a34a);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;flex-shrink:0">AD</div>
+        <div>
+          <div style="font-weight:800;font-size:15px;color:#0f172a">Admin User</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:1px">NACOS/ADM/2024/001</div>
+          <div style="margin-top:5px;display:inline-block;background:#dcfce7;color:#15803d;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px">Admin</div>
+        </div>
+      </div>
+
+      <!-- Info rows -->
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="color:#94a3b8;font-size:12px;width:120px;flex-shrink:0">Full Name</span>
+          <span style="font-size:12px;font-weight:600;color:#0f172a">Admin User</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="color:#94a3b8;font-size:12px;width:120px;flex-shrink:0">Admin ID</span>
+          <span style="font-size:12px;font-weight:600;color:#0f172a;font-family:monospace">NACOS/ADM/2024/001</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="color:#94a3b8;font-size:12px;width:120px;flex-shrink:0">Email Address</span>
+          <span style="font-size:12px;font-weight:600;color:#0f172a">admin@nacos.edu.ng</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="color:#94a3b8;font-size:12px;width:120px;flex-shrink:0">Role</span>
+          <span style="font-size:12px;font-weight:600;color:#0f172a">Administrator</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="color:#94a3b8;font-size:12px;width:120px;flex-shrink:0">Department</span>
+          <span style="font-size:12px;font-weight:600;color:#0f172a">Computer Science (CSC)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account card -->
+    <div style="background:white;border:1px solid #e2e8f0;border-radius:16px;padding:20px">
+      <div style="font-weight:700;font-size:13px;color:#0f172a;margin-bottom:12px">Account</div>
+      <a style="font-size:13px;color:#15803d;font-weight:600;text-decoration:none">Change Password →</a>
+      <div style="font-size:11px;color:#94a3b8;margin-top:4px">You'll be redirected to the password reset flow.</div>
+    </div>
+
+  </div>
+</div>
+
+<div style="margin-top:16px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:14px;font-size:12px;color:#0c4a6e">
+  <strong>Implementation note:</strong> Reuses <code>profileApi.getMe()</code> (same as student ProfilePage). Add route <code>/admin/profile</code> in <code>App.tsx</code>. Add nav link in <code>AdminLayout</code> sidebar footer — clicking the admin avatar/name opens this page. No backend changes.
+</div>
+
+<div class="options" style="margin-top:16px">
+  <div class="option" data-choice="looks-good" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content"><h3>Looks good</h3><p>Move on to Notifications design.</p></div>
+  </div>
+  <div class="option" data-choice="change" onclick="toggleSelect(this)">
+    <div class="letter">↺</div>
+    <div class="content"><h3>I want changes</h3><p>Tell me what to adjust.</p></div>
+  </div>
+</div>

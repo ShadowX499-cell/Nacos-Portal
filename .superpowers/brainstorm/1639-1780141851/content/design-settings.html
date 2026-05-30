@@ -1,0 +1,139 @@
+<h2>Design · Section 3 of 3 — Admin Settings</h2>
+<p class="subtitle"><code>/admin/settings</code> — two tabs: Department (backend, read/edit) + Preferences (localStorage toggles).</p>
+
+<div class="split">
+
+  <div class="mockup">
+    <div class="mockup-header">Tab 1 — Department</div>
+    <div class="mockup-body" style="padding:16px;font-size:12px;max-width:340px">
+      <div style="font-weight:800;font-size:14px;color:#0f172a;margin-bottom:14px">Settings</div>
+
+      <!-- Tabs -->
+      <div style="display:flex;border-bottom:1px solid #e2e8f0;margin-bottom:16px">
+        <div style="padding:7px 14px;font-size:11px;font-weight:700;color:#14532d;border-bottom:2px solid #14532d">Department</div>
+        <div style="padding:7px 14px;font-size:11px;color:#94a3b8">Preferences</div>
+      </div>
+
+      <!-- Dept form -->
+      <div style="background:white;border:1px solid #e2e8f0;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px">
+        <div style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px">Department Info</div>
+
+        <div>
+          <div style="font-size:10px;font-weight:700;color:#64748b;margin-bottom:3px">Department Name</div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:7px 10px;font-size:11px;color:#0f172a">Computer Science Department</div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;color:#64748b;margin-bottom:3px">Code</div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:7px 10px;font-size:11px;color:#0f172a;font-family:monospace">CSC</div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;color:#64748b;margin-bottom:3px">Faculty</div>
+          <div style="background:white;border:1px solid #e2e8f0;border-radius:8px;padding:7px 10px;font-size:11px;color:#0f172a">Faculty of Computing</div>
+        </div>
+
+        <div style="border-top:1px solid #f1f5f9;padding-top:12px">
+          <div style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Academic Session</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div>
+              <div style="font-size:10px;font-weight:700;color:#64748b;margin-bottom:3px">Current Session</div>
+              <div style="background:white;border:1px solid #e2e8f0;border-radius:8px;padding:6px 10px;font-size:11px;color:#334155">2024/2025 ▾</div>
+            </div>
+            <div>
+              <div style="font-size:10px;font-weight:700;color:#64748b;margin-bottom:3px">Semester</div>
+              <div style="background:white;border:1px solid #e2e8f0;border-radius:8px;padding:6px 10px;font-size:11px;color:#334155">First ▾</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;padding-top:4px">
+          <div style="background:#14532d;color:white;border-radius:8px;padding:6px 16px;font-size:11px;font-weight:700">Save Changes</div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;font-size:10px;color:#94a3b8;text-align:center">
+        Department name &amp; code are read-only. Session &amp; semester are editable.
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Tab 2 — Preferences (localStorage)</div>
+    <div class="mockup-body" style="padding:16px;font-size:12px;max-width:340px">
+      <div style="font-weight:800;font-size:14px;color:#0f172a;margin-bottom:14px">Settings</div>
+
+      <!-- Tabs -->
+      <div style="display:flex;border-bottom:1px solid #e2e8f0;margin-bottom:16px">
+        <div style="padding:7px 14px;font-size:11px;color:#94a3b8">Department</div>
+        <div style="padding:7px 14px;font-size:11px;font-weight:700;color:#14532d;border-bottom:2px solid #14532d">Preferences</div>
+      </div>
+
+      <div style="background:white;border:1px solid #e2e8f0;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:0">
+        <div style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Notification Emails</div>
+
+        <!-- Toggle rows -->
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f8fafc">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:#0f172a">New student registration</div>
+            <div style="font-size:10px;color:#94a3b8">Email when a new student account is created</div>
+          </div>
+          <div style="width:36px;height:20px;background:#14532d;border-radius:20px;position:relative;flex-shrink:0;cursor:pointer">
+            <div style="width:16px;height:16px;background:white;border-radius:50%;position:absolute;top:2px;right:2px;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f8fafc">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:#0f172a">Payment received</div>
+            <div style="font-size:10px;color:#94a3b8">Email when a student completes a payment</div>
+          </div>
+          <div style="width:36px;height:20px;background:#e2e8f0;border-radius:20px;position:relative;flex-shrink:0;cursor:pointer">
+            <div style="width:16px;height:16px;background:white;border-radius:50%;position:absolute;top:2px;left:2px;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f8fafc">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:#0f172a">New election nomination</div>
+            <div style="font-size:10px;color:#94a3b8">Email when a student submits a candidacy</div>
+          </div>
+          <div style="width:36px;height:20px;background:#14532d;border-radius:20px;position:relative;flex-shrink:0;cursor:pointer">
+            <div style="width:16px;height:16px;background:white;border-radius:50%;position:absolute;top:2px;right:2px;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:#0f172a">Grade published</div>
+            <div style="font-size:10px;color:#94a3b8">Email when a gradebook is published</div>
+          </div>
+          <div style="width:36px;height:20px;background:#e2e8f0;border-radius:20px;position:relative;flex-shrink:0;cursor:pointer">
+            <div style="width:16px;height:16px;background:white;border-radius:50%;position:absolute;top:2px;left:2px;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;font-size:10px;color:#94a3b8;text-align:center">Preferences saved to browser storage — no server needed.</div>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:14px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:14px;font-size:12px;color:#0c4a6e">
+  <strong>Backend changes for Department tab:</strong>
+  <div style="margin-top:6px;display:flex;flex-direction:column;gap:4px;font-family:monospace;font-size:11px">
+    <div><span style="color:#0369a1">GET</span>   /api/v1/admin/settings/department — returns dept name, code, faculty + currentSession, currentSemester</div>
+    <div><span style="color:#0369a1">PATCH</span> /api/v1/admin/settings/department — updates currentSession + currentSemester (stored on Department model via 2 new nullable columns)</div>
+  </div>
+  <div style="margin-top:8px;color:#075985"><strong>Schema:</strong> Add <code>currentSession String?</code> + <code>currentSemester Semester?</code> to the <code>Department</code> model. One small migration, no new table.</div>
+</div>
+
+<div class="options" style="margin-top:16px">
+  <div class="option" data-choice="looks-good" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content"><h3>Looks good — approve full design</h3><p>Write the spec doc and move to implementation planning.</p></div>
+  </div>
+  <div class="option" data-choice="change" onclick="toggleSelect(this)">
+    <div class="letter">↺</div>
+    <div class="content"><h3>I want changes</h3><p>Tell me what to adjust.</p></div>
+  </div>
+</div>

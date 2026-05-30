@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NACOS Student Dashboard Mockup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: #f1f5f9; color: #111; font-size: 13px; }
+
+  /* Shell */
+  .shell { display: flex; height: 100vh; overflow: hidden; }
+
+  /* Sidebar */
+  .sidebar {
+    width: 220px; background: #1e3a5f; display: flex; flex-direction: column;
+    flex-shrink: 0; overflow-y: auto;
+  }
+  .sidebar-logo {
+    display: flex; align-items: center; gap: 10px; padding: 20px 16px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .logo-box {
+    width: 32px; height: 32px; background: white; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 14px; color: #1e3a5f; flex-shrink: 0;
+  }
+  .logo-text { color: white; }
+  .logo-text .title { font-weight: 700; font-size: 13px; line-height: 1.2; }
+  .logo-text .sub { font-size: 10px; color: rgba(255,255,255,0.5); }
+
+  .sidebar-section { padding: 12px 8px 4px; }
+  .sidebar-label { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.08em; padding: 0 8px; margin-bottom: 4px; }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+    border-radius: 8px; cursor: pointer; transition: background 0.15s;
+    color: rgba(255,255,255,0.65); font-size: 12.5px; font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.08); color: white; }
+  .nav-item.active { background: rgba(255,255,255,0.15); color: white; font-weight: 600; }
+  .nav-item .icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+  .nav-badge { margin-left: auto; background: #ef4444; color: white; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 99px; }
+
+  .sidebar-footer {
+    margin-top: auto; padding: 12px 8px; border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .user-chip {
+    display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+    border-radius: 8px; cursor: pointer; transition: background 0.15s;
+  }
+  .user-chip:hover { background: rgba(255,255,255,0.08); }
+  .avatar {
+    width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px; color: white; flex-shrink: 0;
+  }
+  .user-info .name { font-size: 11.5px; font-weight: 600; color: white; }
+  .user-info .id { font-size: 9.5px; color: rgba(255,255,255,0.5); }
+
+  /* Main area */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* Top bar */
+  .topbar {
+    background: white; border-bottom: 1px solid #e5e7eb;
+    padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .breadcrumb { font-size: 12px; color: #6b7280; }
+  .breadcrumb strong { color: #111; font-weight: 600; }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .notif-btn { position: relative; cursor: pointer; font-size: 16px; line-height: 1; }
+  .notif-dot { position: absolute; top: -2px; right: -3px; width: 7px; height: 7px; background: #ef4444; border-radius: 50%; border: 1.5px solid white; }
+  .session-badge { background: #e8f0fe; color: #1e3a5f; font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 99px; }
+
+  /* Page content */
+  .page { flex: 1; overflow-y: auto; padding: 24px; }
+
+  /* Greeting */
+  .greeting { margin-bottom: 20px; }
+  .greeting h1 { font-size: 20px; font-weight: 700; color: #111; }
+  .greeting p { font-size: 13px; color: #6b7280; margin-top: 2px; }
+
+  /* Stat cards */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+  .stat-card {
+    background: white; border-radius: 12px; border: 1px solid #e5e7eb;
+    padding: 16px; display: flex; flex-direction: column; gap: 4px;
+  }
+  .stat-icon { font-size: 20px; margin-bottom: 4px; }
+  .stat-value { font-size: 26px; font-weight: 800; line-height: 1; }
+  .stat-label { font-size: 11px; color: #6b7280; font-weight: 500; }
+  .stat-sub { font-size: 10px; margin-top: 2px; }
+
+  /* Two-panel grid */
+  .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  .panel { background: white; border-radius: 12px; border: 1px solid #e5e7eb; overflow: hidden; }
+  .panel-header { padding: 14px 16px 12px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: space-between; }
+  .panel-title { font-size: 13px; font-weight: 600; color: #111; }
+  .panel-link { font-size: 11px; color: #1e3a5f; font-weight: 500; cursor: pointer; }
+  .panel-body { padding: 12px 16px; }
+
+  .result-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
+  .result-row:last-child { border-bottom: none; }
+  .result-meta { font-size: 11.5px; color: #374151; font-weight: 500; }
+  .result-sub { font-size: 10px; color: #9ca3af; margin-top: 1px; }
+  .gpa-pill { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 99px; }
+  .gpa-green { background: #dcfce7; color: #15803d; }
+  .gpa-blue { background: #dbeafe; color: #1d4ed8; }
+  .view-btn { font-size: 10px; color: #1e3a5f; font-weight: 600; cursor: pointer; }
+
+  .alert-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
+  .alert-item:last-child { border-bottom: none; }
+  .alert-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+  .dot-orange { background: #f97316; }
+  .dot-green { background: #22c55e; }
+  .dot-blue { background: #3b82f6; }
+  .alert-text { font-size: 11.5px; color: #374151; font-weight: 500; line-height: 1.4; }
+  .alert-sub { font-size: 10px; color: #9ca3af; margin-top: 1px; }
+  .alert-action { margin-top: 5px; display: inline-block; font-size: 10px; font-weight: 600; color: white; background: #f97316; padding: 3px 10px; border-radius: 6px; cursor: pointer; }
+
+  /* Quick actions */
+  .quick-actions { background: white; border-radius: 12px; border: 1px solid #e5e7eb; padding: 16px; }
+  .qa-title { font-size: 13px; font-weight: 600; color: #111; margin-bottom: 12px; }
+  .qa-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .qa-item { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 8px; border-radius: 10px; border: 1px solid #e5e7eb; cursor: pointer; transition: all 0.15s; }
+  .qa-item:hover { border-color: #1e3a5f; background: #f0f4ff; }
+  .qa-icon { font-size: 20px; }
+  .qa-label { font-size: 10.5px; font-weight: 600; color: #374151; text-align: center; line-height: 1.3; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-box">N</div>
+      <div class="logo-text">
+        <div class="title">NACOS Portal</div>
+        <div class="sub">Student</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <div class="nav-item active"><span class="icon">🏠</span> Dashboard</div>
+      <div class="nav-item"><span class="icon">📋</span> My Results</div>
+      <div class="nav-item"><span class="icon">📈</span> Transcript</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Finance</div>
+      <div class="nav-item">
+        <span class="icon">💳</span> Payments
+        <span class="nav-badge">1</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Campus</div>
+      <div class="nav-item"><span class="icon">🗳️</span> Elections</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Account</div>
+      <div class="nav-item"><span class="icon">👤</span> Profile</div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="avatar">CO</div>
+        <div class="user-info">
+          <div class="name">Chidi Okafor</div>
+          <div class="id">NACOS/CSC/2024/001</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Top bar -->
+    <div class="topbar">
+      <div class="breadcrumb">Portal <span style="color:#d1d5db;margin:0 4px;">›</span> <strong>Dashboard</strong></div>
+      <div class="topbar-right">
+        <span class="session-badge">2024/2025 Session</span>
+        <div class="notif-btn">🔔<span class="notif-dot"></span></div>
+        <div style="font-size:12px;color:#6b7280;">Sign out</div>
+      </div>
+    </div>
+
+    <!-- Page -->
+    <div class="page">
+      <!-- Greeting -->
+      <div class="greeting">
+        <h1>Good morning, Chidi 👋</h1>
+        <p>Computer Science · 200 Level · Second Semester 2024/2025</p>
+      </div>
+
+      <!-- Stat cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">🎓</div>
+          <div class="stat-value" style="color:#1e3a5f;">3.72</div>
+          <div class="stat-label">Cumulative GPA</div>
+          <div class="stat-sub" style="color:#15803d;">↑ Up from 3.55</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📚</div>
+          <div class="stat-value" style="color:#15803d;">48</div>
+          <div class="stat-label">Credits Earned</div>
+          <div class="stat-sub" style="color:#6b7280;">Across 3 semesters</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-value" style="color:#d97706;">200L</div>
+          <div class="stat-label">Current Level</div>
+          <div class="stat-sub" style="color:#6b7280;">CSC Programme</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-value" style="color:#7c3aed;">3</div>
+          <div class="stat-label">Semesters Done</div>
+          <div class="stat-sub" style="color:#6b7280;">1 result pending</div>
+        </div>
+      </div>
+
+      <!-- Two panels -->
+      <div class="panels">
+        <!-- Recent results -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">📋 Recent Results</span>
+            <span class="panel-link">View all →</span>
+          </div>
+          <div class="panel-body">
+            <div class="result-row">
+              <div>
+                <div class="result-meta">2024/25 — First Semester</div>
+                <div class="result-sub">200 Level · 24 credits · Published Jan 2025</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span class="gpa-pill gpa-green">3.85</span>
+                <span class="view-btn">View →</span>
+              </div>
+            </div>
+            <div class="result-row">
+              <div>
+                <div class="result-meta">2023/24 — Second Semester</div>
+                <div class="result-sub">100 Level · 12 credits · Published Aug 2024</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span class="gpa-pill gpa-blue">3.60</span>
+                <span class="view-btn">View →</span>
+              </div>
+            </div>
+            <div class="result-row">
+              <div>
+                <div class="result-meta">2023/24 — First Semester</div>
+                <div class="result-sub">100 Level · 12 credits · Published Feb 2024</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span class="gpa-pill" style="background:#f3f4f6;color:#6b7280;">3.50</span>
+                <span class="view-btn">View →</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action required -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">⚡ Action Required</span>
+            <span style="background:#fef3c7;color:#92400e;font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;">1 pending</span>
+          </div>
+          <div class="panel-body">
+            <div class="alert-item">
+              <div class="alert-dot dot-orange"></div>
+              <div style="flex:1;">
+                <div class="alert-text">Payment pending for 2024/25 S2</div>
+                <div class="alert-sub">₦500 · Result subscription · Due now</div>
+                <span class="alert-action">Pay ₦500</span>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-dot dot-green"></div>
+              <div>
+                <div class="alert-text">Result published — 2024/25 S1</div>
+                <div class="alert-sub">Your first semester result is ready to view</div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-dot dot-blue"></div>
+              <div>
+                <div class="alert-text">No active elections</div>
+                <div class="alert-sub">Next departmental election TBA</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="quick-actions">
+        <div class="qa-title">Quick Actions</div>
+        <div class="qa-grid">
+          <div class="qa-item"><div class="qa-icon">📋</div><div class="qa-label">View Results</div></div>
+          <div class="qa-item"><div class="qa-icon">💳</div><div class="qa-label">Pay for Result</div></div>
+          <div class="qa-item"><div class="qa-icon">📈</div><div class="qa-label">My Transcript</div></div>
+          <div class="qa-item"><div class="qa-icon">🗳️</div><div class="qa-label">Elections</div></div>
+          <div class="qa-item"><div class="qa-icon">👤</div><div class="qa-label">My Profile</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

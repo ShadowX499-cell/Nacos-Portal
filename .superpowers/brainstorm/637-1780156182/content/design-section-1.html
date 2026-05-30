@@ -1,0 +1,80 @@
+<h2>Design — Section 1 of 4: Database Schema Changes</h2>
+<p class="subtitle">All schema additions are additive (no breaking changes). Review each model change below.</p>
+
+<div class="section">
+  <h3>User model — new fields</h3>
+  <div style="background:#0f172a;color:#e2e8f0;border-radius:12px;padding:20px;font-family:monospace;font-size:12.5px;line-height:1.8;">
+    <span style="color:#94a3b8">// existing fields stay unchanged</span><br>
+    profilePhotoUrl  <span style="color:#7dd3fc">String?</span>  <span style="color:#94a3b8">@map("profile_photo_url")</span><br>
+    dateOfBirth      <span style="color:#7dd3fc">DateTime?</span> <span style="color:#94a3b8">@map("date_of_birth") @db.Date</span><br>
+    stateOfOrigin    <span style="color:#7dd3fc">String?</span>  <span style="color:#94a3b8">@map("state_of_origin") @db.VarChar(50)</span><br>
+    lga              <span style="color:#7dd3fc">String?</span>  <span style="color:#94a3b8">@db.VarChar(100)</span><br>
+    homeAddress      <span style="color:#7dd3fc">String?</span>  <span style="color:#94a3b8">@map("home_address") @db.VarChar(300)</span><br>
+    superAdminType   <span style="color:#7dd3fc">SuperAdminType?</span> <span style="color:#94a3b8">@map("super_admin_type")</span><br>
+    <span style="color:#94a3b8">// userId format: NACOS/CSC/2024/XXXXX (5-digit random, not sequential)</span>
+  </div>
+</div>
+
+<div class="section">
+  <h3>New enums</h3>
+  <div style="background:#0f172a;color:#e2e8f0;border-radius:12px;padding:20px;font-family:monospace;font-size:12.5px;line-height:1.8;">
+    <span style="color:#c084fc">enum SuperAdminType</span> {<br>
+    &nbsp;&nbsp;course_adviser<br>
+    &nbsp;&nbsp;hod<br>
+    &nbsp;&nbsp;result_exam_officer<br>
+    }<br><br>
+    <span style="color:#c084fc">enum StudentStatus</span> {<br>
+    &nbsp;&nbsp;active &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8">// normal enrolled student</span><br>
+    &nbsp;&nbsp;carryover &nbsp;<span style="color:#94a3b8">// has ≥1 failed course from a published result</span><br>
+    &nbsp;&nbsp;graduated &nbsp;<span style="color:#94a3b8">// was L400, session advanced</span><br>
+    &nbsp;&nbsp;suspended &nbsp;<span style="color:#94a3b8">// existing — manually set by HOD</span><br>
+    }
+  </div>
+  <p style="font-size:12px;color:#6b7280;margin-top:8px;">⚠️ <strong>Note:</strong> The existing <code>UserStatus</code> enum (pending/validated/suspended) stays for account activation. <code>StudentStatus</code> is a new separate field on User tracking academic standing.</p>
+</div>
+
+<div class="section">
+  <h3>StudentGrade model — carryover flag</h3>
+  <div style="background:#0f172a;color:#e2e8f0;border-radius:12px;padding:20px;font-family:monospace;font-size:12.5px;line-height:1.8;">
+    <span style="color:#94a3b8">// existing fields stay unchanged</span><br>
+    isCarryover   <span style="color:#7dd3fc">Boolean</span>  <span style="color:#94a3b8">@default(false) @map("is_carryover")</span><br>
+    carriedFromSession <span style="color:#7dd3fc">String?</span> <span style="color:#94a3b8">@map("carried_from_session") @db.VarChar(20)</span><br>
+    resolvedAt    <span style="color:#7dd3fc">DateTime?</span> <span style="color:#94a3b8">@map("resolved_at") // set when student later passes</span>
+  </div>
+</div>
+
+<div class="section">
+  <h3>AcademicTransition model — new</h3>
+  <div style="background:#0f172a;color:#e2e8f0;border-radius:12px;padding:20px;font-family:monospace;font-size:12.5px;line-height:1.8;">
+    <span style="color:#94a3b8">// audit trail for every semester/session advance</span><br>
+    <span style="color:#c084fc">model AcademicTransition</span> {<br>
+    &nbsp;&nbsp;id              <span style="color:#7dd3fc">String</span>    @id @default(uuid())<br>
+    &nbsp;&nbsp;departmentId    <span style="color:#7dd3fc">String</span><br>
+    &nbsp;&nbsp;fromSession     <span style="color:#7dd3fc">String</span>    <span style="color:#94a3b8">@db.VarChar(20)</span><br>
+    &nbsp;&nbsp;fromSemester    <span style="color:#7dd3fc">Semester</span><br>
+    &nbsp;&nbsp;toSession       <span style="color:#7dd3fc">String</span>    <span style="color:#94a3b8">@db.VarChar(20)</span><br>
+    &nbsp;&nbsp;toSemester      <span style="color:#7dd3fc">Semester</span><br>
+    &nbsp;&nbsp;studentsAdvanced <span style="color:#7dd3fc">Int</span><br>
+    &nbsp;&nbsp;studentsGraduated <span style="color:#7dd3fc">Int</span><br>
+    &nbsp;&nbsp;initiatedById   <span style="color:#7dd3fc">String</span>   <span style="color:#94a3b8">@map("initiated_by")</span><br>
+    &nbsp;&nbsp;initiatedAt     <span style="color:#7dd3fc">DateTime</span>  @default(now())<br>
+    }
+  </div>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="approve" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>Schema looks good — next section</h3>
+      <p>Proceed to Section 2: API & Service Layer design</p>
+    </div>
+  </div>
+  <div class="option" data-choice="change" onclick="toggleSelect(this)">
+    <div class="letter">✎</div>
+    <div class="content">
+      <h3>I want to change something</h3>
+      <p>Tell me in the terminal what to adjust</p>
+    </div>
+  </div>
+</div>

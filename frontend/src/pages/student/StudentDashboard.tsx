@@ -257,6 +257,19 @@ function ProfileAvatar({ user, size = 'lg' }: { user: User | null; size?: 'sm' |
     ? user.name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase()
     : 'ST';
   const sz = size === 'lg' ? 'w-16 h-16 text-2xl' : 'w-10 h-10 text-sm';
+  const photoUrl = user?.profilePhotoUrl;
+
+  if (photoUrl) {
+    return (
+      <img
+        src={photoUrl}
+        alt={user?.name ?? 'Profile'}
+        className={`${sz} rounded-2xl object-cover flex-shrink-0 shadow-lg border-2 border-white/30`}
+        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+      />
+    );
+  }
+
   return (
     <div
       className={`${sz} rounded-2xl flex items-center justify-center text-white font-bold flex-shrink-0 shadow-lg`}

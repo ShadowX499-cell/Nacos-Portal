@@ -12,6 +12,7 @@ import resultsRoutes from './modules/results/results.routes';
 import paymentsRoutes from './modules/payments/payments.routes';
 import notificationsRoutes from './modules/notifications/notifications.routes';
 import registrationRoutes from './modules/registration/registration.routes';
+import electionsRoutes from './modules/elections/elections.routes';
 
 const app: Application = express();
 
@@ -21,7 +22,7 @@ app.use(helmet());
 // ── CORS ─────────────────────────────────────────────────────────────────────
 app.use(
   cors({
-    origin: [env.FRONTEND_URL, 'http://localhost:3000'],
+    origin: [env.FRONTEND_URL, 'http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -56,6 +57,7 @@ app.use('/api/v1/results', resultsRoutes);
 app.use('/api/v1/payments', paymentsRoutes);
 app.use('/api/v1/notifications', notificationsRoutes);
 app.use('/api/v1/registration', registrationRoutes);
+app.use('/api/v1/elections', electionsRoutes);
 
 // ── 404 handler ───────────────────────────────────────────────────────────────
 app.use((_req, res) => {

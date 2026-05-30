@@ -281,6 +281,7 @@ model Election {
   endTime        DateTime       @map("end_time")
   status         ElectionStatus @default(draft)
   eligibleLevels String[]       @map("eligible_levels")
+  positions      String[]       @default([])
   createdById    String         @map("created_by")
   finalizedById  String?        @map("finalized_by")
   finalizedAt    DateTime?      @map("finalized_at")

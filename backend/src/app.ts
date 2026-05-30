@@ -14,6 +14,7 @@ import paymentsRoutes from './modules/payments/payments.routes';
 import notificationsRoutes from './modules/notifications/notifications.routes';
 import registrationRoutes from './modules/registration/registration.routes';
 import electionsRoutes from './modules/elections/elections.routes';
+import complianceRoutes from './modules/student/compliance.routes';
 
 const app: Application = express();
 
@@ -62,6 +63,7 @@ app.use('/api/v1/payments', paymentsRoutes);
 app.use('/api/v1/notifications', notificationsRoutes);
 app.use('/api/v1/registration', registrationRoutes);
 app.use('/api/v1/elections', electionsRoutes);
+app.use('/api/v1/student', complianceRoutes);
 
 // ── 404 handler ───────────────────────────────────────────────────────────────
 app.use((_req, res) => {

@@ -156,6 +156,13 @@ export const adminApi = {
     api.patch<{ success: true; data: import('../types').User }>(`/admin/users/${id}`, body),
 };
 
+// ── Student Compliance API ────────────────────────────────────────────────────
+
+export const complianceApi = {
+  getSummary: () =>
+    api.get<{ success: true; data: import('../types').ComplianceSummary }>('/student/compliance'),
+};
+
 // ── Revenue API (HOD) ─────────────────────────────────────────────────────────
 
 export interface RevenueSummary {

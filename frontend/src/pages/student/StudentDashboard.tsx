@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { TrendingUp, TrendingDown, MapPin, ArrowRight, BookOpen, FileText, Bell, X, Clock, Users } from 'lucide-react';
-import { profileApi, resultsApi, notificationsApi, registrationApi, paymentsApi } from '../../api/client';
-import type { User, ResultListItem, Registration, GpaSummary, StudentResultView } from '../../types';
+import { profileApi, resultsApi, notificationsApi, registrationApi, paymentsApi, complianceApi } from '../../api/client';
+import type { User, ResultListItem, Registration, GpaSummary, StudentResultView, ComplianceSummary } from '../../types';
 
 // ── Upcoming events (static — will be from API in Phase 3) ───────────────────
 
@@ -289,6 +289,7 @@ export default function StudentDashboard() {
   const [latestReg, setLatestReg] = useState<Registration | null>(null);
   const [pendingPayments, setPendingPayments] = useState(0);
   const [gpa, setGpa] = useState<GpaSummary | null>(null);
+  const [compliance, setCompliance] = useState<ComplianceSummary | null>(null);
   const [resultCache, setResultCache] = useState<Map<string, StudentResultView>>(new Map());
   const [activeSemGbId, setActiveSemGbId] = useState<string | null>(null);
   const [loadingSem, setLoadingSem] = useState(false);
@@ -316,6 +317,7 @@ export default function StudentDashboard() {
       paymentsApi.history().then((r) =>
         setPendingPayments(r.data.data.filter((p) => p.status === 'pending').length)
       ),
+      complianceApi.getSummary().then((r) => setCompliance(r.data.data)).catch(() => {}),
     ]).finally(() => setLoading(false));
   }, []);
 
@@ -424,31 +426,55 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        {/* Big stat cards row */}
-        <div className="relative mt-6 grid grid-cols-3 gap-3">
+        {/* Big stat cards row — 6 cards: 3 academic + 3 compliance */}
+        <div className="relative mt-6 grid grid-cols-3 md:grid-cols-6 gap-3">
           {[
             {
               label: 'Credits Earned',
               value: String(gpa?.totalCreditsEarned ?? 0),
               sub: 'total credit units',
               icon: BookOpen,
+              color: null,
             },
             {
               label: 'Semesters',
               value: String(gpa?.semesters.length ?? 0),
               sub: 'completed',
               icon: FileText,
+              color: null,
             },
             {
               label: 'Results',
               value: `${paidResults.length}/${results.length}`,
               sub: 'subscribed',
               icon: Bell,
+              color: null,
+            },
+            {
+              label: 'NACOS Due',
+              value: `${compliance?.nacosDue.paid ?? '—'}/${compliance?.nacosDue.total ?? 8}`,
+              sub: 'semesters paid',
+              icon: Clock,
+              color: compliance ? (compliance.nacosDue.paid === compliance.nacosDue.total ? 'text-green-300' : compliance.nacosDue.paid > 0 ? 'text-yellow-300' : 'text-red-300') : null,
+            },
+            {
+              label: 'School Fees',
+              value: `${compliance?.schoolFees.paid ?? '—'}/${compliance?.schoolFees.total ?? 8}`,
+              sub: 'semesters paid',
+              icon: Users,
+              color: compliance ? (compliance.schoolFees.paid === compliance.schoolFees.total ? 'text-green-300' : compliance.schoolFees.paid > 0 ? 'text-yellow-300' : 'text-red-300') : null,
+            },
+            {
+              label: 'Course Form',
+              value: `${compliance?.courseForm.verified ?? '—'}/${compliance?.courseForm.total ?? 8}`,
+              sub: 'verified',
+              icon: FileText,
+              color: compliance ? (compliance.courseForm.verified === compliance.courseForm.total ? 'text-green-300' : compliance.courseForm.verified > 0 ? 'text-yellow-300' : 'text-red-300') : null,
             },
           ].map((s) => (
             <div key={s.label} className="bg-white/10 border border-white/15 rounded-2xl px-4 py-4 text-center backdrop-blur-sm">
               <s.icon className="w-4 h-4 text-brand-300 mx-auto mb-2" />
-              <div className="text-white font-black text-2xl md:text-3xl leading-none">{s.value}</div>
+              <div className={`font-black text-2xl md:text-3xl leading-none ${s.color ?? 'text-white'}`}>{s.value}</div>
               <div className="text-brand-300 text-[11px] font-semibold mt-1 leading-tight">{s.label}</div>
               <div className="text-white/35 text-[9px] mt-0.5">{s.sub}</div>
             </div>

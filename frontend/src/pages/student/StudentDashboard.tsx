@@ -276,7 +276,9 @@ export default function StudentDashboard() {
   const [latestReg, setLatestReg] = useState<Registration | null>(null);
   const [pendingPayments, setPendingPayments] = useState(0);
   const [gpa, setGpa] = useState<GpaSummary | null>(null);
-  const [latestResult, setLatestResult] = useState<StudentResultView | null>(null);
+  const [resultCache, setResultCache] = useState<Map<string, StudentResultView>>(new Map());
+  const [activeSemGbId, setActiveSemGbId] = useState<string | null>(null);
+  const [loadingSem, setLoadingSem] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeEvent, setActiveEvent] = useState<EventItem | null>(null);
 
@@ -284,15 +286,16 @@ export default function StudentDashboard() {
     Promise.allSettled([
       profileApi.getMe().then((r) => setProfile(r.data.data)),
       resultsApi.list().then((r) => setResults(r.data.data)),
-      resultsApi.getGpa().then((r) => {
+      resultsApi.getGpa().then(async (r) => {
         const g = r.data.data;
         setGpa(g);
-        // Load latest paid semester for histogram
         if (g.semesters.length > 0) {
-          const sorted = [...g.semesters].sort((a, b) =>
+          const latest = [...g.semesters].sort((a, b) =>
             b.session.localeCompare(a.session) || b.semester.localeCompare(a.semester)
-          );
-          return resultsApi.get(sorted[0].gradebookId).then((rr) => setLatestResult(rr.data.data));
+          )[0];
+          setActiveSemGbId(latest.gradebookId);
+          const rr = await resultsApi.get(latest.gradebookId);
+          setResultCache(new Map([[latest.gradebookId, rr.data.data]]));
         }
       }),
       notificationsApi.getUnreadCount().then((r) => setUnread(r.data.data.count)),
@@ -302,6 +305,21 @@ export default function StudentDashboard() {
       ),
     ]).finally(() => setLoading(false));
   }, []);
+
+  const handleSelectSem = async (gbId: string) => {
+    setActiveSemGbId(gbId);
+    if (!resultCache.has(gbId)) {
+      setLoadingSem(true);
+      try {
+        const rr = await resultsApi.get(gbId);
+        setResultCache((prev) => new Map(prev).set(gbId, rr.data.data));
+      } finally {
+        setLoadingSem(false);
+      }
+    }
+  };
+
+  const activeResult = activeSemGbId ? resultCache.get(activeSemGbId) ?? null : null;
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
@@ -360,24 +378,30 @@ export default function StudentDashboard() {
               <p className="text-brand-300 text-sm mt-1">{profile?.program} · {profile?.level} · {profile?.userId}</p>
             </div>
           </div>
-          {/* CGPA + Semester GPA breakdown */}
-          <div className="flex-shrink-0 bg-white/15 border border-white/25 rounded-2xl px-4 py-4 backdrop-blur-sm min-w-[130px]">
-            <div className="text-center mb-2">
+          {/* CGPA + Semester GPAs side by side */}
+          <div className="flex-shrink-0 flex items-center gap-4 bg-white/15 border border-white/25 rounded-2xl px-5 py-4 backdrop-blur-sm">
+            {/* Big CGPA number */}
+            <div className="text-center flex-shrink-0">
               <div className="text-4xl font-black text-white leading-none">
                 {gpa && gpa.cgpa > 0 ? gpa.cgpa.toFixed(2) : '—'}
               </div>
               <div className="text-brand-300 text-xs font-bold uppercase tracking-widest mt-1">CGPA</div>
             </div>
+            {/* Vertical divider */}
             {gpa && gpa.semesters.length > 0 && (
-              <div className="border-t border-white/20 pt-2 mt-2 space-y-1">
+              <div className="w-px self-stretch bg-white/20" />
+            )}
+            {/* Semester list beside */}
+            {gpa && gpa.semesters.length > 0 && (
+              <div className="space-y-1.5">
                 {[...gpa.semesters]
                   .sort((a, b) => a.session.localeCompare(b.session) || a.semester.localeCompare(b.semester))
                   .map((s, i) => (
-                    <div key={i} className="flex items-center justify-between gap-3">
-                      <span className="text-[10px] text-brand-300 whitespace-nowrap">
+                    <div key={i} className="flex items-center gap-2.5 whitespace-nowrap">
+                      <span className="text-[11px] text-brand-300 font-semibold">
                         {s.session.split('/')[0]} {s.semester === 'first' ? 'S1' : 'S2'}
                       </span>
-                      <span className={`text-xs font-bold ${s.sgpa >= 3.5 ? 'text-green-300' : s.sgpa >= 2.5 ? 'text-yellow-300' : 'text-red-300'}`}>
+                      <span className={`text-sm font-black ${s.sgpa >= 3.5 ? 'text-green-300' : s.sgpa >= 2.5 ? 'text-yellow-300' : 'text-red-300'}`}>
                         {s.sgpa.toFixed(2)}
                       </span>
                     </div>
@@ -451,107 +475,109 @@ export default function StudentDashboard() {
           )}
         </motion.div>
 
-        {/* Grade Distribution Donut */}
+        {/* Course Performance — vertical bar chart with semester toggle */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.15 }}
-          className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm"
+          className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex flex-col"
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h2 className="text-sm font-bold text-gray-900">Grade Distribution</h2>
-              <p className="text-xs text-gray-400 mt-0.5">A – F breakdown across courses</p>
+              <h2 className="text-sm font-bold text-gray-900">Course Performance</h2>
+              <p className="text-xs text-gray-400 mt-0.5">scores out of 100</p>
             </div>
-            <Link to="/student/results" className="text-xs text-brand-700 font-medium hover:underline">
-              View results →
-            </Link>
+            {activeResult && (
+              <span className="text-xs font-bold text-brand-700 bg-brand-50 px-2 py-1 rounded-lg">
+                SGPA {activeResult.sgpa.toFixed(2)}
+              </span>
+            )}
           </div>
-          <GradePieChart gpa={gpa} />
 
-          {/* Result subscription mini list */}
-          {results.length > 0 && (
-            <div className="mt-4 space-y-1.5 pt-3 border-t border-gray-100">
-              {results.slice(0, 3).map((r) => (
-                <div key={r.gradebookId} className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600 truncate max-w-[160px]">{r.gradebookName}</span>
-                  <span className={`font-semibold px-2 py-0.5 rounded-full text-[10px] ${
-                    r.hasPaid ? 'bg-brand-100 text-brand-700' : 'bg-orange-100 text-orange-700'
-                  }`}>
-                    {r.hasPaid ? 'Subscribed' : 'Unpaid'}
-                  </span>
-                </div>
-              ))}
+          {/* Semester toggle pills */}
+          {gpa && gpa.semesters.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {[...gpa.semesters]
+                .sort((a, b) => a.session.localeCompare(b.session) || a.semester.localeCompare(b.semester))
+                .map((s) => (
+                  <button
+                    key={s.gradebookId}
+                    onClick={() => void handleSelectSem(s.gradebookId)}
+                    className={`text-[11px] font-bold px-3 py-1 rounded-full transition-all ${
+                      activeSemGbId === s.gradebookId
+                        ? 'bg-brand-700 text-white shadow-sm'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    {s.session.split('/')[0]} {s.semester === 'first' ? 'S1' : 'S2'}
+                  </button>
+                ))}
+            </div>
+          )}
+
+          {/* Vertical bar chart */}
+          {loadingSem ? (
+            <div className="flex-1 flex items-center justify-center h-36">
+              <div className="w-6 h-6 rounded-full border-2 border-brand-200 border-t-brand-700 animate-spin" />
+            </div>
+          ) : activeResult ? (
+            <div className="flex-1 overflow-x-auto">
+              {(() => {
+                const CHART_H = 130;
+                const BAR_W = 34;
+                const GAP = 10;
+                const n = activeResult.courses.length;
+                const totalW = n * (BAR_W + GAP) - GAP;
+                return (
+                  <svg
+                    viewBox={`0 0 ${totalW} ${CHART_H + 44}`}
+                    style={{ width: Math.max(totalW, 220), height: CHART_H + 44 }}
+                  >
+                    {/* Y-axis guide lines */}
+                    {[25, 50, 75, 100].map((v) => {
+                      const y = CHART_H - (v / 100) * CHART_H;
+                      return (
+                        <g key={v}>
+                          <line x1={0} y1={y} x2={totalW} y2={y} stroke="#f3f4f6" strokeWidth="1" />
+                          <text x={0} y={y - 2} fontSize="7" fill="#d1d5db">{v}</text>
+                        </g>
+                      );
+                    })}
+                    {activeResult.courses.map((c, i) => {
+                      const score = c.total ?? 0;
+                      const barH = (score / 100) * CHART_H;
+                      const x = i * (BAR_W + GAP);
+                      const color = score >= 70 ? '#16a34a' : score >= 60 ? '#2563eb' : score >= 50 ? '#7c3aed' : score >= 40 ? '#d97706' : '#dc2626';
+                      const shortCode = c.courseCode.replace(/[A-Za-z]+/, '').slice(0, 5);
+                      return (
+                        <g key={c.courseCode}>
+                          {/* Bar */}
+                          <rect x={x} y={CHART_H - barH} width={BAR_W} height={barH} fill={color} rx="4" />
+                          {/* Score inside bar */}
+                          {barH > 16 && (
+                            <text x={x + BAR_W / 2} y={CHART_H - barH + 13} textAnchor="middle" fill="white" fontSize="9" fontWeight="bold">{score}</text>
+                          )}
+                          {/* Grade label */}
+                          <text x={x + BAR_W / 2} y={CHART_H + 13} textAnchor="middle" fontSize="10" fontWeight="bold" fill={color}>{c.grade ?? '—'}</text>
+                          {/* Course code */}
+                          <text x={x + BAR_W / 2} y={CHART_H + 27} textAnchor="middle" fontSize="8" fill="#9ca3af">{shortCode}</text>
+                          {/* Full code tooltip area */}
+                          <title>{c.courseCode}: {c.courseTitle} ({score}/100)</title>
+                        </g>
+                      );
+                    })}
+                  </svg>
+                );
+              })()}
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center h-36 gap-2">
+              <div className="text-3xl">📊</div>
+              <p className="text-xs text-gray-400 text-center">Subscribe to a result to see performance</p>
             </div>
           )}
         </motion.div>
       </div>
-
-      {/* ── Course Performance Histogram ───────────────────────────────────── */}
-      {latestResult && latestResult.courses.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.22 }}
-          className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-sm font-bold text-gray-900">Course Performance</h2>
-              <p className="text-xs text-gray-400 mt-0.5">
-                {latestResult.gradebookName} — scores out of 100
-              </p>
-            </div>
-            <span className="text-xs font-bold text-brand-700 bg-brand-50 px-2 py-1 rounded-lg">
-              SGPA {latestResult.sgpa.toFixed(2)}
-            </span>
-          </div>
-          <div className="space-y-2.5">
-            {latestResult.courses.map((c) => {
-              const score = c.total ?? 0;
-              const pct = Math.min((score / 100) * 100, 100);
-              const barColor =
-                score >= 70 ? '#16a34a' :
-                score >= 60 ? '#2563eb' :
-                score >= 50 ? '#7c3aed' :
-                score >= 40 ? '#d97706' : '#dc2626';
-              return (
-                <div key={c.courseCode} className="flex items-center gap-3">
-                  <span className="font-mono text-[10px] text-gray-400 w-14 flex-shrink-0 text-right">{c.courseCode}</span>
-                  <div className="flex-1 bg-gray-100 rounded-full h-5 overflow-hidden">
-                    <div
-                      className="h-full rounded-full flex items-center justify-end pr-2 transition-all duration-700"
-                      style={{ width: `${pct}%`, background: barColor, minWidth: score > 0 ? '2rem' : 0 }}
-                    >
-                      {score > 0 && (
-                        <span className="text-white text-[9px] font-bold leading-none">{score}</span>
-                      )}
-                    </div>
-                  </div>
-                  <span className={`text-xs font-bold w-6 flex-shrink-0 text-center`} style={{ color: barColor }}>
-                    {c.grade ?? '—'}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-          {/* Score legend */}
-          <div className="flex flex-wrap gap-3 mt-4 pt-3 border-t border-gray-100">
-            {[
-              { range: '70–100', label: 'A', color: '#16a34a' },
-              { range: '60–69', label: 'B', color: '#2563eb' },
-              { range: '50–59', label: 'C', color: '#7c3aed' },
-              { range: '40–49', label: 'D/E', color: '#d97706' },
-              { range: '0–39', label: 'F', color: '#dc2626' },
-            ].map((l) => (
-              <div key={l.label} className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ background: l.color }} />
-                <span className="text-[10px] text-gray-500">{l.range} = {l.label}</span>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      )}
 
       {/* ── Action Required + Recent Results ───────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -635,7 +661,10 @@ export default function StudentDashboard() {
         </motion.div>
       </div>
 
-      {/* ── Upcoming Events ────────────────────────────────────────────────── */}
+      {/* ── Upcoming Events + Grade Distribution ──────────────────────────── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      {/* Upcoming Events */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -644,7 +673,7 @@ export default function StudentDashboard() {
       >
         <div className="px-5 py-3.5 border-b border-gray-100 flex items-center justify-between">
           <h2 className="text-sm font-bold text-gray-900">📅 Upcoming Events</h2>
-          <Link to="/events" className="text-xs text-brand-700 font-medium hover:underline">
+          <Link to="/student/notifications" className="text-xs text-brand-700 font-medium hover:underline">
             View all →
           </Link>
         </div>
@@ -680,6 +709,41 @@ export default function StudentDashboard() {
           ))}
         </div>
       </motion.div>
+
+      {/* Grade Distribution — beside Upcoming Events */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.32 }}
+        className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-sm font-bold text-gray-900">Grade Distribution</h2>
+            <p className="text-xs text-gray-400 mt-0.5">A – F breakdown across courses</p>
+          </div>
+          <Link to="/student/results" className="text-xs text-brand-700 font-medium hover:underline">
+            View results →
+          </Link>
+        </div>
+        <GradePieChart gpa={gpa} />
+        {results.length > 0 && (
+          <div className="mt-4 space-y-1.5 pt-3 border-t border-gray-100">
+            {results.slice(0, 3).map((r) => (
+              <div key={r.gradebookId} className="flex items-center justify-between text-xs">
+                <span className="text-gray-600 truncate max-w-[140px]">{r.gradebookName}</span>
+                <span className={`font-semibold px-2 py-0.5 rounded-full text-[10px] ${
+                  r.hasPaid ? 'bg-brand-100 text-brand-700' : 'bg-orange-100 text-orange-700'
+                }`}>
+                  {r.hasPaid ? 'Subscribed' : 'Unpaid'}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </motion.div>
+
+      </div>{/* end events+distribution grid */}
 
       {/* ── Quick Actions ──────────────────────────────────────────────────── */}
       <motion.div

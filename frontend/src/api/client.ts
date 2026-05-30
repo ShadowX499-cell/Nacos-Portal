@@ -156,6 +156,35 @@ export const adminApi = {
     api.patch<{ success: true; data: import('../types').User }>(`/admin/users/${id}`, body),
 };
 
+// ── Super Admins API ──────────────────────────────────────────────────────────
+
+export const superAdminsApi = {
+  list: () =>
+    api.get<{ success: true; data: import('../types').User[] }>('/admin/super-admins'),
+  assign: (userId: string, superAdminType: import('../types').SuperAdminType) =>
+    api.post<{ success: true; data: import('../types').User }>('/admin/super-admins', { userId, superAdminType }),
+  revoke: (id: string) =>
+    api.delete<{ success: true; data: import('../types').User }>(`/admin/super-admins/${id}`),
+};
+
+// ── Audit Logs API ────────────────────────────────────────────────────────────
+
+export interface AuditLogEntry {
+  id: string; actorId: string; actorName: string; actorUserId: string;
+  actorRole: string; action: string; entityType: string | null;
+  entityId: string | null; oldValue: unknown; newValue: unknown;
+  ipAddress: string | null; createdAt: string;
+}
+
+export const auditLogsApi = {
+  list: (params?: Record<string, string | number>) =>
+    api.get<{ success: true; data: AuditLogEntry[]; meta: import('../types').PaginationMeta }>('/admin/audit-logs', { params }),
+  listOwn: (params?: Record<string, string | number>) =>
+    api.get<{ success: true; data: AuditLogEntry[]; meta: import('../types').PaginationMeta }>('/admin/audit-logs/me', { params }),
+  getById: (id: string) =>
+    api.get<{ success: true; data: AuditLogEntry }>(`/admin/audit-logs/${id}`),
+};
+
 // ── Gradebook API (admin) ─────────────────────────────────────────────────────
 
 export const gradebookApi = {

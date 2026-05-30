@@ -32,6 +32,8 @@ import ElectionDetailPage from './pages/admin/ElectionDetailPage';
 import AdminProfilePage from './pages/admin/AdminProfilePage';
 import AdminNotificationsPage from './pages/admin/AdminNotificationsPage';
 import AdminSettingsPage from './pages/admin/AdminSettingsPage';
+import SuperAdminsPage from './pages/admin/SuperAdminsPage';
+import AuditLogsPage from './pages/admin/AuditLogsPage';
 
 // Student pages
 import StudentDashboard from './pages/student/StudentDashboard';
@@ -81,6 +83,8 @@ export default function App() {
             <Route path="/admin/profile"        element={<AdminProfilePage />} />
             <Route path="/admin/notifications"  element={<AdminNotificationsPage />} />
             <Route path="/admin/settings"       element={<AdminSettingsPage />} />
+            <Route path="/admin/super-admins"   element={<SuperAdminsPage />} />
+            <Route path="/admin/audit-logs"     element={<AuditLogsPage />} />
           </Route>
         </Route>
 

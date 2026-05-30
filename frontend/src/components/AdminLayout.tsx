@@ -1,33 +1,51 @@
 import { NavLink, Link, Outlet, useLocation } from 'react-router-dom';
 import { useState } from 'react';
-import { Menu, X, Lock, LayoutDashboard, Users, BookOpen, Vote, Fingerprint, Bell, Settings } from 'lucide-react';
+import { Menu, X, Lock, LayoutDashboard, Users, BookOpen, Vote, Fingerprint, Bell, Settings, Shield, ClipboardList, TrendingUp, CalendarDays } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import NacosLogo from './NacosLogo';
+import type { SuperAdminType } from '../types';
 
-const NAV_SECTIONS = [
+interface NavItem {
+  icon: React.ElementType;
+  label: string;
+  to: string;
+  phase: string | null;
+  hodOnly?: boolean;
+}
+
+interface NavSection {
+  label: string;
+  items: NavItem[];
+}
+
+const NAV_SECTIONS: NavSection[] = [
   {
     label: 'Main',
     items: [
-      { icon: LayoutDashboard, label: 'Dashboard',   to: '/admin/dashboard', phase: null },
-      { icon: Users,           label: 'Students',    to: '/admin/users',     phase: null },
+      { icon: LayoutDashboard, label: 'Dashboard',   to: '/admin/dashboard',  phase: null },
+      { icon: Users,           label: 'Students',    to: '/admin/users',      phase: null },
       { icon: BookOpen,        label: 'Gradebooks',  to: '/admin/gradebooks', phase: null },
     ],
   },
   {
     label: 'Modules',
     items: [
-      { icon: Vote,        label: 'Elections',  to: '/admin/elections',  phase: null },
-      { icon: Fingerprint, label: 'Attendance', to: '/admin/attendance', phase: 'Phase 4' },
+      { icon: Vote,         label: 'Elections',  to: '/admin/elections',  phase: null },
+      { icon: Fingerprint,  label: 'Attendance', to: '/admin/attendance', phase: 'Phase 4' },
+      { icon: CalendarDays, label: 'Academic Calendar', to: '/admin/academic', phase: null, hodOnly: true },
     ],
   },
   {
     label: 'System',
     items: [
-      { icon: Bell,     label: 'Notifications', to: '/admin/notifications', phase: null },
-      { icon: Settings, label: 'Settings',       to: '/admin/settings',     phase: null },
+      { icon: Bell,          label: 'Notifications', to: '/admin/notifications', phase: null },
+      { icon: TrendingUp,    label: 'Revenue',       to: '/admin/revenue',       phase: null, hodOnly: true },
+      { icon: ClipboardList, label: 'Audit Logs',    to: '/admin/audit-logs',    phase: null, hodOnly: true },
+      { icon: Shield,        label: 'Super Admins',  to: '/admin/super-admins',  phase: null, hodOnly: true },
+      { icon: Settings,      label: 'Settings',      to: '/admin/settings',      phase: null },
     ],
   },
-] as const;
+];
 
 const PAGE_TITLES: Record<string, string> = {
   '/admin/dashboard':      'Dashboard',
@@ -45,6 +63,8 @@ export default function AdminLayout() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const isHod = (user?.superAdminType as SuperAdminType | null) === 'hod';
 
   const initials = user?.name
     ? user.name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase()
@@ -81,7 +101,7 @@ export default function AdminLayout() {
             <p className="px-3 mb-1 text-white/40 text-[11px] font-bold uppercase tracking-widest">
               {section.label}
             </p>
-            {section.items.map((item) => (
+            {section.items.filter((item) => !item.hodOnly || isHod).map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}

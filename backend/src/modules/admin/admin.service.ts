@@ -1,5 +1,7 @@
 import { PrismaClient, UserRole, UserStatus } from '@prisma/client';
 import { Prisma } from '@prisma/client';
+import fs from 'fs';
+import path from 'path';
 import { prisma as defaultPrisma } from '../../config/prisma';
 import { generateUserId } from '../../utils/id-generator';
 import { sendWelcomeEmail } from '../../utils/email';
@@ -51,8 +53,24 @@ export class AdminService {
         role: UserRole.student,
         status: UserStatus.pending,
         createdById,
+        profilePhotoUrl: dto.profilePhotoUrl ?? null,
+        dateOfBirth: dto.dateOfBirth ? new Date(dto.dateOfBirth) : null,
+        stateOfOrigin: dto.stateOfOrigin ?? null,
+        lga: dto.lga ?? null,
+        homeAddress: dto.homeAddress ?? null,
       },
     });
+
+    // Audit log (fire-and-forget)
+    this.db.auditLog.create({
+      data: {
+        actorId: createdById,
+        action: 'STUDENT_CREATED',
+        entityType: 'user',
+        entityId: user.id,
+        newValue: { userId: user.userId, program: user.program, level: user.level } as Prisma.InputJsonValue,
+      },
+    }).catch((e: unknown) => console.error('[AdminService] Audit log failed:', e));
 
     // Send welcome email with the generated User ID
     const validateUrl = `${env.FRONTEND_URL}/auth/validate`;
@@ -136,8 +154,10 @@ export class AdminService {
   async updateUser(
     id: string,
     departmentId: string,
-    updates: Partial<Pick<CreateUserDto, 'name' | 'email' | 'phone' | 'level' | 'program'>> & {
+    updates: Partial<Pick<CreateUserDto, 'name' | 'email' | 'phone' | 'level' | 'program' | 'profilePhotoUrl' | 'stateOfOrigin' | 'lga' | 'homeAddress'>> & {
       status?: 'validated' | 'suspended';
+      dateOfBirth?: string;
+      oldPhotoUrl?: string;
     },
     actorId: string
   ): Promise<UserPublic> {
@@ -158,9 +178,28 @@ export class AdminService {
       }
     }
 
+    // Delete old photo file if a new one is being set
+    if (updates.oldPhotoUrl && updates.profilePhotoUrl && updates.oldPhotoUrl !== updates.profilePhotoUrl) {
+      const filename = path.basename(updates.oldPhotoUrl);
+      const filePath = path.join(process.cwd(), 'uploads', filename);
+      fs.unlink(filePath, (err) => {
+        if (err) console.error('[AdminService] Failed to delete old photo:', err);
+      });
+    }
+
+    // Build data object — exclude oldPhotoUrl, convert dateOfBirth if provided
+    const { oldPhotoUrl: _oldPhotoUrl, dateOfBirth, ...rest } = updates;
+    const data: Record<string, unknown> = {
+      ...rest,
+      updatedAt: new Date(),
+    };
+    if (dateOfBirth !== undefined) {
+      data.dateOfBirth = dateOfBirth ? new Date(dateOfBirth) : null;
+    }
+
     const updatedUser = await this.db.user.update({
       where: { id },
-      data: { ...updates, updatedAt: new Date() },
+      data: data as Prisma.UserUpdateInput,
     });
 
     // Audit log (fire-and-forget — separate concerns)
@@ -390,6 +429,7 @@ export class AdminService {
     role: UserPublic['role'];
     status: UserPublic['status'];
     studentStatus: UserPublic['studentStatus'];
+    superAdminType?: UserPublic['superAdminType'];
     profilePhotoUrl?: string | null;
     dateOfBirth?: Date | null;
     stateOfOrigin?: string | null;
@@ -410,7 +450,7 @@ export class AdminService {
       role: user.role,
       status: user.status,
       studentStatus: user.studentStatus,
-      superAdminType: null,
+      superAdminType: user.superAdminType ?? null,
       profilePhotoUrl: user.profilePhotoUrl ?? null,
       dateOfBirth: user.dateOfBirth ? user.dateOfBirth.toISOString().split('T')[0] : null,
       stateOfOrigin: user.stateOfOrigin ?? null,

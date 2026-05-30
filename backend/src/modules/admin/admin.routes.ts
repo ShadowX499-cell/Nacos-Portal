@@ -3,7 +3,10 @@ import { authenticate, requireAdmin } from '../../middleware/auth.middleware';
 import { validate } from '../../middleware/validate.middleware';
 import { apiRateLimit } from '../../middleware/rate-limit.middleware';
 import { photoUpload } from '../../config/multer';
+import { requirePermission } from '../../middleware/permission.middleware';
 import { createUserRules, listUsersRules, updateUserRules } from './admin.validation';
+import { listSuperAdmins, assignSuperAdmin, revokeSuperAdmin } from './super-admins.controller';
+import { listAuditLogs, listOwnAuditLogs, getAuditLogById } from './audit-logs.controller';
 import {
   getDashboard,
   createUser,
@@ -80,5 +83,27 @@ router.patch(
   ]),
   updateDepartmentSettings
 );
+
+// ── Super Admins (HOD only) ───────────────────────────────────────────────────
+
+/** GET  /api/v1/admin/super-admins */
+router.get('/super-admins', requirePermission('manage_super_admins'), listSuperAdmins);
+
+/** POST /api/v1/admin/super-admins */
+router.post('/super-admins', requirePermission('manage_super_admins'), assignSuperAdmin);
+
+/** DELETE /api/v1/admin/super-admins/:id */
+router.delete('/super-admins/:id', requirePermission('manage_super_admins'), revokeSuperAdmin);
+
+// ── Audit Logs ────────────────────────────────────────────────────────────────
+
+/** GET /api/v1/admin/audit-logs (HOD only — all logs) */
+router.get('/audit-logs', requirePermission('view_all_audit_logs'), listAuditLogs);
+
+/** GET /api/v1/admin/audit-logs/me (any super admin — own trail) */
+router.get('/audit-logs/me', requirePermission('view_own_audit_log'), listOwnAuditLogs);
+
+/** GET /api/v1/admin/audit-logs/:id (HOD only) */
+router.get('/audit-logs/:id', requirePermission('view_all_audit_logs'), getAuditLogById);
 
 export default router;

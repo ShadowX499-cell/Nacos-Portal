@@ -214,12 +214,14 @@ export class AuthService {
     userId: string;
     role: UserPublic['role'];
     departmentId: string;
+    superAdminType?: UserPublic['superAdminType'];
   }): Promise<TokenPair> {
     const accessToken = signAccessToken({
       sub: user.id,
       userId: user.userId,
       role: user.role,
       departmentId: user.departmentId,
+      superAdminType: user.superAdminType ?? null,
     });
 
     const refreshToken = generateSecureToken();

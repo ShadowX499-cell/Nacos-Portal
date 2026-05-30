@@ -1,8 +1,7 @@
 import { Request } from 'express';
-import { UserRole, UserStatus, Program, Level, StudentStatus } from '@prisma/client';
+import { UserRole, UserStatus, Program, Level, StudentStatus, SuperAdminType } from '@prisma/client';
 
-// ── Local type aliases (not yet in Prisma schema) ─────────────────────────────
-export type SuperAdminType = 'course_adviser' | 'hod' | 'result_exam_officer';
+export type { SuperAdminType };
 
 // ── Augment Express Request to carry JWT payload ──────────────────────────────
 export interface JwtPayload {

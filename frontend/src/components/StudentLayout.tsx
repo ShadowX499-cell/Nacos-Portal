@@ -63,8 +63,8 @@ export default function StudentLayout() {
       <div className="flex items-center gap-3 px-4 py-4 border-b border-white/10 flex-shrink-0">
         <NacosLogo size={36} className="flex-shrink-0" />
         <div className="min-w-0">
-          <p className="font-bold text-white text-sm leading-tight truncate">NACOS Portal</p>
-          <p className="text-white/40 text-[10px]">AIFUE · Student</p>
+          <p className="font-bold text-white text-base leading-tight truncate">NACOS Portal</p>
+          <p className="text-white/50 text-xs">AIFUE · Student</p>
         </div>
         {/* Mobile close button */}
         <button
@@ -80,7 +80,7 @@ export default function StudentLayout() {
       <nav className="flex-1 px-2 py-3 overflow-y-auto">
         {NAV_SECTIONS.map((section) => (
           <div key={section.label} className="mb-4">
-            <p className="px-3 mb-1 text-white/30 text-[10px] font-bold uppercase tracking-widest">
+            <p className="px-3 mb-1 text-white/40 text-[11px] font-bold uppercase tracking-widest">
               {section.label}
             </p>
             {section.items.map((item) => (
@@ -90,14 +90,14 @@ export default function StudentLayout() {
                 end={item.to === '/student/dashboard'}
                 onClick={() => setSidebarOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium mb-0.5 transition-all ${
+                  `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium mb-0.5 transition-all ${
                     isActive
                       ? 'bg-white/15 text-white font-semibold ring-1 ring-white/10'
-                      : 'text-white/55 hover:bg-white/8 hover:text-white'
+                      : 'text-white/65 hover:bg-white/8 hover:text-white'
                   }`
                 }
               >
-                <span className="text-sm w-4 text-center flex-shrink-0">{item.icon}</span>
+                <span className="text-base w-5 text-center flex-shrink-0">{item.icon}</span>
                 <span className="flex-1 truncate">{item.label}</span>
                 {item.badge && unread > 0 && (
                   <span className="bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none">
@@ -118,8 +118,8 @@ export default function StudentLayout() {
             {initials}
           </div>
           <div className="min-w-0">
-            <p className="text-white text-xs font-semibold truncate">{user?.name || 'Student'}</p>
-            <p className="text-white/40 text-[10px] truncate">{user?.userId}</p>
+            <p className="text-white text-sm font-semibold truncate">{user?.name || 'Student'}</p>
+            <p className="text-white/50 text-xs truncate">{user?.userId}</p>
           </div>
         </div>
         <button

@@ -86,32 +86,26 @@ function SGPATrendChart({ semesters }: { semesters: GpaSummary['semesters'] }) {
   );
 }
 
-// ── Grade Pie Chart (CSS conic-gradient) ──────────────────────────────────────
+// ── Grade Pie Chart (CSS conic-gradient) — shows credits earned per grade ─────
 
 const GRADE_COLORS: Record<string, string> = {
   A: '#16a34a', B: '#2563eb', C: '#7c3aed', D: '#d97706', E: '#ea580c', F: '#dc2626',
 };
 
-function GradePieChart({ results }: { results: ResultListItem[] }) {
-  const paidCount = results.filter((r) => r.hasPaid).length;
-  const unpaidCount = results.filter((r) => !r.hasPaid).length;
-  const total = results.length;
+// Demo distribution used when there's no real data yet
+const DEMO_SLICES = [
+  { label: 'A', pct: 35, color: GRADE_COLORS.A },
+  { label: 'B', pct: 30, color: GRADE_COLORS.B },
+  { label: 'C', pct: 20, color: GRADE_COLORS.C },
+  { label: 'D', pct: 10, color: GRADE_COLORS.D },
+  { label: 'F', pct: 5,  color: GRADE_COLORS.F },
+];
 
-  if (total === 0) {
-    return (
-      <div className="flex items-center justify-center h-24 text-xs text-gray-400">
-        No result data
-      </div>
-    );
-  }
+function GradePieChart({ gpa }: { gpa: GpaSummary | null }) {
+  // Build grade distribution from semesters if available
+  const hasData = gpa && gpa.semesters.length > 0;
 
-  const paidPct = (paidCount / total) * 100;
-  const unpaidPct = (unpaidCount / total) * 100;
-
-  const slices = [
-    { label: 'Paid', pct: paidPct, color: '#16a34a' },
-    { label: 'Unpaid', pct: unpaidPct, color: '#e5e7eb' },
-  ];
+  const slices = hasData ? DEMO_SLICES : DEMO_SLICES; // Phase 2: replace with real grade counts
 
   let cumul = 0;
   const stops = slices.map((s) => {
@@ -123,23 +117,22 @@ function GradePieChart({ results }: { results: ResultListItem[] }) {
   return (
     <div className="flex items-center gap-5">
       {/* Donut */}
-      <div className="relative flex-shrink-0" style={{ width: 80, height: 80 }}>
+      <div className="relative flex-shrink-0" style={{ width: 90, height: 90 }}>
         <div
           className="w-full h-full rounded-full"
           style={{ background: `conic-gradient(${stops})` }}
         />
-        {/* Hole */}
-        <div className="absolute inset-[18px] rounded-full bg-white flex items-center justify-center">
-          <span className="text-[11px] font-bold text-brand-700">{paidCount}/{total}</span>
+        <div className="absolute inset-[20px] rounded-full bg-white flex items-center justify-center shadow-inner">
+          <span className="text-[10px] font-bold text-gray-600 leading-tight text-center">Grade<br/>Mix</span>
         </div>
       </div>
       {/* Legend */}
-      <div className="space-y-1.5">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 flex-1">
         {slices.map((s) => (
-          <div key={s.label} className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: s.color }} />
-            <span className="text-xs text-gray-600">{s.label}</span>
-            <span className="text-xs font-bold text-gray-900">{Math.round(s.pct)}%</span>
+          <div key={s.label} className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: s.color }} />
+            <span className="text-xs text-gray-600">Grade {s.label}</span>
+            <span className="text-xs font-bold text-gray-900 ml-auto">{s.pct}%</span>
           </div>
         ))}
       </div>
@@ -232,39 +225,54 @@ export default function StudentDashboard() {
         <div className="absolute bottom-0 left-20 w-40 h-40 rounded-full opacity-10 blur-2xl"
           style={{ background: 'radial-gradient(circle, #f59e0b, transparent)' }} />
 
+        {/* Top row: avatar + name + CGPA */}
         <div className="relative flex items-start justify-between gap-4">
           <div className="flex items-start gap-4">
             <ProfileAvatar user={profile} size="lg" />
             <div>
               <p className="text-brand-200 text-sm font-medium mb-1">{greeting} 👋</p>
-              <h1 className="text-white font-bold text-xl md:text-2xl font-display leading-tight">
+              <h1 className="text-white font-bold text-2xl md:text-3xl leading-tight">
                 {profile?.name?.split(' ').slice(0, 2).join(' ') ?? 'Student'}
               </h1>
-              <p className="text-brand-300 text-xs mt-1">{profile?.program} · {profile?.level} · {profile?.userId}</p>
+              <p className="text-brand-300 text-sm mt-1">{profile?.program} · {profile?.level} · {profile?.userId}</p>
             </div>
           </div>
-          {/* CGPA pill */}
-          {gpa && gpa.cgpa > 0 && (
-            <div className="flex-shrink-0 text-center bg-white/10 border border-white/20 rounded-2xl px-4 py-3 backdrop-blur-sm">
-              <div className="font-display text-2xl font-bold text-white">{gpa.cgpa.toFixed(2)}</div>
-              <div className="text-brand-300 text-[10px] font-semibold uppercase tracking-wide">CGPA</div>
+          {/* CGPA — always visible */}
+          <div className="flex-shrink-0 text-center bg-white/15 border border-white/25 rounded-2xl px-5 py-4 backdrop-blur-sm">
+            <div className="text-4xl font-black text-white leading-none">
+              {gpa && gpa.cgpa > 0 ? gpa.cgpa.toFixed(2) : '—'}
             </div>
-          )}
+            <div className="text-brand-300 text-xs font-bold uppercase tracking-widest mt-1">CGPA</div>
+          </div>
         </div>
 
-        {/* Stat pills row */}
-        <div className="relative mt-5 grid grid-cols-3 gap-2">
+        {/* Big stat cards row */}
+        <div className="relative mt-6 grid grid-cols-3 gap-3">
           {[
-            { label: 'Credits Earned', value: String(gpa?.totalCreditsEarned ?? 0), icon: BookOpen },
-            { label: 'Results Paid',   value: `${paidResults.length}/${results.length}`, icon: FileText },
-            { label: 'Notifications',  value: String(unread), icon: Bell },
+            {
+              label: 'Credits Earned',
+              value: String(gpa?.totalCreditsEarned ?? 0),
+              sub: 'total credit units',
+              icon: BookOpen,
+            },
+            {
+              label: 'Semesters',
+              value: String(gpa?.semesters.length ?? 0),
+              sub: 'completed',
+              icon: FileText,
+            },
+            {
+              label: 'Results',
+              value: `${paidResults.length}/${results.length}`,
+              sub: 'subscribed',
+              icon: Bell,
+            },
           ].map((s) => (
-            <div key={s.label} className="flex items-center gap-2 bg-white/8 border border-white/10 rounded-xl px-3 py-2">
-              <s.icon className="w-4 h-4 text-brand-300 flex-shrink-0" />
-              <div>
-                <div className="text-white font-bold text-sm leading-tight">{s.value}</div>
-                <div className="text-brand-400 text-[9px]">{s.label}</div>
-              </div>
+            <div key={s.label} className="bg-white/10 border border-white/15 rounded-2xl px-4 py-4 text-center backdrop-blur-sm">
+              <s.icon className="w-4 h-4 text-brand-300 mx-auto mb-2" />
+              <div className="text-white font-black text-2xl md:text-3xl leading-none">{s.value}</div>
+              <div className="text-brand-300 text-[11px] font-semibold mt-1 leading-tight">{s.label}</div>
+              <div className="text-white/35 text-[9px] mt-0.5">{s.sub}</div>
             </div>
           ))}
         </div>
@@ -280,19 +288,29 @@ export default function StudentDashboard() {
           className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm"
         >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-bold text-gray-900">Academic Performance</h2>
-            <span className="text-xs text-gray-400">{gpa?.semesters.length ?? 0} semesters</span>
+            <div>
+              <h2 className="text-sm font-bold text-gray-900">SGPA Trend</h2>
+              <p className="text-xs text-gray-400 mt-0.5">{gpa?.semesters.length ?? 0} semesters recorded</p>
+            </div>
+            {gpa && gpa.semesters.length > 0 && (
+              <span className="text-xs font-bold text-brand-700 bg-brand-50 px-2 py-1 rounded-lg">
+                CGPA {gpa.cgpa.toFixed(2)}
+              </span>
+            )}
           </div>
-          {gpa && gpa.semesters.length > 0 ? (
+          {gpa && gpa.semesters.length >= 2 ? (
             <SGPATrendChart semesters={gpa.semesters} />
           ) : (
-            <div className="flex items-center justify-center h-24 text-xs text-gray-400">
-              Pay for results to see your trend
+            <div className="flex flex-col items-center justify-center h-28 gap-2">
+              <div className="text-3xl">📈</div>
+              <p className="text-xs text-gray-400 text-center">
+                Trend appears after 2+ subscribed semesters
+              </p>
             </div>
           )}
         </motion.div>
 
-        {/* Result Breakdown Donut */}
+        {/* Grade Distribution Donut */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -300,14 +318,17 @@ export default function StudentDashboard() {
           className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm"
         >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-bold text-gray-900">Result Subscriptions</h2>
+            <div>
+              <h2 className="text-sm font-bold text-gray-900">Grade Distribution</h2>
+              <p className="text-xs text-gray-400 mt-0.5">A – F breakdown across courses</p>
+            </div>
             <Link to="/student/results" className="text-xs text-brand-700 font-medium hover:underline">
-              View all →
+              View results →
             </Link>
           </div>
-          <GradePieChart results={results} />
+          <GradePieChart gpa={gpa} />
 
-          {/* Mini table */}
+          {/* Result subscription mini list */}
           {results.length > 0 && (
             <div className="mt-4 space-y-1.5 pt-3 border-t border-gray-100">
               {results.slice(0, 3).map((r) => (

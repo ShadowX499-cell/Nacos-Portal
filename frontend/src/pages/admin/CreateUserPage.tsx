@@ -39,17 +39,8 @@ export default function CreateUserPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Top nav */}
-      <nav className="bg-brand-800 text-white px-6 py-4 flex items-center gap-3 shadow-lg">
-        <Link to="/admin/dashboard" className="text-brand-200 hover:text-white text-sm">
-          ← Dashboard
-        </Link>
-        <span className="text-brand-400">/</span>
-        <span className="text-sm">Add Student</span>
-      </nav>
-
-      <div className="max-w-2xl mx-auto px-6 py-8">
+    <div>
+      <div className="max-w-2xl mx-auto px-4 md:px-6 py-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Add New Student</h1>
         <p className="text-sm text-gray-500 mb-8">
           Fill in the details below. The system will auto-generate a NACOS Student ID and email

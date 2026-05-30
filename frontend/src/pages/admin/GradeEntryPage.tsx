@@ -72,20 +72,8 @@ export default function GradeEntryPage() {
   if (error && !gradebook) return <div className="p-8 text-center text-red-600">{error}</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-brand-800 text-white px-6 py-4 flex items-center justify-between shadow-lg">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-            <span className="text-brand-800 font-bold text-sm">N</span>
-          </div>
-          <span className="font-semibold text-lg">NACOS-AIFUE Admin</span>
-        </div>
-        <Link to={`/admin/gradebooks/${id}`} className="text-brand-200 hover:text-white text-sm">
-          ← Back to Gradebook
-        </Link>
-      </nav>
-
-      <div className="max-w-5xl mx-auto px-6 py-8">
+    <div>
+      <div className="max-w-5xl mx-auto px-4 md:px-6 py-8">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900">
             {course ? `${course.courseCode} — ${course.courseTitle}` : 'Grade Entry'}

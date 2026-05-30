@@ -51,22 +51,8 @@ export default function UserListPage() {
   useEffect(() => { setPage(1); }, [search, levelFilter, programFilter, statusFilter]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Nav */}
-      <nav className="bg-brand-800 text-white px-6 py-4 flex items-center justify-between shadow-lg">
-        <div className="flex items-center gap-3">
-          <Link to="/admin/dashboard" className="text-brand-200 hover:text-white text-sm">
-            ← Dashboard
-          </Link>
-          <span className="text-brand-400">/</span>
-          <span className="text-sm">Students</span>
-        </div>
-        <button onClick={() => navigate('/admin/users/new')} className="btn-primary btn-sm">
-          + Add Student
-        </button>
-      </nav>
-
-      <div className="max-w-6xl mx-auto px-6 py-8">
+    <div>
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-8">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-gray-900">
             Students{meta ? ` (${meta.total})` : ''}

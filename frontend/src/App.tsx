@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import StudentLayout from './components/StudentLayout';
+import AdminLayout from './components/AdminLayout';
 import PublicLayout from './components/PublicLayout';
 
 // Public website pages
@@ -60,13 +61,15 @@ export default function App() {
 
         {/* ── Admin ────────────────────────────────────────────────────── */}
         <Route element={<ProtectedRoute roles={['admin', 'super_admin']} />}>
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/users" element={<UserListPage />} />
-          <Route path="/admin/users/new" element={<CreateUserPage />} />
-          <Route path="/admin/gradebooks" element={<GradebookListPage />} />
-          <Route path="/admin/gradebooks/new" element={<CreateGradebookPage />} />
-          <Route path="/admin/gradebooks/:id" element={<GradebookDetailPage />} />
-          <Route path="/admin/gradebooks/:id/courses/:courseId/grades" element={<GradeEntryPage />} />
+          <Route element={<AdminLayout />}>
+            <Route path="/admin/dashboard"                                       element={<AdminDashboard />} />
+            <Route path="/admin/users"                                           element={<UserListPage />} />
+            <Route path="/admin/users/new"                                       element={<CreateUserPage />} />
+            <Route path="/admin/gradebooks"                                      element={<GradebookListPage />} />
+            <Route path="/admin/gradebooks/new"                                  element={<CreateGradebookPage />} />
+            <Route path="/admin/gradebooks/:id"                                  element={<GradebookDetailPage />} />
+            <Route path="/admin/gradebooks/:id/courses/:courseId/grades"         element={<GradeEntryPage />} />
+          </Route>
         </Route>
 
         {/* ── Student ──────────────────────────────────────────────────── */}

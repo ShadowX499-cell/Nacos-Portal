@@ -79,6 +79,17 @@ export interface DashboardStats {
   pendingValidations: number;
   activeElections: number;
   unpublishedResults: number;
+  totalRevenue: number;
+  publishedGradebooks: number;
+  todayAttendanceSessions: number;
+  draftGradebooksReady: number;
+  monthlyRevenue: { month: string; total: number }[];
+  studentsByLevel: { level: string; count: number }[];
+  recentActivity: {
+    type: 'registered' | 'activated' | 'payment' | 'result_published';
+    label: string;
+    time: string;
+  }[];
 }
 
 // ── Gradebooks ────────────────────────────────────────────────────────────────

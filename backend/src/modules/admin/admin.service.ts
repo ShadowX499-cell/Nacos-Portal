@@ -192,22 +192,143 @@ export class AdminService {
     pendingValidations: number;
     activeElections: number;
     unpublishedResults: number;
+    totalRevenue: number;
+    publishedGradebooks: number;
+    todayAttendanceSessions: number;
+    draftGradebooksReady: number;
+    monthlyRevenue: { month: string; total: number }[];
+    studentsByLevel: { level: string; count: number }[];
+    recentActivity: {
+      type: 'registered' | 'activated' | 'payment' | 'result_published';
+      label: string;
+      time: string;
+    }[];
   }> {
-    const [totalStudents, pendingValidations, activeElections, unpublishedResults] =
-      await Promise.all([
-        this.db.user.count({ where: { departmentId, role: UserRole.student } }),
-        this.db.user.count({
-          where: { departmentId, role: UserRole.student, status: UserStatus.pending },
-        }),
-        this.db.election.count({
-          where: { departmentId, status: 'active' },
-        }),
-        this.db.gradebook.count({
-          where: { departmentId, status: 'draft' },
-        }),
-      ]);
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
 
-    return { totalStudents, pendingValidations, activeElections, unpublishedResults };
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
+    sixMonthsAgo.setDate(1);
+    sixMonthsAgo.setHours(0, 0, 0, 0);
+
+    const [
+      totalStudents,
+      pendingValidations,
+      activeElections,
+      unpublishedResults,
+      revenueResult,
+      publishedGradebooks,
+      todayAttendanceSessions,
+      draftGradebooksWithCourses,
+      recentUsers,
+      recentPayments,
+      recentGradebooks,
+      levelCounts,
+      successPayments,
+    ] = await Promise.all([
+      this.db.user.count({ where: { departmentId, role: UserRole.student } }),
+      this.db.user.count({ where: { departmentId, role: UserRole.student, status: UserStatus.pending } }),
+      this.db.election.count({ where: { departmentId, status: 'active' } }),
+      this.db.gradebook.count({ where: { departmentId, status: 'draft' } }),
+      this.db.payment.aggregate({ where: { status: 'success' }, _sum: { amount: true } }),
+      this.db.gradebook.count({ where: { departmentId, status: 'published' } }),
+      this.db.attendanceSession.count({ where: { departmentId, createdAt: { gte: todayStart } } }),
+      this.db.gradebook.findMany({
+        where: { departmentId, status: 'draft' },
+        include: { courses: { include: { _count: { select: { studentGrades: true } } } } },
+      }),
+      this.db.user.findMany({
+        where: { departmentId, role: UserRole.student },
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+        select: { name: true, status: true, createdAt: true, updatedAt: true },
+      }),
+      this.db.payment.findMany({
+        where: { status: 'success', user: { departmentId } },
+        orderBy: { paidAt: 'desc' },
+        take: 5,
+        include: { user: { select: { name: true } } },
+      }),
+      this.db.gradebook.findMany({
+        where: { departmentId, status: 'published' },
+        orderBy: { publishedAt: 'desc' },
+        take: 5,
+        select: { name: true, publishedAt: true },
+      }),
+      Promise.all(
+        (['L100', 'L200', 'L300', 'L400'] as const).map(async (level) => ({
+          level,
+          count: await this.db.user.count({ where: { departmentId, role: UserRole.student, level } }),
+        }))
+      ),
+      this.db.payment.findMany({
+        where: { status: 'success', paidAt: { gte: sixMonthsAgo } },
+        select: { amount: true, paidAt: true },
+      }),
+    ]);
+
+    // Draft gradebooks where every course has at least one grade entered
+    const draftGradebooksReady = draftGradebooksWithCourses.filter(
+      (gb) => gb.courses.length > 0 && gb.courses.every((c) => c._count.studentGrades > 0)
+    ).length;
+
+    // Monthly revenue — last 6 months
+    const monthlyMap = new Map<string, number>();
+    for (const p of successPayments) {
+      if (!p.paidAt) continue;
+      const key = `${p.paidAt.getFullYear()}-${String(p.paidAt.getMonth() + 1).padStart(2, '0')}`;
+      monthlyMap.set(key, (monthlyMap.get(key) ?? 0) + Number(p.amount));
+    }
+    const monthlyRevenue: { month: string; total: number }[] = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      const label = d.toLocaleDateString('en', { month: 'short', year: '2-digit' });
+      monthlyRevenue.push({ month: label, total: monthlyMap.get(key) ?? 0 });
+    }
+
+    // Recent activity — merge, sort, take 10
+    const activities: {
+      type: 'registered' | 'activated' | 'payment' | 'result_published';
+      label: string;
+      time: string;
+    }[] = [
+      ...recentUsers.map((u) => ({
+        type: (u.status === UserStatus.validated ? 'activated' : 'registered') as 'activated' | 'registered',
+        label: u.status === UserStatus.validated
+          ? `${u.name} account activated`
+          : `${u.name} registered`,
+        time: (u.status === UserStatus.validated ? u.updatedAt : u.createdAt).toISOString(),
+      })),
+      ...recentPayments.map((p) => ({
+        type: 'payment' as const,
+        label: `₦${Number(p.amount).toLocaleString()} payment — ${p.user.name}`,
+        time: (p.paidAt ?? p.createdAt).toISOString(),
+      })),
+      ...recentGradebooks.map((g) => ({
+        type: 'result_published' as const,
+        label: `${g.name} result published`,
+        time: (g.publishedAt ?? new Date()).toISOString(),
+      })),
+    ]
+      .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
+      .slice(0, 10);
+
+    return {
+      totalStudents,
+      pendingValidations,
+      activeElections,
+      unpublishedResults,
+      totalRevenue: Number(revenueResult._sum.amount ?? 0),
+      publishedGradebooks,
+      todayAttendanceSessions,
+      draftGradebooksReady,
+      monthlyRevenue,
+      studentsByLevel: levelCounts,
+      recentActivity: activities,
+    };
   }
 
   // ── Private ─────────────────────────────────────────────────────────────

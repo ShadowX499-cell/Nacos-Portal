@@ -8,7 +8,7 @@ type Tab = 'courses' | 'csv' | 'publish';
 
 export default function GradebookDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>('courses');
   const [gradebook, setGradebook] = useState<Gradebook & { courses: Course[] } | null>(null);
@@ -31,22 +31,8 @@ export default function GradebookDetailPage() {
   const isDraft = gradebook.status === 'draft';
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-brand-800 text-white px-6 py-4 flex items-center justify-between shadow-lg">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-            <span className="text-brand-800 font-bold text-sm">N</span>
-          </div>
-          <span className="font-semibold text-lg">NACOS-AIFUE Admin</span>
-        </div>
-        <div className="flex items-center gap-4 text-sm">
-          <Link to="/admin/gradebooks" className="text-brand-200 hover:text-white">← Gradebooks</Link>
-          <span className="text-brand-200">{user?.name || user?.userId}</span>
-          <button onClick={() => void logout()} className="text-brand-200 hover:text-white">Sign out</button>
-        </div>
-      </nav>
-
-      <div className="max-w-5xl mx-auto px-6 py-8">
+    <div>
+      <div className="max-w-5xl mx-auto px-4 md:px-6 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>

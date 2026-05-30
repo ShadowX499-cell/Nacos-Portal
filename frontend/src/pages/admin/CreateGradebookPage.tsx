@@ -39,18 +39,8 @@ export default function CreateGradebookPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-brand-800 text-white px-6 py-4 flex items-center justify-between shadow-lg">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-            <span className="text-brand-800 font-bold text-sm">N</span>
-          </div>
-          <span className="font-semibold text-lg">NACOS-AIFUE Admin</span>
-        </div>
-        <Link to="/admin/gradebooks" className="text-brand-200 hover:text-white text-sm">← Back</Link>
-      </nav>
-
-      <div className="max-w-lg mx-auto px-6 py-10">
+    <div>
+      <div className="max-w-lg mx-auto px-4 md:px-6 py-10">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">New Gradebook</h1>
 
         <form onSubmit={(e) => { void handleSubmit(onSubmit)(e); }} className="card p-6 space-y-5">

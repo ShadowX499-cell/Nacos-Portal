@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { gradebookApi, extractApiError } from '../../api/client';
-import { useAuth } from '../../context/AuthContext';
 import type { Gradebook } from '../../types';
 
 const STATUS_BADGE: Record<string, string> = {
@@ -11,7 +10,6 @@ const STATUS_BADGE: Record<string, string> = {
 };
 
 export default function GradebookListPage() {
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [gradebooks, setGradebooks] = useState<Gradebook[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,22 +23,8 @@ export default function GradebookListPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-brand-800 text-white px-6 py-4 flex items-center justify-between shadow-lg">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-            <span className="text-brand-800 font-bold text-sm">N</span>
-          </div>
-          <span className="font-semibold text-lg">NACOS-AIFUE Admin</span>
-        </div>
-        <div className="flex items-center gap-4 text-sm">
-          <Link to="/admin/dashboard" className="text-brand-200 hover:text-white">Dashboard</Link>
-          <span className="text-brand-200">{user?.name || user?.userId}</span>
-          <button onClick={() => void logout()} className="text-brand-200 hover:text-white">Sign out</button>
-        </div>
-      </nav>
-
-      <div className="max-w-5xl mx-auto px-6 py-8">
+    <div>
+      <div className="max-w-5xl mx-auto px-4 md:px-6 py-8">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Gradebooks</h1>

@@ -11,8 +11,8 @@ const STATUS_BADGE: Record<string, string> = {
 
 const TYPE_LABELS: Record<string, string> = {
   result_subscription: 'Result Subscription',
-  school_fees: 'School Fees',
-  nacos_dues: 'NACOS Dues',
+  school_fees: 'NACOS Due',
+  nacos_dues: 'NACOS Due',
   other: 'Other',
 };
 

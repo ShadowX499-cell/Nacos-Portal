@@ -26,6 +26,9 @@ import GradebookListPage from './pages/admin/GradebookListPage';
 import CreateGradebookPage from './pages/admin/CreateGradebookPage';
 import GradebookDetailPage from './pages/admin/GradebookDetailPage';
 import GradeEntryPage from './pages/admin/GradeEntryPage';
+import ElectionListPage from './pages/admin/ElectionListPage';
+import CreateElectionPage from './pages/admin/CreateElectionPage';
+import ElectionDetailPage from './pages/admin/ElectionDetailPage';
 
 // Student pages
 import StudentDashboard from './pages/student/StudentDashboard';
@@ -69,6 +72,9 @@ export default function App() {
             <Route path="/admin/gradebooks/new"                                  element={<CreateGradebookPage />} />
             <Route path="/admin/gradebooks/:id"                                  element={<GradebookDetailPage />} />
             <Route path="/admin/gradebooks/:id/courses/:courseId/grades"         element={<GradeEntryPage />} />
+            <Route path="/admin/elections"     element={<ElectionListPage />} />
+            <Route path="/admin/elections/new" element={<CreateElectionPage />} />
+            <Route path="/admin/elections/:id" element={<ElectionDetailPage />} />
           </Route>
         </Route>
 

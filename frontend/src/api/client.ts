@@ -270,3 +270,44 @@ export const profileApi = {
   getMe: () =>
     api.get<{ success: true; data: import('../types').User }>('/auth/me'),
 };
+
+// ── Elections API (admin) ─────────────────────────────────────────────────────
+
+export const electionsAdminApi = {
+  list: () =>
+    api.get<{ success: true; data: import('../types').Election[] }>('/elections'),
+
+  create: (body: import('../types').CreateElectionForm) =>
+    api.post<{ success: true; data: import('../types').Election }>('/elections', body),
+
+  get: (id: string) =>
+    api.get<{ success: true; data: import('../types').ElectionDetail }>(`/elections/${id}`),
+
+  updateStatus: (id: string, action: 'activate' | 'close' | 'publish') =>
+    api.patch<{ success: true; data: import('../types').Election }>(`/elections/${id}/status`, { action }),
+
+  delete: (id: string) =>
+    api.delete(`/elections/${id}`),
+
+  listCandidates: (id: string) =>
+    api.get<{ success: true; data: import('../types').ElectionCandidate[] }>(`/elections/${id}/candidates`),
+
+  reviewCandidate: (id: string, candidateId: string, approved: boolean) =>
+    api.patch<{ success: true; data: import('../types').ElectionCandidate }>(
+      `/elections/${id}/candidates/${candidateId}`,
+      { approved }
+    ),
+};
+
+// ── Elections API (student) ───────────────────────────────────────────────────
+
+export const electionsStudentApi = {
+  getActive: () =>
+    api.get<{ success: true; data: import('../types').StudentElectionView | null }>('/elections/active'),
+
+  nominate: (id: string, body: { position: string; manifesto: string; photoUrl?: string }) =>
+    api.post<{ success: true; data: import('../types').ElectionCandidate }>(`/elections/${id}/candidates`, body),
+
+  vote: (id: string, body: import('../types').VoteBallot) =>
+    api.post<{ success: true; data: null }>(`/elections/${id}/vote`, body),
+};

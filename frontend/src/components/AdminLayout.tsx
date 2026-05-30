@@ -16,7 +16,7 @@ const NAV_SECTIONS = [
   {
     label: 'Modules',
     items: [
-      { icon: Vote,        label: 'Elections',  to: '/admin/elections',  phase: 'Phase 3' },
+      { icon: Vote,        label: 'Elections',  to: '/admin/elections',  phase: null },
       { icon: Fingerprint, label: 'Attendance', to: '/admin/attendance', phase: 'Phase 4' },
     ],
   },

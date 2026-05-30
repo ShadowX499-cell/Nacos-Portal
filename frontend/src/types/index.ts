@@ -242,3 +242,67 @@ export interface SchoolFeesStatus {
   paidAt: string | null;
   reference: string | null;
 }
+
+// ── Elections ─────────────────────────────────────────────────────────────────
+
+export type ElectionStatus = 'draft' | 'active' | 'closed' | 'results_published';
+
+export interface Election {
+  id: string;
+  title: string;
+  description: string | null;
+  status: ElectionStatus;
+  positions: string[];
+  eligibleLevels: string[];
+  startTime: string;
+  endTime: string;
+  candidateCount: number;
+  approvedCandidateCount: number;
+  voteCount: number;
+  createdAt: string;
+}
+
+export interface ElectionCandidate {
+  id: string;
+  electionId: string;
+  position: string;
+  manifesto: string | null;
+  photoUrl: string | null;
+  isApproved: boolean;
+  studentName: string;
+  studentUserId: string;
+  createdAt: string;
+}
+
+export interface CandidateResult extends ElectionCandidate {
+  voteCount: number;
+  percentage: number;
+  isWinner: boolean;
+}
+
+export interface ElectionDetail extends Election {
+  candidates: ElectionCandidate[];
+  results: CandidateResult[] | null;
+}
+
+export interface StudentElectionView {
+  election: Election;
+  candidates: ElectionCandidate[];
+  myNominations: ElectionCandidate[];
+  hasVoted: boolean;
+  hasPaidDues: boolean;
+  results: CandidateResult[] | null;
+}
+
+export interface CreateElectionForm {
+  title: string;
+  description: string;
+  positions: string[];
+  eligibleLevels: string[];
+  startTime: string;
+  endTime: string;
+}
+
+export interface VoteBallot {
+  votes: { position: string; candidateId: string }[];
+}

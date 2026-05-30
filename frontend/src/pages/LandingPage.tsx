@@ -4,163 +4,247 @@ import { motion } from 'motion/react';
 import {
   Menu, X, BookOpen, Vote, Fingerprint, CreditCard, Bell, Users,
   ChevronRight, Calendar, Target, Heart, Lightbulb, ArrowRight,
-  MapPin, Mail, Phone, Code2, Rocket, Network, Briefcase,
+  MapPin, Mail, Phone, Code2, Rocket, Network, Briefcase, Star,
+  TrendingUp, Shield, Zap,
 } from 'lucide-react';
 import NacosLogo from '../components/NacosLogo';
 import { TestimonialsColumn } from '../components/ui/TestimonialsColumn';
 
-// ── Data ─────────────────────────────────────────────────────────────────────
+// ── Data ──────────────────────────────────────────────────────────────────────
 
 const NAV_LINKS = [
-  { label: 'About',      href: '/about' },
+  { label: 'About', href: '/about' },
   { label: 'Executives', href: '/executives' },
-  { label: 'Events',     href: '/events' },
-  { label: 'Gallery',    href: '/gallery' },
-  { label: 'Blog',       href: '/blog' },
-  { label: 'Contact',    href: '/contact' },
+  { label: 'Events', href: '/events' },
+  { label: 'Gallery', href: '/gallery' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 const MISSION_PILLARS = [
-  { icon: Code2,    title: 'We Develop',       desc: 'Building technical skills through workshops, bootcamps, and hands-on projects that prepare members for the industry.' },
-  { icon: Lightbulb, title: 'We Create',       desc: 'Fostering innovation through hackathons, research initiatives, and entrepreneurship programmes that solve real problems.' },
-  { icon: Rocket,   title: 'We Build Capacity', desc: 'Growing the next generation of technology leaders through mentorship, networking, and career development programmes.' },
+  { icon: Code2,     title: 'We Develop',        desc: 'Building technical skills through hands-on workshops, bootcamps, and industry-grade projects.' },
+  { icon: Lightbulb, title: 'We Create',          desc: 'Fostering innovation through hackathons, research initiatives, and student-led tech startups.' },
+  { icon: Rocket,    title: 'We Build Capacity',  desc: 'Growing the next generation of tech leaders through mentorship, networking, and career development.' },
 ];
 
 const EXPLORE_PAGES = [
-  { title: 'About Us',    desc: 'Learn about our mission, vision, and values.',               href: '/about',      color: 'text-brand-700',   bg: 'bg-brand-50',   border: 'border-brand-200',  img: 'https://images.pexels.com/photos/7369237/pexels-photo-7369237.jpeg?w=600&auto=compress' },
-  { title: 'Executives',  desc: 'Meet our leadership team and course representatives.',        href: '/executives', color: 'text-blue-700',    bg: 'bg-blue-50',    border: 'border-blue-200',   img: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?w=600&auto=compress' },
-  { title: 'Events',      desc: 'See upcoming and past events organised by NACOS AIFUE.',     href: '/events',     color: 'text-purple-700',  bg: 'bg-purple-50',  border: 'border-purple-200', img: 'https://images.pexels.com/photos/1181396/pexels-photo-1181396.jpeg?w=600&auto=compress' },
-  { title: 'Gallery',     desc: 'Browse photos and memories from our events and activities.', href: '/gallery',    color: 'text-pink-700',    bg: 'bg-pink-50',    border: 'border-pink-200',   img: '/IMG_0982.jpg' },
-  { title: 'Blog',        desc: 'Read articles, announcements, and news from NACOS AIFUE.',   href: '/blog',       color: 'text-orange-700',  bg: 'bg-orange-50',  border: 'border-orange-200', img: 'https://images.pexels.com/photos/261662/pexels-photo-261662.jpeg?w=600&auto=compress' },
-  { title: 'Contact',     desc: 'Get in touch with the executive team and secretariat.',      href: '/contact',    color: 'text-teal-700',    bg: 'bg-teal-50',    border: 'border-teal-200',   img: 'https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?w=600&auto=compress' },
+  { title: 'About Us',   desc: 'Our mission, vision, history and values.', href: '/about',      color: 'text-brand-700', bg: 'from-brand-50 to-green-100',   img: 'https://images.pexels.com/photos/7369237/pexels-photo-7369237.jpeg?auto=compress&cs=tinysrgb&w=600' },
+  { title: 'Executives', desc: 'Meet our leadership team and course reps.', href: '/executives', color: 'text-blue-700',  bg: 'from-blue-50 to-indigo-100',   img: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=600' },
+  { title: 'Events',     desc: 'Upcoming workshops, hackathons, and fairs.', href: '/events',   color: 'text-purple-700', bg: 'from-purple-50 to-violet-100', img: 'https://images.pexels.com/photos/1181396/pexels-photo-1181396.jpeg?auto=compress&cs=tinysrgb&w=600' },
+  { title: 'Gallery',    desc: 'Photos and memories from NACOS activities.', href: '/gallery',  color: 'text-rose-700',  bg: 'from-rose-50 to-pink-100',     img: '/IMG_0982.jpg' },
+  { title: 'Blog',       desc: 'Articles, recaps, guides, and announcements.', href: '/blog',   color: 'text-orange-700', bg: 'from-orange-50 to-amber-100',  img: 'https://images.pexels.com/photos/261662/pexels-photo-261662.jpeg?auto=compress&cs=tinysrgb&w=600' },
+  { title: 'Contact',    desc: 'Reach out to the secretariat or exec team.', href: '/contact',  color: 'text-teal-700',  bg: 'from-teal-50 to-cyan-100',     img: 'https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600' },
 ];
 
 const FEATURES = [
-  { icon: BookOpen,    title: 'Academic Results',    desc: 'View semester result slips, track your SGPA and CGPA — available after result subscription payment.',              badge: 'Live',    live: true },
-  { icon: Vote,        title: 'Dept. Elections',     desc: 'Participate in transparent NACOS elections with a cryptographically verified one-member-one-vote system.',         badge: 'Phase 3', live: false },
-  { icon: Fingerprint, title: 'Biometric Attendance', desc: 'Fast fingerprint-based exam and lecture attendance tracking with real-time session reports.',                       badge: 'Phase 4', live: false },
-  { icon: CreditCard,  title: 'Payments & Dues',     desc: 'Pay school fees, NACOS dues and result subscriptions securely via Paystack. Download instant receipts.',           badge: 'Live',    live: true },
-  { icon: Bell,        title: 'Notifications',       desc: 'Receive real-time in-app notifications for results, elections, announcements, and departmental events.',            badge: 'Live',    live: true },
-  { icon: Users,       title: 'Student Management',  desc: 'Admins register students, generate NACOS IDs, manage profiles and course registration approvals.',                  badge: 'Live',    live: true },
+  { icon: BookOpen,    title: 'Academic Results',    desc: 'View result slips, track SGPA and CGPA after subscription payment.', badge: 'Live',    live: true  },
+  { icon: Vote,        title: 'Dept. Elections',     desc: 'Transparent NACOS elections with cryptographically verified voting.',  badge: 'Phase 3', live: false },
+  { icon: Fingerprint, title: 'Biometric Attendance', desc: 'Fingerprint-based exam attendance tracking with live session reports.', badge: 'Phase 4', live: false },
+  { icon: CreditCard,  title: 'Payments & Dues',     desc: 'Pay school fees and dues via Paystack. Download instant receipts.',   badge: 'Live',    live: true  },
+  { icon: Bell,        title: 'Notifications',       desc: 'Real-time alerts for results, elections, and announcements.',          badge: 'Live',    live: true  },
+  { icon: Users,       title: 'Student Management',  desc: 'Admin tools for registration, ID generation, and approvals.',          badge: 'Live',    live: true  },
 ];
 
 const UPCOMING_EVENTS = [
-  { date: { month: 'MAR', day: '15' }, title: 'Web Development Workshop', desc: 'Learn modern web development with React, Node.js, and MongoDB.', location: 'CS Lab 1', tag: 'Free' },
-  { date: { month: 'MAR', day: '22' }, title: 'AI/ML Hackathon 2024',     desc: '48-hour hackathon focused on artificial intelligence and machine learning.', location: 'Main Auditorium', tag: '₦2,000' },
-  { date: { month: 'APR', day: '05' }, title: 'Career Fair 2024',         desc: 'Connect with top tech companies and explore internship opportunities.', location: 'University Main Hall', tag: 'Free' },
+  { date: { month: 'MAR', day: '15' }, title: 'Web Development Workshop',  desc: 'Learn modern web development with React, Node.js, and MongoDB.', location: 'CS Lab 1',           tag: 'Free'    },
+  { date: { month: 'MAR', day: '22' }, title: 'AI/ML Hackathon 2024',      desc: '48-hour hackathon focused on AI and machine learning solutions.',  location: 'Main Auditorium',     tag: '₦2,000'  },
+  { date: { month: 'APR', day: '05' }, title: 'Career Fair 2024',          desc: 'Connect with top tech companies and explore internship opportunities.', location: 'University Main Hall', tag: 'Free' },
 ];
 
 const PROGRAMS = [
-  { icon: Code2,     title: 'Technical Training',   desc: 'Hands-on workshops covering web dev, mobile, AI/ML, cloud, and cybersecurity.' },
-  { icon: Lightbulb, title: 'Innovation Hub',        desc: 'Hackathons, ideathons, and incubation support for student-led tech startups.' },
-  { icon: Briefcase, title: 'Career Development',    desc: 'CV clinics, mock interviews, industry mentors, and recruitment connections.' },
-  { icon: Network,   title: 'Global Network',        desc: 'Access NACOS national network — 1M+ members across 25 chapters nationwide.' },
+  { icon: Code2,     label: 'Technical Training',  desc: 'Web dev, AI/ML, cloud, cybersecurity workshops.' },
+  { icon: Lightbulb, label: 'Innovation Hub',       desc: 'Hackathons, ideathons, startup incubation.' },
+  { icon: Briefcase, label: 'Career Development',   desc: 'CV clinics, interviews, mentors, recruiters.' },
+  { icon: Network,   label: 'Global Network',       desc: '1M+ members across 25 NACOS chapters nationwide.' },
 ];
 
 const TESTIMONIALS = [
-  { text: 'NACOS AIFUE gave me the technical skills and professional network that landed my internship at a top Lagos fintech. Best decision I made on campus.', image: 'https://randomuser.me/api/portraits/men/32.jpg',   name: 'Chibuike A.', role: '400L Computer Science' },
-  { text: 'The hackathons and workshops are incredible. I built my first full-stack project here and now I freelance. NACOS is not just an association — it\'s a launchpad.', image: 'https://randomuser.me/api/portraits/women/44.jpg', name: 'Adaeze N.', role: '300L Computer Science' },
-  { text: 'From the career fair to the mentorship programme — NACOS AIFUE prepared me for the real world. I credit this association for where I am today.', image: 'https://randomuser.me/api/portraits/men/55.jpg',   name: 'Emeka O.', role: 'Alumni, 2023' },
-  { text: 'The presidential elections were so smooth on the new portal! Every vote counted and results were instant. True transparency in student governance.', image: 'https://randomuser.me/api/portraits/women/68.jpg', name: 'Ngozi U.', role: '200L ICT' },
-  { text: 'I used to worry about missing result announcements. The notification system on the portal is a game-changer — I get alerts the moment results drop.', image: 'https://randomuser.me/api/portraits/men/77.jpg',   name: 'Favour I.', role: '300L CRE' },
-  { text: 'Paying school fees from my phone without going to the bank? The NACOS portal made that possible. Technology at its finest.', image: 'https://randomuser.me/api/portraits/women/22.jpg', name: 'Chinwe P.', role: '400L Information Technology' },
-  { text: 'Our department\'s Web Dev workshop opened my eyes to so many possibilities. I landed a junior developer role before even graduating.', image: 'https://randomuser.me/api/portraits/men/11.jpg',   name: 'Ikenna R.', role: 'Alumni, 2024' },
-  { text: 'NACOS AIFUE is the reason I love computer science. The community, the events, the people — it made university life meaningful and purposeful.', image: 'https://randomuser.me/api/portraits/women/33.jpg', name: 'Obiageli C.', role: '200L Computer Science' },
-  { text: 'The course registration review system is so much better than paper forms. Admin reviewed my form within a day and I got notified immediately.', image: 'https://randomuser.me/api/portraits/men/88.jpg',   name: 'Tobechukwu M.', role: '300L Computer Science' },
+  { text: 'NACOS AIFUE gave me the skills and network that landed my fintech internship. Best decision I made on campus.', image: 'https://randomuser.me/api/portraits/men/32.jpg', name: 'Chibuike A.', role: '400L Computer Science' },
+  { text: 'The hackathons and workshops are incredible. I built my first full-stack project here and now I freelance.', image: 'https://randomuser.me/api/portraits/women/44.jpg', name: 'Adaeze N.', role: '300L Computer Science' },
+  { text: 'NACOS AIFUE prepared me for the real world. I credit this association for where I am today.', image: 'https://randomuser.me/api/portraits/men/55.jpg', name: 'Emeka O.', role: 'Alumni, 2023' },
+  { text: 'The elections were so smooth on the new portal! Every vote counted and results were instant. True transparency.', image: 'https://randomuser.me/api/portraits/women/68.jpg', name: 'Ngozi U.', role: '200L ICT' },
+  { text: 'The notification system is a game-changer. I get alerts the moment results drop.', image: 'https://randomuser.me/api/portraits/men/77.jpg', name: 'Favour I.', role: '300L CRE' },
+  { text: 'Paying school fees from my phone without going to the bank? The NACOS portal made that possible.', image: 'https://randomuser.me/api/portraits/women/22.jpg', name: 'Chinwe P.', role: '400L IT' },
+  { text: 'Our Web Dev workshop opened my eyes. I landed a junior developer role before graduating.', image: 'https://randomuser.me/api/portraits/men/11.jpg', name: 'Ikenna R.', role: 'Alumni, 2024' },
+  { text: 'NACOS AIFUE is the reason I love computer science. The community made university life meaningful.', image: 'https://randomuser.me/api/portraits/women/33.jpg', name: 'Obiageli C.', role: '200L Computer Science' },
+  { text: 'Admin reviewed my course registration within a day and I got notified immediately. So efficient.', image: 'https://randomuser.me/api/portraits/men/88.jpg', name: 'Tobechukwu M.', role: '300L Computer Science' },
 ];
 
 const firstColumn  = TESTIMONIALS.slice(0, 3);
 const secondColumn = TESTIMONIALS.slice(3, 6);
 const thirdColumn  = TESTIMONIALS.slice(6, 9);
 
-// ── Portal Mockup ─────────────────────────────────────────────────────────────
+// ── VenLearn-style Portal Mockup ──────────────────────────────────────────────
 
 function PortalMockup() {
   return (
-    <div className="relative max-w-3xl mx-auto">
-      {/* Glow */}
-      <div className="absolute -inset-6 bg-brand-500/10 rounded-3xl blur-3xl" />
+    <div className="relative">
+      {/* Glow effect */}
+      <div className="absolute -inset-8 bg-brand-500/15 rounded-3xl blur-3xl pointer-events-none" />
+
       {/* Browser shell */}
-      <div className="relative bg-gray-900 rounded-2xl shadow-2xl overflow-hidden border border-gray-700/60">
-        {/* Browser chrome */}
-        <div className="bg-gray-950 px-4 py-3 flex items-center gap-3">
-          <div className="flex gap-1.5 flex-shrink-0">
-            <div className="w-3 h-3 rounded-full bg-red-400" />
-            <div className="w-3 h-3 rounded-full bg-yellow-400" />
-            <div className="w-3 h-3 rounded-full bg-green-400" />
+      <div className="relative rounded-2xl overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.5)] border border-white/10">
+        {/* Chrome bar */}
+        <div className="bg-[#1a1d2e] px-4 py-2.5 flex items-center gap-3">
+          <div className="flex gap-1.5">
+            <div className="w-3 h-3 rounded-full bg-red-400/80" />
+            <div className="w-3 h-3 rounded-full bg-yellow-400/80" />
+            <div className="w-3 h-3 rounded-full bg-green-400/80" />
           </div>
-          <div className="flex-1 bg-gray-800 rounded-lg px-3 py-1 text-xs text-gray-400 text-center font-mono tracking-tight">
+          <div className="flex-1 bg-[#252836] rounded-md px-3 py-1 text-[11px] text-gray-400 text-center font-mono">
             portal.nacos-aifue.edu.ng/student/dashboard
           </div>
-        </div>
-        {/* App UI */}
-        <div className="flex" style={{ height: '280px' }}>
-          {/* Sidebar */}
-          <div className="w-44 bg-brand-900 flex flex-col flex-shrink-0 p-3">
-            <div className="flex items-center gap-2 px-2 mb-4">
-              <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center">
-                <span className="text-brand-800 font-bold text-xs">N</span>
-              </div>
-              <span className="text-white font-semibold text-xs">NACOS Portal</span>
-            </div>
-            {[
-              { label: 'Dashboard',   active: true },
-              { label: 'My Results',  active: false },
-              { label: 'Transcript',  active: false },
-              { label: 'School Fees', active: false },
-              { label: 'Payments',    active: false },
-              { label: 'Notifications', active: false },
-            ].map((item) => (
-              <div key={item.label} className={`px-2 py-1.5 rounded-lg text-xs mb-0.5 ${
-                item.active ? 'bg-white/15 text-white font-semibold' : 'text-white/50'
-              }`}>
-                {item.label}
-              </div>
-            ))}
+          <div className="flex gap-1.5">
+            <div className="w-5 h-5 rounded bg-white/5" />
+            <div className="w-5 h-5 rounded bg-white/5" />
           </div>
-          {/* Main content */}
-          <div className="flex-1 bg-gray-50 p-4 overflow-hidden">
-            <p className="text-gray-800 font-bold text-sm mb-3">Good morning, Victor 👋</p>
-            {/* Stat cards */}
-            <div className="grid grid-cols-4 gap-2 mb-3">
+        </div>
+
+        {/* Dashboard layout */}
+        <div className="flex" style={{ height: '360px' }}>
+          {/* Sidebar */}
+          <div className="w-44 flex-shrink-0 flex flex-col" style={{ background: 'linear-gradient(180deg, #052e16 0%, #14532d 100%)' }}>
+            {/* Brand */}
+            <div className="flex items-center gap-2 px-3 py-3 border-b border-white/10">
+              <div className="w-7 h-7 rounded-lg bg-brand-500 flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-bold text-[10px]">N</span>
+              </div>
+              <div>
+                <p className="text-white font-bold text-[11px] leading-tight">NACOS Portal</p>
+                <p className="text-brand-400 text-[9px]">AIFUE Chapter</p>
+              </div>
+            </div>
+
+            {/* Nav */}
+            <nav className="flex-1 p-2 space-y-0.5 overflow-hidden">
               {[
-                { label: 'CGPA',      value: '4.51', cls: 'text-brand-700 bg-brand-50' },
-                { label: 'Credits',   value: '48',   cls: 'text-blue-700 bg-blue-50' },
-                { label: 'Level',     value: 'L300',  cls: 'text-yellow-700 bg-yellow-50' },
-                { label: 'Semesters', value: '4',    cls: 'text-purple-700 bg-purple-50' },
-              ].map((s) => (
-                <div key={s.label} className={`rounded-lg p-2 ${s.cls}`}>
-                  <div className="font-bold text-sm leading-tight">{s.value}</div>
-                  <div className="text-xs opacity-60">{s.label}</div>
+                { icon: '🏠', label: 'Dashboard',      active: true  },
+                { icon: '📊', label: 'My Results',     active: false },
+                { icon: '📈', label: 'Transcript',     active: false },
+                { icon: '💰', label: 'School Fees',    active: false },
+                { icon: '💳', label: 'Payments',       active: false },
+                { icon: '📝', label: 'Registration',   active: false },
+                { icon: '🔔', label: 'Notifications',  active: false },
+                { icon: '👤', label: 'Profile',        active: false },
+              ].map((item) => (
+                <div key={item.label}
+                  className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] font-medium transition-all ${
+                    item.active
+                      ? 'bg-brand-500/25 text-white ring-1 ring-brand-500/30'
+                      : 'text-white/50'
+                  }`}>
+                  <span className="text-sm leading-none">{item.icon}</span>
+                  <span>{item.label}</span>
                 </div>
               ))}
+            </nav>
+
+            {/* User */}
+            <div className="p-2 border-t border-white/10">
+              <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-white/5">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-bold text-[9px] flex-shrink-0">VC</div>
+                <div className="min-w-0">
+                  <p className="text-white text-[10px] font-semibold truncate">Victor C.</p>
+                  <p className="text-brand-400 text-[9px]">400L · CSC</p>
+                </div>
+              </div>
             </div>
-            {/* Two panels */}
-            <div className="grid grid-cols-2 gap-2">
-              <div className="bg-white rounded-lg border border-gray-200 p-2.5">
-                <div className="text-xs font-semibold text-gray-700 mb-2">Recent Results</div>
+          </div>
+
+          {/* Main area */}
+          <div className="flex-1 flex flex-col bg-[#f4f6f9] overflow-hidden">
+            {/* Top bar */}
+            <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-200 flex-shrink-0">
+              <div>
+                <h2 className="text-gray-900 font-bold text-sm">Dashboard</h2>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 bg-gray-100 rounded-lg px-2.5 py-1">
+                  <svg className="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                  <span className="text-[10px] text-gray-400">Search...</span>
+                </div>
+                <div className="relative">
+                  <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
+                    <Bell className="w-3 h-3 text-gray-500" />
+                  </div>
+                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-red-500 rounded-full flex items-center justify-center text-white text-[7px] font-bold">3</span>
+                </div>
+                <span className="text-[10px] text-gray-400 hidden sm:block">May 30, 2025</span>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 p-3 overflow-hidden">
+              <p className="text-gray-700 font-semibold text-[11px] mb-2.5">Good morning, Victor 👋</p>
+
+              {/* Stat cards */}
+              <div className="grid grid-cols-4 gap-2 mb-3">
                 {[
-                  { code: 'CSC 301 — Data Structures',  grade: 'A', color: 'text-brand-700' },
-                  { code: 'CSC 305 — Web Engineering',  grade: 'B', color: 'text-blue-700' },
-                  { code: 'CSC 311 — Networks',         grade: 'A', color: 'text-brand-700' },
-                ].map((r) => (
-                  <div key={r.code} className="flex items-center justify-between py-1 border-b border-gray-50 last:border-0">
-                    <span className="text-xs text-gray-500">{r.code}</span>
-                    <span className={`text-xs font-bold ${r.color}`}>{r.grade}</span>
+                  { label: 'CGPA',     value: '4.51',  change: '+0.12',      gradient: 'from-brand-600 to-emerald-400' },
+                  { label: 'Credits',  value: '48',    change: '+6 this sem', gradient: 'from-blue-600 to-cyan-400'    },
+                  { label: 'Fees',     value: '₦500',  change: 'Due soon',    gradient: 'from-orange-500 to-amber-400' },
+                  { label: 'Alerts',   value: '5',     change: '3 unread',    gradient: 'from-violet-600 to-purple-400' },
+                ].map((s) => (
+                  <div key={s.label}
+                    className={`bg-gradient-to-br ${s.gradient} rounded-xl p-2.5 text-white shadow-md`}>
+                    <div className="text-[11px] opacity-80 font-medium mb-0.5">{s.label}</div>
+                    <div className="font-bold text-base leading-tight">{s.value}</div>
+                    <div className="text-[9px] opacity-70 mt-0.5 flex items-center gap-0.5">
+                      <TrendingUp className="w-2.5 h-2.5" />{s.change}
+                    </div>
                   </div>
                 ))}
               </div>
-              <div className="bg-white rounded-lg border border-gray-200 p-2.5">
-                <div className="text-xs font-semibold text-gray-700 mb-2">Action Required</div>
-                {[
-                  { icon: '💳', text: '2 results unpaid', urgent: true },
-                  { icon: '🔔', text: '3 new notifications', urgent: false },
-                  { icon: '📝', text: 'Registration open', urgent: false },
-                ].map((a) => (
-                  <div key={a.text} className={`flex items-center gap-1.5 py-1 text-xs ${a.urgent ? 'text-orange-600' : 'text-gray-500'}`}>
-                    <span>{a.icon}</span><span>{a.text}</span>
+
+              {/* Panels row */}
+              <div className="grid grid-cols-2 gap-2.5">
+                {/* Results */}
+                <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                  <div className="flex items-center justify-between px-3 py-2 border-b border-gray-100">
+                    <span className="text-[11px] font-bold text-gray-800">Recent Results</span>
+                    <span className="text-[9px] text-brand-600 font-semibold">View All →</span>
                   </div>
-                ))}
+                  <div className="p-2 space-y-1.5">
+                    {[
+                      { code: 'CSC 301', name: 'Data Structures',  grade: 'A', pct: 78, color: 'bg-green-500'  },
+                      { code: 'CSC 305', name: 'Web Engineering',   grade: 'B', pct: 65, color: 'bg-blue-500'   },
+                      { code: 'CSC 311', name: 'Networks',          grade: 'A', pct: 81, color: 'bg-green-500'  },
+                    ].map((r) => (
+                      <div key={r.code} className="flex items-center gap-2">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-0.5">
+                            <span className="text-[10px] font-semibold text-gray-700 truncate">{r.code} · {r.name}</span>
+                            <span className={`text-[10px] font-bold ml-1 flex-shrink-0 ${r.grade === 'A' ? 'text-green-600' : 'text-blue-600'}`}>{r.grade}</span>
+                          </div>
+                          <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
+                            <div className={`h-full ${r.color} rounded-full`} style={{ width: `${r.pct}%` }} />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                  <div className="flex items-center justify-between px-3 py-2 border-b border-gray-100">
+                    <span className="text-[11px] font-bold text-gray-800">Action Required</span>
+                    <span className="bg-orange-100 text-orange-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full">2 urgent</span>
+                  </div>
+                  <div className="p-2 space-y-1.5">
+                    {[
+                      { dot: 'bg-orange-400', text: 'Pay for CSC 301 result',    urgent: true  },
+                      { dot: 'bg-orange-400', text: 'Pay for CSC 305 result',    urgent: true  },
+                      { dot: 'bg-brand-400',  text: 'Submit course registration', urgent: false },
+                      { dot: 'bg-blue-400',   text: '3 new notifications',        urgent: false },
+                    ].map((a, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${a.dot}`} />
+                        <span className={`text-[10px] ${a.urgent ? 'text-orange-700 font-semibold' : 'text-gray-500'}`}>{a.text}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -170,7 +254,7 @@ function PortalMockup() {
   );
 }
 
-// ── Component ─────────────────────────────────────────────────────────────────
+// ── Main component ─────────────────────────────────────────────────────────────
 
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -178,7 +262,7 @@ export default function LandingPage() {
   const year = new Date().getFullYear();
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 40);
+    const handler = () => setScrolled(window.scrollY > 60);
     window.addEventListener('scroll', handler, { passive: true });
     return () => window.removeEventListener('scroll', handler);
   }, []);
@@ -187,17 +271,24 @@ export default function LandingPage() {
     <div className="min-h-screen flex flex-col bg-white text-gray-900 overflow-x-hidden">
 
       {/* ── STICKY NAV ───────────────────────────────────────────────────────── */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-100' : 'bg-transparent'
-      }`}>
-        <nav className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          scrolled
+            ? 'bg-white/90 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-gray-100'
+            : 'bg-transparent'
+        }`}
+      >
+        <nav className="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 group">
-            <NacosLogo size={40} />
+            <div className="relative">
+              <div className="absolute inset-0 bg-brand-400/20 rounded-full blur-md group-hover:bg-brand-400/30 transition-all" />
+              <NacosLogo size={42} className="relative drop-shadow-md" />
+            </div>
             <div>
               <p className={`font-bold text-sm leading-tight transition-colors ${scrolled ? 'text-brand-900' : 'text-white'}`}>
                 NACOS AIFUE
               </p>
-              <p className={`text-xs transition-colors ${scrolled ? 'text-brand-600' : 'text-brand-200'}`}>
+              <p className={`text-xs transition-colors ${scrolled ? 'text-brand-500' : 'text-brand-200'}`}>
                 Computer Science Chapter
               </p>
             </div>
@@ -206,8 +297,8 @@ export default function LandingPage() {
           <div className="hidden md:flex items-center gap-5">
             {NAV_LINKS.map((l) => (
               <Link key={l.label} to={l.href}
-                className={`text-sm font-medium transition-colors ${
-                  scrolled ? 'text-gray-600 hover:text-brand-700' : 'text-white/80 hover:text-white'
+                className={`text-sm font-medium transition-all hover:opacity-100 ${
+                  scrolled ? 'text-gray-600 hover:text-brand-700' : 'text-white/75 hover:text-white'
                 }`}>
                 {l.label}
               </Link>
@@ -216,83 +307,101 @@ export default function LandingPage() {
 
           <div className="hidden md:flex items-center gap-3">
             <Link to="/auth/login"
-              className={`text-sm font-medium transition-colors ${scrolled ? 'text-brand-700 hover:text-brand-900' : 'text-white/80 hover:text-white'}`}>
+              className={`text-sm font-medium transition-colors px-4 py-2 rounded-lg ${
+                scrolled ? 'text-gray-600 hover:text-brand-700' : 'text-white/80 hover:text-white'
+              }`}>
               Sign In
             </Link>
             <Link to="/auth/validate"
-              className="bg-brand-700 hover:bg-brand-800 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors shadow-sm">
+              className="bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-brand-900/30 hover:shadow-brand-900/50 hover:-translate-y-0.5">
               Join Us →
             </Link>
           </div>
 
           <button onClick={() => setMenuOpen(!menuOpen)}
-            className={`md:hidden p-2 rounded-lg transition-colors ${scrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/10'}`}
+            className={`md:hidden p-2 rounded-xl transition-colors ${scrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/10'}`}
             aria-label="Toggle menu">
             {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </nav>
 
         {menuOpen && (
-          <div className="md:hidden bg-white border-t border-gray-100 px-6 py-4 space-y-2 shadow-lg">
+          <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 px-6 py-4 space-y-1 shadow-xl">
             {NAV_LINKS.map((l) => (
               <Link key={l.label} to={l.href} onClick={() => setMenuOpen(false)}
-                className="block text-sm font-medium text-gray-700 hover:text-brand-700 py-1.5">{l.label}</Link>
-            ))}
-            <div className="pt-3 border-t border-gray-100 flex flex-col gap-2">
-              <Link to="/auth/login" className="text-sm font-medium text-brand-700 py-1">Sign In</Link>
-              <Link to="/auth/validate" className="block w-full text-center bg-brand-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg">
-                Join Us →
+                className="block text-sm font-medium text-gray-700 hover:text-brand-700 py-2">
+                {l.label}
               </Link>
+            ))}
+            <div className="pt-3 border-t border-gray-100 flex gap-2">
+              <Link to="/auth/login" className="flex-1 text-center text-sm font-medium text-brand-700 border border-brand-200 py-2.5 rounded-xl">Sign In</Link>
+              <Link to="/auth/validate" className="flex-1 text-center bg-brand-600 text-white text-sm font-bold py-2.5 rounded-xl">Join Us</Link>
             </div>
           </div>
         )}
       </header>
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
-      <section
-        className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16"
-        style={{ backgroundImage: 'url(/IMG_0982.jpg)', backgroundSize: 'cover', backgroundPosition: 'center top' }}
-      >
-        {/* Dark green overlay */}
-        <div className="absolute inset-0 bg-brand-900/78" />
-        {/* Grid pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <svg width="100%" height="100%"><defs><pattern id="g" width="60" height="60" patternUnits="userSpaceOnUse">
-            <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" strokeWidth="0.5"/>
-          </pattern></defs><rect width="100%" height="100%" fill="url(#g)" /></svg>
-        </div>
-        <div className="absolute top-20 right-10 w-72 h-72 bg-brand-600/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-20 left-10 w-80 h-80 bg-brand-700/15 rounded-full blur-3xl animate-float delay-400" />
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+        style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 35%, #166534 65%, #15803d 100%)' }}>
 
-        <div className="relative max-w-5xl mx-auto px-6 text-center">
-          {/* Logo badge */}
+        {/* Photo overlay — adds texture when IMG_0982.jpg is present */}
+        <div className="absolute inset-0 bg-cover bg-center opacity-20 mix-blend-luminosity"
+          style={{ backgroundImage: 'url(/IMG_0982.jpg)' }} />
+
+        {/* Grid pattern */}
+        <div className="absolute inset-0 opacity-[0.07]">
+          <svg width="100%" height="100%"><defs>
+            <pattern id="hero-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" strokeWidth="0.8"/>
+            </pattern>
+          </defs><rect width="100%" height="100%" fill="url(#hero-grid)"/></svg>
+        </div>
+
+        {/* Gradient orbs */}
+        <div className="absolute top-20 right-[15%] w-[500px] h-[500px] rounded-full opacity-20 blur-3xl pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #22c55e, transparent 70%)' }} />
+        <div className="absolute bottom-16 left-[10%] w-[400px] h-[400px] rounded-full opacity-15 blur-3xl pointer-events-none animate-float"
+          style={{ background: 'radial-gradient(circle, #4ade80, transparent 70%)' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-10 blur-3xl pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #f59e0b, transparent 70%)' }} />
+
+        <div className="relative max-w-5xl mx-auto px-6 text-center z-10">
+          {/* Logo + badge row */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex items-center justify-center gap-3 mb-8"
+            transition={{ duration: 0.7 }}
+            className="flex flex-col items-center gap-4 mb-8"
           >
-            <NacosLogo size={52} className="ring-2 ring-white/20" />
-            <span className="bg-brand-800/60 border border-brand-600/50 text-brand-200 text-xs font-semibold px-4 py-1.5 rounded-full backdrop-blur-sm">
+            <div className="relative inline-block">
+              <div className="absolute inset-0 bg-brand-400/30 rounded-full blur-xl" />
+              <NacosLogo size={72} className="relative drop-shadow-2xl" />
+            </div>
+            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-brand-200 text-xs font-semibold px-5 py-2 rounded-full backdrop-blur-sm">
+              <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
               National Association of Computing Students · AIFUE Chapter · Est. 2010
-            </span>
+            </div>
           </motion.div>
 
+          {/* Heading */}
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="font-display text-5xl md:text-7xl font-bold text-white leading-tight mb-4"
+            transition={{ duration: 0.7, delay: 0.15 }}
+            className="font-display text-6xl md:text-8xl font-bold text-white leading-[1.05] mb-5"
           >
             Towards Advanced
-            <span className="block text-brand-300 italic">Computing</span>
+            <span className="block bg-gradient-to-r from-brand-300 via-green-300 to-emerald-200 bg-clip-text text-transparent italic">
+              Computing
+            </span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-gold-400 font-semibold text-lg mb-6 tracking-wide"
+            transition={{ duration: 0.6, delay: 0.28 }}
+            className="text-yellow-400 font-bold text-lg tracking-widest mb-5 uppercase"
           >
             We Develop · We Create · We Build Capacity
           </motion.p>
@@ -300,8 +409,8 @@ export default function LandingPage() {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-brand-100/80 text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed"
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-white/65 text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed"
           >
             The official portal of NACOS-AIFUE — your gateway to academic results, elections,
             payments, and everything that powers your computing journey at AIFUE, Owerri.
@@ -310,131 +419,177 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.6, delay: 0.52 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             <Link to="/auth/login"
-              className="group inline-flex items-center gap-2 bg-white text-brand-900 font-bold px-8 py-4 rounded-xl hover:bg-brand-50 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5 text-base">
+              className="group relative inline-flex items-center gap-2.5 bg-white text-brand-900 font-bold px-9 py-4 rounded-2xl hover:bg-brand-50 transition-all shadow-2xl hover:-translate-y-1 text-base overflow-hidden">
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500" />
               Access Student Portal
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link to="/auth/validate"
-              className="inline-flex items-center gap-2 border-2 border-brand-400/60 text-white font-semibold px-8 py-4 rounded-xl hover:bg-brand-800 transition-all text-base">
+              className="inline-flex items-center gap-2.5 border-2 border-white/30 text-white font-semibold px-9 py-4 rounded-2xl hover:bg-white/10 hover:border-white/50 transition-all text-base backdrop-blur-sm">
               Activate Account
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-5 h-5" />
             </Link>
           </motion.div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-16">
-            <path d="M0 80L60 68C120 57 240 34 360 28C480 22 600 34 720 40C840 45 960 45 1080 40C1200 34 1320 22 1380 16L1440 10V80H0Z" fill="white"/>
+        {/* Wave bottom */}
+        <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
+          <svg viewBox="0 0 1440 90" fill="none" preserveAspectRatio="none" className="w-full h-20">
+            <path d="M0 90L48 78C96 66 192 42 288 34C384 26 480 34 576 42C672 50 768 58 864 54C960 50 1056 34 1152 26C1248 18 1344 18 1392 18L1440 18V90H0Z" fill="white"/>
           </svg>
         </div>
       </section>
 
       {/* ── MISSION PILLARS ───────────────────────────────────────────────────── */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <span className="text-brand-700 text-xs font-bold uppercase tracking-widest">Our Purpose</span>
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mt-3 mb-5">What Drives Us</h2>
-            <p className="text-gray-500 max-w-2xl mx-auto text-lg leading-relaxed">
-              Fostering excellence in computer science education, promoting innovation, and building capacity — bridging academia and industry.
-            </p>
+      <section className="py-24 px-6 bg-white relative overflow-hidden">
+        {/* Subtle background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-50/30 to-transparent pointer-events-none" />
+
+        <div className="relative max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
+              <span className="inline-block bg-brand-50 text-brand-700 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-brand-200 mb-5">Our Purpose</span>
+              <h2 className="font-display text-5xl md:text-6xl font-bold text-gray-900 mb-5">
+                What Drives Us
+              </h2>
+              <p className="text-gray-500 max-w-xl mx-auto text-lg leading-relaxed">
+                Fostering excellence in computer science education, promoting innovation, and building capacity — bridging academia and industry.
+              </p>
+            </motion.div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {MISSION_PILLARS.map((p, i) => (
-              <motion.div
-                key={p.title}
-                initial={{ opacity: 0, y: 30 }}
+              <motion.div key={p.title}
+                initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
+                transition={{ duration: 0.55, delay: i * 0.12 }}
                 viewport={{ once: true }}
-                className={`rounded-3xl p-8 border transition-all hover:shadow-lg hover:-translate-y-1 ${
-                  i === 1 ? 'bg-brand-900 border-brand-800' : 'bg-brand-50 border-brand-100'
+                className={`group relative rounded-3xl p-8 overflow-hidden transition-all hover:-translate-y-2 hover:shadow-2xl ${
+                  i === 1
+                    ? 'text-white'
+                    : 'bg-white border border-gray-200 hover:border-brand-300'
+                }`}
+                style={i === 1 ? { background: 'linear-gradient(135deg, #052e16 0%, #166534 100%)' } : {}}
+              >
+                {i === 1 && (
+                  <div className="absolute top-0 right-0 w-48 h-48 rounded-full opacity-20 blur-2xl"
+                    style={{ background: 'radial-gradient(circle, #4ade80, transparent)' }} />
+                )}
+                <div className={`relative w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-lg ${
+                  i === 1 ? 'bg-brand-500/30 ring-1 ring-brand-400/30' : 'bg-brand-600 shadow-brand-600/40'
                 }`}>
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 ${i === 1 ? 'bg-brand-600' : 'bg-brand-700'}`}>
-                  <p.icon className="w-6 h-6 text-white" />
+                  <p.icon className="w-7 h-7 text-white" />
                 </div>
-                <h3 className={`font-display text-2xl font-bold mb-3 ${i === 1 ? 'text-white' : 'text-brand-900'}`}>{p.title}</h3>
-                <p className={`leading-relaxed text-sm ${i === 1 ? 'text-brand-200' : 'text-gray-600'}`}>{p.desc}</p>
+                <h3 className={`font-display text-2xl font-bold mb-3 ${i === 1 ? 'text-white' : 'text-gray-900'}`}>
+                  {p.title}
+                </h3>
+                <p className={`leading-relaxed ${i === 1 ? 'text-brand-200' : 'text-gray-600'}`}>{p.desc}</p>
               </motion.div>
             ))}
           </div>
-          <div className="text-center">
-            <Link to="/about" className="inline-flex items-center gap-2 text-brand-700 font-semibold hover:text-brand-900 transition-colors text-sm">
-              Learn more about NACOS-AIFUE <ArrowRight className="w-4 h-4" />
+
+          <div className="text-center mt-10">
+            <Link to="/about" className="inline-flex items-center gap-2 text-brand-700 font-semibold hover:text-brand-900 transition-colors text-sm group">
+              Learn more about NACOS-AIFUE
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ── PORTAL PREVIEW (replaces stats) ──────────────────────────────────── */}
-      <section className="py-24 px-6 bg-gray-950 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <svg width="100%" height="100%"><defs><pattern id="dots" width="40" height="40" patternUnits="userSpaceOnUse">
-            <circle cx="20" cy="20" r="1.5" fill="white"/>
-          </pattern></defs><rect width="100%" height="100%" fill="url(#dots)" /></svg>
+      {/* ── PORTAL PREVIEW ───────────────────────────────────────────────────── */}
+      <section className="py-24 px-6 relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #0a0f1e 0%, #0d1a0d 50%, #0a1a0a 100%)' }}>
+        {/* Dot pattern */}
+        <div className="absolute inset-0 opacity-[0.04]">
+          <svg width="100%" height="100%"><defs>
+            <pattern id="dots" width="30" height="30" patternUnits="userSpaceOnUse">
+              <circle cx="15" cy="15" r="1.2" fill="white"/>
+            </pattern>
+          </defs><rect width="100%" height="100%" fill="url(#dots)"/></svg>
         </div>
-        <div className="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-          <div>
-            <span className="text-brand-400 text-xs font-bold uppercase tracking-widest">Student Portal</span>
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-white mt-3 mb-5 leading-tight">
-              Your Academic Life,<br />
-              <span className="text-brand-300">All in One Place</span>
+
+        {/* Gradient accent */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-500/50 to-transparent" />
+
+        <div className="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Text side */}
+          <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} viewport={{ once: true }}>
+            <span className="inline-block bg-brand-500/10 border border-brand-500/30 text-brand-400 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-6">
+              Student Portal
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
+              Your Academic Life,
+              <span className="block bg-gradient-to-r from-brand-400 to-emerald-300 bg-clip-text text-transparent">
+                All in One Place
+              </span>
             </h2>
-            <p className="text-gray-400 leading-relaxed mb-8">
-              Access your results, pay dues, track attendance, vote in elections, and receive real-time notifications — all from a single secure platform designed for NACOS-AIFUE members.
+            <p className="text-gray-400 leading-relaxed mb-8 text-base">
+              Access results, pay dues, track attendance, vote in elections, and receive real-time notifications — all from a single secure platform built for NACOS-AIFUE members.
             </p>
+
             <div className="space-y-3 mb-8">
-              {['View semester results & CGPA instantly', 'Pay school fees & dues via Paystack', 'Submit & track course registration', 'Get notified of results & announcements'].map((feat) => (
-                <div key={feat} className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full bg-brand-600 flex items-center justify-center flex-shrink-0">
-                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                    </svg>
+              {[
+                { icon: TrendingUp, text: 'View semester results & CGPA instantly'     },
+                { icon: Shield,     text: 'Pay school fees & dues via Paystack securely' },
+                { icon: Zap,        text: 'Submit & track course registration forms'    },
+                { icon: Bell,       text: 'Get notified of results & announcements'     },
+              ].map((feat) => (
+                <div key={feat.text} className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-brand-600/20 border border-brand-500/30 flex items-center justify-center flex-shrink-0">
+                    <feat.icon className="w-4 h-4 text-brand-400" />
                   </div>
-                  <span className="text-gray-300 text-sm">{feat}</span>
+                  <span className="text-gray-300 text-sm">{feat.text}</span>
                 </div>
               ))}
             </div>
+
             <Link to="/auth/login"
-              className="inline-flex items-center gap-2 bg-brand-700 hover:bg-brand-600 text-white font-bold px-6 py-3.5 rounded-xl transition-all shadow-lg text-sm">
-              Go to Portal <ArrowRight className="w-4 h-4" />
+              className="inline-flex items-center gap-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold px-7 py-3.5 rounded-xl transition-all shadow-lg shadow-brand-900/40 hover:-translate-y-0.5 text-sm">
+              Access Portal <ArrowRight className="w-4 h-4" />
             </Link>
-          </div>
-          <PortalMockup />
+          </motion.div>
+
+          {/* Mockup side */}
+          <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.1 }} viewport={{ once: true }}>
+            <PortalMockup />
+          </motion.div>
         </div>
+
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-500/30 to-transparent" />
       </section>
 
       {/* ── EXPLORE OUR PAGES ─────────────────────────────────────────────────── */}
       <section className="py-24 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <span className="text-brand-700 text-xs font-bold uppercase tracking-widest">Navigate</span>
-            <h2 className="font-display text-4xl font-bold text-gray-900 mt-3 mb-3">Explore Our Pages</h2>
-            <p className="text-gray-500 max-w-xl mx-auto">Everything about NACOS-AIFUE, all in one place.</p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <motion.div className="text-center mb-14"
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
+            <span className="inline-block bg-brand-50 text-brand-700 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-brand-200 mb-5">Navigate</span>
+            <h2 className="font-display text-5xl font-bold text-gray-900 mb-3">Explore Our Pages</h2>
+            <p className="text-gray-500 max-w-lg mx-auto">Everything about NACOS-AIFUE, all in one place.</p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {EXPLORE_PAGES.map((page, i) => (
-              <motion.div
-                key={page.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, delay: i * 0.08 }}
-                viewport={{ once: true }}
-              >
+              <motion.div key={page.title}
+                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: i * 0.07 }} viewport={{ once: true }}>
                 <Link to={page.href}
-                  className={`block rounded-2xl overflow-hidden border ${page.border} hover:shadow-xl transition-all hover:-translate-y-1 group`}>
-                  <div className="h-44 overflow-hidden">
+                  className="block rounded-2xl overflow-hidden border border-gray-200 hover:border-transparent hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group">
+                  <div className="h-44 overflow-hidden relative">
                     <img src={page.img} alt={page.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                   </div>
-                  <div className={`p-5 ${page.bg}`}>
-                    <h3 className={`font-bold text-lg mb-1 ${page.color}`}>{page.title}</h3>
+                  <div className={`p-5 bg-gradient-to-br ${page.bg}`}>
+                    <h3 className={`font-bold text-lg mb-1.5 ${page.color}`}>{page.title}</h3>
                     <p className="text-gray-600 text-sm mb-3 leading-relaxed">{page.desc}</p>
-                    <span className={`text-sm font-semibold ${page.color} flex items-center gap-1`}>
+                    <span className={`text-sm font-bold ${page.color} flex items-center gap-1.5 group-hover:gap-2.5 transition-all`}>
                       View More <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </div>
@@ -445,112 +600,124 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── PORTAL FEATURES ───────────────────────────────────────────────────── */}
-      <section className="py-24 px-6 bg-brand-900 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <svg width="100%" height="100%"><defs><pattern id="dots2" width="40" height="40" patternUnits="userSpaceOnUse">
-            <circle cx="20" cy="20" r="1.5" fill="white"/>
-          </pattern></defs><rect width="100%" height="100%" fill="url(#dots2)" /></svg>
-        </div>
-        <div className="relative max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <span className="text-brand-300 text-xs font-bold uppercase tracking-widest">Features</span>
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-4 mt-3">Everything in One Place</h2>
-            <p className="text-brand-200 max-w-xl mx-auto leading-relaxed">
-              The NACOS-AIFUE portal brings your academic life, financial records, and departmental participation into one secure platform.
-            </p>
+      {/* ── PROGRAMS ─────────────────────────────────────────────────────────── */}
+      <section className="py-20 px-6 relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%)' }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="inline-block bg-white text-brand-700 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-brand-200 mb-5">What We Offer</span>
+            <h2 className="font-display text-4xl font-bold text-gray-900">Programs & Initiatives</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
-            {FEATURES.map((f, i) => (
-              <motion.div key={f.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.08 }}
-                viewport={{ once: true }}
-                className={`rounded-2xl p-6 border transition-all hover:scale-[1.02] ${
-                  f.live ? 'bg-white/10 border-brand-500/40 backdrop-blur-sm hover:bg-white/15' : 'bg-white/5 border-white/10'
-                }`}>
-                <div className="flex items-start justify-between mb-4">
-                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${f.live ? 'bg-brand-500/30' : 'bg-white/10'}`}>
-                    <f.icon className={`w-5 h-5 ${f.live ? 'text-brand-300' : 'text-white/40'}`} />
-                  </div>
-                  <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${f.live ? 'bg-brand-400/20 text-brand-200' : 'bg-white/10 text-white/30'}`}>
-                    {f.badge}
-                  </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {PROGRAMS.map((p, i) => (
+              <motion.div key={p.label}
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: i * 0.1 }} viewport={{ once: true }}
+                className="bg-white rounded-2xl p-6 border border-brand-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-600 to-emerald-500 flex items-center justify-center mb-5 shadow-lg shadow-brand-600/30 group-hover:scale-110 transition-transform">
+                  <p.icon className="w-6 h-6 text-white" />
                 </div>
-                <h3 className={`font-bold mb-2 ${f.live ? 'text-white' : 'text-white/50'}`}>{f.title}</h3>
-                <p className={`text-sm leading-relaxed ${f.live ? 'text-brand-200' : 'text-white/30'}`}>{f.desc}</p>
+                <h3 className="font-bold text-gray-900 mb-2">{p.label}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{p.desc}</p>
               </motion.div>
             ))}
-          </div>
-          <div className="text-center">
-            <Link to="/auth/login"
-              className="inline-flex items-center gap-2 bg-white text-brand-900 font-bold px-8 py-4 rounded-xl hover:bg-brand-50 transition-all shadow-xl text-sm">
-              Access Your Portal <ArrowRight className="w-4 h-4" />
-            </Link>
           </div>
         </div>
       </section>
 
-      {/* ── PROGRAMS ─────────────────────────────────────────────────────────── */}
-      <section className="py-20 px-6 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <span className="text-brand-700 text-xs font-bold uppercase tracking-widest">What We Offer</span>
-            <h2 className="font-display text-4xl font-bold text-gray-900 mt-3 mb-3">Programs & Initiatives</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {PROGRAMS.map((p, i) => (
-              <motion.div key={p.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-                viewport={{ once: true }}
-                className="bg-white rounded-2xl p-6 border border-gray-200 hover:border-brand-300 hover:shadow-md transition-all hover:-translate-y-1">
-                <div className="w-11 h-11 bg-brand-100 rounded-xl flex items-center justify-center mb-4">
-                  <p.icon className="w-5 h-5 text-brand-700" />
+      {/* ── PORTAL FEATURES (DARK) ───────────────────────────────────────────── */}
+      <section className="py-24 px-6 relative overflow-hidden bg-brand-900">
+        <div className="absolute inset-0 opacity-[0.04]">
+          <svg width="100%" height="100%"><defs>
+            <pattern id="dots2" width="36" height="36" patternUnits="userSpaceOnUse">
+              <circle cx="18" cy="18" r="1.5" fill="white"/>
+            </pattern>
+          </defs><rect width="100%" height="100%" fill="url(#dots2)"/></svg>
+        </div>
+        {/* Top gradient line */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-400/40 to-transparent" />
+
+        <div className="relative max-w-6xl mx-auto">
+          <motion.div className="text-center mb-14"
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
+            <span className="inline-block bg-brand-800 text-brand-300 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-brand-700 mb-5">Features</span>
+            <h2 className="font-display text-5xl font-bold text-white mb-4">Everything in One Place</h2>
+            <p className="text-brand-300 max-w-lg mx-auto leading-relaxed">
+              One secure platform for your entire academic life at AIFUE.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+            {FEATURES.map((f, i) => (
+              <motion.div key={f.title}
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: i * 0.08 }} viewport={{ once: true }}
+                className={`group rounded-2xl p-6 border transition-all hover:-translate-y-1 cursor-default ${
+                  f.live
+                    ? 'bg-white/8 border-brand-500/30 hover:bg-white/12 hover:border-brand-400/50 hover:shadow-lg hover:shadow-brand-900/50'
+                    : 'bg-white/3 border-white/8'
+                }`}>
+                <div className="flex items-start justify-between mb-5">
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-md ${
+                    f.live ? 'bg-gradient-to-br from-brand-600 to-emerald-500 shadow-brand-900/40' : 'bg-white/8'
+                  }`}>
+                    <f.icon className={`w-5 h-5 ${f.live ? 'text-white' : 'text-white/30'}`} />
+                  </div>
+                  <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+                    f.live ? 'bg-brand-500/20 text-brand-300 ring-1 ring-brand-500/30' : 'bg-white/8 text-white/25'
+                  }`}>{f.badge}</span>
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2">{p.title}</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">{p.desc}</p>
+                <h3 className={`font-bold mb-2 ${f.live ? 'text-white' : 'text-white/35'}`}>{f.title}</h3>
+                <p className={`text-sm leading-relaxed ${f.live ? 'text-brand-200/80' : 'text-white/20'}`}>{f.desc}</p>
               </motion.div>
             ))}
           </div>
+
+          <div className="text-center">
+            <Link to="/auth/login"
+              className="inline-flex items-center gap-2.5 bg-white text-brand-900 font-bold px-9 py-4 rounded-2xl hover:bg-brand-50 transition-all shadow-2xl hover:-translate-y-0.5 text-sm">
+              Access Your Portal <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
+
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-400/30 to-transparent" />
       </section>
 
       {/* ── UPCOMING EVENTS ───────────────────────────────────────────────────── */}
       <section className="py-24 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-end justify-between mb-12 gap-4">
-            <div>
-              <span className="text-brand-700 text-xs font-bold uppercase tracking-widest">Calendar</span>
-              <h2 className="font-display text-4xl font-bold text-gray-900 mt-2">Upcoming Events</h2>
-            </div>
-            <Link to="/events" className="text-sm text-brand-700 font-semibold hover:text-brand-900 flex items-center gap-1 whitespace-nowrap">
-              View all <ArrowRight className="w-4 h-4" />
+            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }} viewport={{ once: true }}>
+              <span className="inline-block bg-brand-50 text-brand-700 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-brand-200 mb-3">Calendar</span>
+              <h2 className="font-display text-4xl font-bold text-gray-900">Upcoming Events</h2>
+            </motion.div>
+            <Link to="/events" className="text-sm text-brand-700 font-semibold hover:text-brand-900 flex items-center gap-1 whitespace-nowrap group">
+              View all <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
+
           <div className="space-y-4">
             {UPCOMING_EVENTS.map((ev, i) => (
               <motion.div key={ev.title}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-                viewport={{ once: true }}
-                className="flex gap-5 bg-white rounded-2xl p-6 border border-gray-200 hover:border-brand-300 hover:shadow-md transition-all">
-                <div className="flex-shrink-0 text-center bg-brand-50 border border-brand-100 rounded-2xl px-4 py-3 min-w-[70px]">
-                  <div className="text-xs font-bold text-brand-600 uppercase">{ev.date.month}</div>
-                  <div className="font-display text-2xl font-bold text-brand-900 leading-none">{ev.date.day}</div>
+                initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.45, delay: i * 0.1 }} viewport={{ once: true }}
+                className="group flex gap-5 bg-white rounded-2xl p-6 border border-gray-200 hover:border-brand-300 hover:shadow-xl hover:shadow-brand-900/5 transition-all">
+                <div className="flex-shrink-0 text-center bg-gradient-to-br from-brand-50 to-green-100 border border-brand-200 rounded-2xl px-4 py-3 min-w-[72px]">
+                  <div className="text-xs font-bold text-brand-600 uppercase tracking-wide">{ev.date.month}</div>
+                  <div className="font-display text-3xl font-bold text-brand-900 leading-none">{ev.date.day}</div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-3 mb-1">
-                    <h3 className="font-bold text-gray-900">{ev.title}</h3>
-                    <span className={`flex-shrink-0 text-xs font-bold px-2.5 py-1 rounded-full ${ev.tag === 'Free' ? 'bg-brand-100 text-brand-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                      {ev.tag}
-                    </span>
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <h3 className="font-bold text-gray-900 group-hover:text-brand-700 transition-colors">{ev.title}</h3>
+                    <span className={`flex-shrink-0 text-xs font-bold px-2.5 py-1 rounded-full ${
+                      ev.tag === 'Free' ? 'bg-brand-100 text-brand-800' : 'bg-yellow-100 text-yellow-800'
+                    }`}>{ev.tag}</span>
                   </div>
                   <p className="text-sm text-gray-500 mb-2">{ev.desc}</p>
-                  <span className="flex items-center gap-1 text-xs text-gray-400"><MapPin className="w-3 h-3" />{ev.location}</span>
+                  <span className="flex items-center gap-1.5 text-xs text-gray-400">
+                    <MapPin className="w-3 h-3" />{ev.location}
+                  </span>
                 </div>
               </motion.div>
             ))}
@@ -559,29 +726,23 @@ export default function LandingPage() {
       </section>
 
       {/* ── ANIMATED TESTIMONIALS ─────────────────────────────────────────────── */}
-      <section className="py-24 px-6 bg-gray-50 relative overflow-hidden">
+      <section className="py-24 px-6 relative overflow-hidden"
+        style={{ background: 'linear-gradient(180deg, #f8fafb 0%, #f0fdf4 100%)' }}>
         <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="flex flex-col items-center justify-center max-w-2xl mx-auto mb-14"
-          >
-            <div className="inline-block border border-brand-200 bg-brand-50 text-brand-700 text-xs font-bold px-4 py-1.5 rounded-full mb-5 uppercase tracking-widest">
-              Member Stories
-            </div>
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 tracking-tight text-center">
+          <motion.div className="flex flex-col items-center max-w-2xl mx-auto mb-14 text-center"
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
+            <span className="inline-block bg-white text-brand-700 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-brand-200 mb-5">Member Stories</span>
+            <h2 className="font-display text-5xl font-bold text-gray-900 tracking-tight mb-4">
               What Our Members Say
             </h2>
-            <p className="text-center text-gray-500 mt-4 max-w-md leading-relaxed">
-              Real experiences from NACOS-AIFUE students and alumni across all levels.
+            <p className="text-gray-500 max-w-md leading-relaxed">
+              Real experiences from NACOS-AIFUE students and alumni across all levels and programmes.
             </p>
           </motion.div>
 
-          <div className="flex justify-center gap-6 [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)] max-h-[680px] overflow-hidden">
-            <TestimonialsColumn testimonials={firstColumn} duration={16} />
-            <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={20} />
+          <div className="flex justify-center gap-6 [mask-image:linear-gradient(to_bottom,transparent,black_18%,black_82%,transparent)] max-h-[700px] overflow-hidden">
+            <TestimonialsColumn testimonials={firstColumn}  duration={16} />
+            <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={21} />
             <TestimonialsColumn testimonials={thirdColumn}  className="hidden lg:block" duration={18} />
           </div>
         </div>
@@ -590,63 +751,74 @@ export default function LandingPage() {
       {/* ── CONTACT CTA ───────────────────────────────────────────────────────── */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
-          <div className="bg-brand-900 rounded-3xl p-10 md:p-14 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-72 h-72 bg-brand-700/30 rounded-full -translate-y-20 translate-x-20 blur-3xl" />
-            <div className="relative grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} viewport={{ once: true }}
+            className="relative rounded-3xl p-10 md:p-14 overflow-hidden"
+            style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 50%, #166534 100%)' }}
+          >
+            {/* Decorative orbs */}
+            <div className="absolute top-0 right-0 w-80 h-80 rounded-full opacity-20 blur-3xl pointer-events-none"
+              style={{ background: 'radial-gradient(circle, #4ade80, transparent)' }} />
+            <div className="absolute bottom-0 left-0 w-60 h-60 rounded-full opacity-15 blur-3xl pointer-events-none"
+              style={{ background: 'radial-gradient(circle, #f59e0b, transparent)' }} />
+
+            <div className="relative grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
+                <h2 className="font-display text-4xl font-bold text-white mb-4">
                   Ready to join the NACOS family?
                 </h2>
-                <p className="text-brand-200 leading-relaxed mb-6">
-                  Activate your portal account and unlock everything NACOS-AIFUE has to offer.
+                <p className="text-brand-200 leading-relaxed mb-7">
+                  Activate your portal account and unlock everything NACOS-AIFUE has to offer for your academic journey.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Link to="/auth/login"
-                    className="inline-flex items-center gap-2 bg-white text-brand-900 font-bold px-6 py-3 rounded-xl hover:bg-brand-50 transition-all text-sm">
+                    className="inline-flex items-center gap-2 bg-white text-brand-900 font-bold px-7 py-3.5 rounded-xl hover:bg-brand-50 transition-all shadow-xl text-sm hover:-translate-y-0.5">
                     Sign In to Portal <ArrowRight className="w-4 h-4" />
                   </Link>
                   <Link to="/auth/validate"
-                    className="inline-flex items-center gap-2 border border-brand-500 text-white font-semibold px-6 py-3 rounded-xl hover:bg-brand-800 transition-all text-sm">
+                    className="inline-flex items-center gap-2 border border-brand-500/60 text-white font-semibold px-7 py-3.5 rounded-xl hover:bg-brand-800/50 transition-all text-sm backdrop-blur-sm">
                     Activate Account
                   </Link>
                 </div>
               </div>
               <div className="space-y-4">
                 {[
-                  { icon: Mail,   text: 'nacos@aifue.edu.ng' },
-                  { icon: Phone,  text: '+234 803 123 4567' },
-                  { icon: MapPin, text: 'CS Dept, AIFUE, Owerri, Imo State' },
+                  { icon: Mail,   text: 'nacos@aifue.edu.ng', sub: 'Email us anytime' },
+                  { icon: Phone,  text: '+234 803 123 4567',  sub: 'Mon–Fri, 9am–5pm' },
+                  { icon: MapPin, text: 'CS Dept, AIFUE, Owerri', sub: 'Imo State, Nigeria' },
                 ].map((item) => (
-                  <div key={item.text} className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-brand-700 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <div key={item.text} className="flex items-start gap-4">
+                    <div className="w-10 h-10 bg-brand-700/50 border border-brand-600/40 rounded-xl flex items-center justify-center flex-shrink-0">
                       <item.icon className="w-4 h-4 text-brand-300" />
                     </div>
-                    <span className="text-brand-100 text-sm">{item.text}</span>
+                    <div>
+                      <p className="text-white font-medium text-sm">{item.text}</p>
+                      <p className="text-brand-400 text-xs mt-0.5">{item.sub}</p>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* ── FOOTER ────────────────────────────────────────────────────────────── */}
-      <footer className="bg-brand-900 text-brand-300 py-14 px-6">
+      <footer className="text-brand-300 py-14 px-6" style={{ background: 'linear-gradient(180deg, #052e16 0%, #030f09 100%)' }}>
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
             <div className="md:col-span-2">
-              <div className="flex items-center gap-3 mb-4">
-                <NacosLogo size={36} />
+              <div className="flex items-center gap-3 mb-5">
+                <NacosLogo size={44} className="drop-shadow-lg" />
                 <div>
-                  <p className="font-bold text-white text-sm">NACOS AIFUE</p>
-                  <p className="text-brand-400 text-xs">Towards Advanced Computing</p>
+                  <p className="font-bold text-white text-base">NACOS AIFUE</p>
+                  <p className="text-brand-500 text-xs">Towards Advanced Computing</p>
                 </div>
               </div>
-              <p className="text-sm leading-relaxed max-w-xs mb-5">
-                The official student association of the Computer Science Department,
-                Alvan Ikoku Federal University of Education, Owerri — uniting students, advancing technology since 2010.
+              <p className="text-sm leading-relaxed max-w-xs mb-5 text-brand-400">
+                Alvan Ikoku Federal University of Education, Owerri — advancing computer science education since 2010.
               </p>
-              <div className="space-y-1.5 text-xs">
+              <div className="space-y-1.5 text-xs text-brand-400">
                 <div className="flex items-center gap-2"><Mail className="w-3.5 h-3.5" /> nacos@aifue.edu.ng</div>
                 <div className="flex items-center gap-2"><Phone className="w-3.5 h-3.5" /> +234 803 123 4567</div>
               </div>
@@ -654,24 +826,27 @@ export default function LandingPage() {
             <div>
               <p className="text-white text-xs font-bold uppercase tracking-widest mb-4">Website</p>
               <ul className="space-y-2 text-sm">
-                {NAV_LINKS.map((l) => <li key={l.label}><Link to={l.href} className="hover:text-white transition-colors">{l.label}</Link></li>)}
+                {NAV_LINKS.map((l) => (
+                  <li key={l.label}><Link to={l.href} className="text-brand-400 hover:text-white transition-colors">{l.label}</Link></li>
+                ))}
               </ul>
             </div>
             <div>
               <p className="text-white text-xs font-bold uppercase tracking-widest mb-4">Portal</p>
               <ul className="space-y-2 text-sm">
-                <li><Link to="/auth/login" className="hover:text-white transition-colors">Student Login</Link></li>
-                <li><Link to="/auth/validate" className="hover:text-white transition-colors">Activate Account</Link></li>
-                <li><Link to="/auth/forgot-password" className="hover:text-white transition-colors">Forgot Password</Link></li>
+                <li><Link to="/auth/login" className="text-brand-400 hover:text-white transition-colors">Student Login</Link></li>
+                <li><Link to="/auth/validate" className="text-brand-400 hover:text-white transition-colors">Activate Account</Link></li>
+                <li><Link to="/auth/forgot-password" className="text-brand-400 hover:text-white transition-colors">Forgot Password</Link></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-brand-700 pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
-            <p>© {year} NACOS-AIFUE. All rights reserved. Computer Science Department, AIFUE, Owerri.</p>
-            <p className="text-brand-500">We Develop · We Create · We Build Capacity</p>
+          <div className="border-t border-brand-900 pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-brand-600">
+            <p>© {year} NACOS-AIFUE. All rights reserved. Computer Science Dept, AIFUE, Owerri.</p>
+            <p>We Develop · We Create · We Build Capacity</p>
           </div>
         </div>
       </footer>
+
     </div>
   );
 }

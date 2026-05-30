@@ -111,6 +111,13 @@ enum RegistrationStatus {
   rejected
 }
 
+enum StudentStatus {
+  active
+  carryover
+  graduated
+  suspended
+}
+
 // ────────────────────────────────────────────────────────────────────────────
 // MODELS
 // ────────────────────────────────────────────────────────────────────────────
@@ -145,7 +152,13 @@ model User {
   level        Level
   role         UserRole   @default(student)
   passwordHash String?    @map("password_hash") @db.VarChar(255)
-  status       UserStatus @default(pending)
+  status          UserStatus    @default(pending)
+  studentStatus   StudentStatus @default(active) @map("student_status")
+  profilePhotoUrl String?       @map("profile_photo_url") @db.VarChar(500)
+  dateOfBirth     DateTime?     @map("date_of_birth")     @db.Date
+  stateOfOrigin   String?       @map("state_of_origin")   @db.VarChar(50)
+  lga             String?                                  @db.VarChar(100)
+  homeAddress     String?       @map("home_address")       @db.VarChar(300)
   createdById  String?    @map("created_by")
   createdAt    DateTime   @default(now()) @map("created_at")
   updatedAt    DateTime   @updatedAt @map("updated_at")

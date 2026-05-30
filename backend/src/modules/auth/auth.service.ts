@@ -255,6 +255,12 @@ export class AuthService {
     level: UserPublic['level'];
     role: UserPublic['role'];
     status: UserPublic['status'];
+    studentStatus: UserPublic['studentStatus'];
+    profilePhotoUrl?: string | null;
+    dateOfBirth?: Date | null;
+    stateOfOrigin?: string | null;
+    lga?: string | null;
+    homeAddress?: string | null;
     departmentId: string;
     createdAt: Date;
     updatedAt: Date;
@@ -269,6 +275,13 @@ export class AuthService {
       level: user.level,
       role: user.role,
       status: user.status,
+      studentStatus: user.studentStatus,
+      superAdminType: null,
+      profilePhotoUrl: user.profilePhotoUrl ?? null,
+      dateOfBirth: user.dateOfBirth ? user.dateOfBirth.toISOString().split('T')[0] : null,
+      stateOfOrigin: user.stateOfOrigin ?? null,
+      lga: user.lga ?? null,
+      homeAddress: user.homeAddress ?? null,
       departmentId: user.departmentId,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,

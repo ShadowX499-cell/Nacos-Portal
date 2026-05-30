@@ -1,12 +1,16 @@
 import { Request } from 'express';
-import { UserRole, UserStatus, Program, Level } from '@prisma/client';
+import { UserRole, UserStatus, Program, Level, StudentStatus } from '@prisma/client';
+
+// ── Local type aliases (not yet in Prisma schema) ─────────────────────────────
+export type SuperAdminType = 'super' | 'department';
 
 // ── Augment Express Request to carry JWT payload ──────────────────────────────
 export interface JwtPayload {
   sub: string;        // user UUID
-  userId: string;     // NACOS/CSC/2024/001
+  userId: string;     // NACOS/CSC/2024/47291
   role: UserRole;
   departmentId: string;
+  superAdminType?: SuperAdminType | null;
   iat?: number;
   exp?: number;
 }
@@ -53,6 +57,11 @@ export interface CreateUserDto {
   program: Program;
   level: Level;
   departmentId: string;
+  profilePhotoUrl?: string;
+  dateOfBirth?: string;       // ISO date string YYYY-MM-DD
+  stateOfOrigin?: string;
+  lga?: string;
+  homeAddress?: string;
 }
 
 export interface LoginDto {
@@ -91,6 +100,13 @@ export interface UserPublic {
   level: Level;
   role: UserRole;
   status: UserStatus;
+  studentStatus: StudentStatus;
+  superAdminType: SuperAdminType | null;
+  profilePhotoUrl: string | null;
+  dateOfBirth: string | null;
+  stateOfOrigin: string | null;
+  lga: string | null;
+  homeAddress: string | null;
   departmentId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -267,4 +283,100 @@ export interface PaymentPublic {
   semester: string | null;
   paidAt: Date | null;
   createdAt: Date;
+}
+
+// ── Audit Log DTOs ────────────────────────────────────────────────────────────
+
+export interface AuditLogPublic {
+  id: string;
+  actorId: string;
+  actorName: string;
+  actorUserId: string;
+  actorRole: string;
+  action: string;
+  entityType: string | null;
+  entityId: string | null;
+  oldValue: unknown;
+  newValue: unknown;
+  ipAddress: string | null;
+  createdAt: Date;
+}
+
+export interface ListAuditLogsQuery {
+  page?: number;
+  limit?: number;
+  actorId?: string;
+  action?: string;
+  entityType?: string;
+  dateFrom?: string;
+  dateTo?: string;
+}
+
+// ── Compliance DTOs ───────────────────────────────────────────────────────────
+
+export interface ComplianceSummary {
+  nacosDue: { paid: number; total: number };
+  schoolFees: { paid: number; total: number };
+  courseForm: { verified: number; total: number };
+}
+
+// ── Revenue DTOs ──────────────────────────────────────────────────────────────
+
+export interface RevenueQuery {
+  page?: number;
+  limit?: number;
+  dateFrom?: string;
+  dateTo?: string;
+  session?: string;
+  semester?: string;
+  program?: string;
+  level?: string;
+  type?: string;
+}
+
+export interface RevenueSummary {
+  totalRevenue: number;
+  collectionRate: number;
+  byType: { type: string; amount: number; count: number }[];
+  byProgram: { program: string; amount: number }[];
+  byLevel: { level: string; amount: number }[];
+  monthlyTrend: { month: string; total: number }[];
+  recentPayments: Array<PaymentPublic & { studentName: string; studentUserId: string }>;
+  meta: PaginationMeta;
+}
+
+// ── Academic DTOs ─────────────────────────────────────────────────────────────
+
+export interface AcademicAdvancePreview {
+  currentSession: string;
+  currentSemester: string;
+  targetSession: string;
+  targetSemester: string;
+  type: 'semester' | 'session';
+  studentsToAdvance: number;
+  studentsToGraduate: number;
+  unpublishedGradebooks: number;
+}
+
+export interface AcademicTransitionPublic {
+  id: string;
+  fromSession: string;
+  fromSemester: string;
+  toSession: string;
+  toSemester: string;
+  studentsAdvanced: number;
+  studentsGraduated: number;
+  initiatedAt: Date;
+  initiatedByName: string;
+}
+
+export interface CarryoverCourse {
+  gradeId: string;
+  courseCode: string;
+  courseTitle: string;
+  creditUnits: number;
+  caScore: number | null;
+  examScore: number | null;
+  carriedFromSession: string;
+  resolvedAt: Date | null;
 }

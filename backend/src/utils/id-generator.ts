@@ -1,15 +1,11 @@
 import { PrismaClient, Program } from '@prisma/client';
 
 /**
- * Auto-generates the next sequential NACOS User ID for a given program + year.
+ * Generates a NACOS User ID with a random 5-digit suffix.
+ * Format: NACOS/<PROGRAM>/<YEAR>/<5-digit-random>
+ * Examples: NACOS/CSC/2024/47291, NACOS/ICT/2025/83104
  *
- * Format: NACOS/<PROGRAM>/<YEAR>/<SEQUENCE padded to 3 digits>
- * Examples: NACOS/CSC/2024/001, NACOS/ICT/2024/042
- *
- * Uses a database query to find the highest existing sequence for the
- * (program, year) pair and increments it by 1. Race conditions are safe
- * because the `userId` column has a UNIQUE constraint — Prisma will throw
- * on collision and the caller can retry.
+ * Retries up to 5 times on collision (userId has UNIQUE constraint).
  */
 export async function generateUserId(
   prisma: PrismaClient,
@@ -19,22 +15,14 @@ export async function generateUserId(
   const currentYear = year ?? new Date().getFullYear();
   const prefix = `NACOS/${program}/${currentYear}/`;
 
-  // Find the highest sequence for this prefix
-  const lastUser = await prisma.user.findFirst({
-    where: { userId: { startsWith: prefix } },
-    orderBy: { userId: 'desc' },
-    select: { userId: true },
-  });
-
-  let nextSeq = 1;
-  if (lastUser) {
-    const parts = lastUser.userId.split('/');
-    const lastSeq = parseInt(parts[3], 10);
-    if (!isNaN(lastSeq)) nextSeq = lastSeq + 1;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const suffix = String(Math.floor(Math.random() * 90000) + 10000);
+    const candidate = `${prefix}${suffix}`;
+    const existing = await prisma.user.findUnique({ where: { userId: candidate } });
+    if (!existing) return candidate;
   }
 
-  const seq = nextSeq.toString().padStart(3, '0');
-  return `${prefix}${seq}`;
+  throw new Error('ID_GENERATION_FAILED: Could not generate unique user ID after 5 attempts');
 }
 
 /** Derive the intake year from a User ID string. */

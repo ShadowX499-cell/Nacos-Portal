@@ -5,7 +5,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AdminService } from '../../src/modules/admin/admin.service';
 import { AppError } from '../../src/utils/response';
-import { UserRole, UserStatus, Program, Level } from '@prisma/client';
+import { UserRole, UserStatus, Program, Level, StudentStatus } from '@prisma/client';
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 
@@ -20,7 +20,7 @@ const mockDept = {
 
 const mockUser = {
   id: 'user-uuid-1',
-  userId: 'NACOS/CSC/2024/001',
+  userId: 'NACOS/CSC/2024/47291',
   departmentId: 'dept-uuid-1',
   name: 'Ada Lovelace',
   email: 'ada@test.com',
@@ -30,6 +30,12 @@ const mockUser = {
   role: UserRole.student,
   passwordHash: null,
   status: UserStatus.pending,
+  studentStatus: StudentStatus.active,
+  profilePhotoUrl: null,
+  dateOfBirth: null,
+  stateOfOrigin: null,
+  lga: null,
+  homeAddress: null,
   createdById: 'admin-uuid-1',
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -46,8 +52,13 @@ const prismaMock = {
     count: vi.fn(),
   },
   election: { count: vi.fn() },
-  gradebook: { count: vi.fn() },
+  gradebook: { count: vi.fn(), findMany: vi.fn() },
   auditLog: { create: vi.fn() },
+  payment: {
+    aggregate: vi.fn(),
+    findMany: vi.fn(),
+  },
+  attendanceSession: { count: vi.fn() },
 };
 
 vi.mock('../../src/utils/email', () => ({
@@ -56,7 +67,7 @@ vi.mock('../../src/utils/email', () => ({
 }));
 
 vi.mock('../../src/utils/id-generator', () => ({
-  generateUserId: vi.fn().mockResolvedValue('NACOS/CSC/2024/001'),
+  generateUserId: vi.fn().mockResolvedValue('NACOS/CSC/2024/47291'),
 }));
 
 let service: AdminService;
@@ -86,7 +97,7 @@ describe('AdminService.createUser', () => {
       'admin-uuid-1'
     );
 
-    expect(result.userId).toBe('NACOS/CSC/2024/001');
+    expect(result.userId).toBe('NACOS/CSC/2024/47291');
     expect(result.user.name).toBe('Ada Lovelace');
     expect(result.user).not.toHaveProperty('passwordHash');
     expect(prismaMock.user.create).toHaveBeenCalledTimes(1);
@@ -176,20 +187,31 @@ describe('AdminService.getUserById', () => {
 // ── getDashboardStats ─────────────────────────────────────────────────────────
 
 describe('AdminService.getDashboardStats', () => {
-  it('returns counts for all four summary cards', async () => {
+  it('returns counts for all summary cards', async () => {
     prismaMock.user.count
-      .mockResolvedValueOnce(120)
-      .mockResolvedValueOnce(5);
+      .mockResolvedValueOnce(120)   // totalStudents
+      .mockResolvedValueOnce(5)     // pendingValidations
+      .mockResolvedValueOnce(0)     // L100
+      .mockResolvedValueOnce(0)     // L200
+      .mockResolvedValueOnce(0)     // L300
+      .mockResolvedValueOnce(0);    // L400
     prismaMock.election.count.mockResolvedValue(1);
-    prismaMock.gradebook.count.mockResolvedValue(2);
+    prismaMock.gradebook.count
+      .mockResolvedValueOnce(2)     // unpublishedResults (draft)
+      .mockResolvedValueOnce(3);    // publishedGradebooks
+    prismaMock.gradebook.findMany.mockResolvedValue([]);
+    prismaMock.payment.aggregate.mockResolvedValue({ _sum: { amount: 50000 } });
+    prismaMock.payment.findMany.mockResolvedValue([]);
+    prismaMock.attendanceSession.count.mockResolvedValue(0);
+    prismaMock.user.findMany.mockResolvedValue([]);
 
     const stats = await service.getDashboardStats('dept-uuid-1');
 
-    expect(stats).toEqual({
-      totalStudents: 120,
-      pendingValidations: 5,
-      activeElections: 1,
-      unpublishedResults: 2,
-    });
+    expect(stats.totalStudents).toBe(120);
+    expect(stats.pendingValidations).toBe(5);
+    expect(stats.activeElections).toBe(1);
+    expect(stats.unpublishedResults).toBe(2);
+    expect(stats.publishedGradebooks).toBe(3);
+    expect(stats.totalRevenue).toBe(50000);
   });
 });

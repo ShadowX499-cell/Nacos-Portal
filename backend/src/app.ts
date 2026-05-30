@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import path from 'path';
 import { env } from './config/env';
 import { errorHandler } from './middleware/error.middleware';
 import authRoutes from './modules/auth/auth.routes';
@@ -43,6 +44,9 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 if (env.NODE_ENV !== 'test') {
   app.use(morgan('dev'));
 }
+
+// ── Static file serving for uploaded photos ───────────────────────────────────
+app.use('/api/v1/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get('/health', (_req, res) => {

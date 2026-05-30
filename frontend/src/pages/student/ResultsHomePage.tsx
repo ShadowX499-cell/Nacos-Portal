@@ -88,10 +88,16 @@ export default function ResultsHomePage() {
           Loading…
         </div>
       ) : results.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center text-gray-500">
-          <div className="text-4xl mb-3">📂</div>
-          <p className="font-semibold text-gray-700">No published results yet</p>
-          <p className="text-sm text-gray-400 mt-1">Check back after your semester results are published.</p>
+        <div className="bg-white rounded-2xl border-2 border-dashed border-gray-200 p-10 text-center">
+          <div className="text-5xl mb-4">📋</div>
+          <p className="font-bold text-gray-800 text-lg">No results published yet</p>
+          <p className="text-sm text-gray-500 mt-2 max-w-sm mx-auto">
+            Your department admin will publish semester results here. Once available, you can pay
+            ₦{RESULT_FEE.toLocaleString()} per semester to unlock your full grade sheet.
+          </p>
+          <div className="mt-5 inline-flex items-center gap-2 bg-brand-50 border border-brand-100 rounded-xl px-5 py-3 text-sm text-brand-700 font-medium">
+            <span>💡</span> Check back after end-of-semester exams
+          </div>
         </div>
       ) : (
         <div className="space-y-5">

@@ -1,17 +1,127 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { TrendingUp, TrendingDown, Calendar, MapPin, ArrowRight, BookOpen, CreditCard, FileText, Bell } from 'lucide-react';
+import { TrendingUp, TrendingDown, MapPin, ArrowRight, BookOpen, FileText, Bell, X, Clock, Users } from 'lucide-react';
 import { profileApi, resultsApi, notificationsApi, registrationApi, paymentsApi } from '../../api/client';
 import type { User, ResultListItem, Registration, GpaSummary } from '../../types';
 
 // ── Upcoming events (static — will be from API in Phase 3) ───────────────────
 
-const UPCOMING_EVENTS = [
-  { date: { month: 'JUN', day: '14' }, title: 'NACOS Week 2025 Kick-off', location: 'Main Auditorium', tag: 'Free' },
-  { date: { month: 'JUN', day: '21' }, title: 'Tech Showcase & Exhibition', location: 'CS Department', tag: 'Free' },
-  { date: { month: 'JUL', day: '05' }, title: 'Executive Elections 2025',   location: 'University Hall',  tag: 'Members' },
+interface EventItem {
+  date: { month: string; day: string };
+  title: string;
+  location: string;
+  tag: string;
+  time: string;
+  description: string;
+  organizer: string;
+}
+
+const UPCOMING_EVENTS: EventItem[] = [
+  {
+    date: { month: 'JUN', day: '14' },
+    title: 'NACOS Week 2025 Kick-off',
+    location: 'Main Auditorium',
+    tag: 'Free',
+    time: '10:00 AM',
+    description: 'The official opening ceremony of NACOS Week 2025. All students are welcome to attend the keynote address, departmental parade, and cultural performances. Refreshments will be provided.',
+    organizer: 'NACOS Executive Council',
+  },
+  {
+    date: { month: 'JUN', day: '21' },
+    title: 'Tech Showcase & Exhibition',
+    location: 'CS Department',
+    tag: 'Free',
+    time: '9:00 AM – 4:00 PM',
+    description: 'Students showcase their semester projects and innovations. Industry judges from top Nigerian tech companies will be in attendance. Top 3 projects win cash prizes and internship placements.',
+    organizer: 'NACOS Tech Committee',
+  },
+  {
+    date: { month: 'JUL', day: '05' },
+    title: 'Executive Elections 2025',
+    location: 'University Hall',
+    tag: 'Members',
+    time: '8:00 AM – 5:00 PM',
+    description: 'Cast your vote for the next NACOS executive team. Voting is open to all paid-up NACOS members. Bring your student ID and ensure your NACOS Due is cleared before the election date.',
+    organizer: 'NACOS Electoral Committee',
+  },
 ];
+
+// ── Event Detail Modal ────────────────────────────────────────────────────────
+
+function EventModal({ event, onClose }: { event: EventItem; onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+      >
+        {/* Banner */}
+        <div className="relative px-5 py-5" style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 100%)' }}>
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/25 transition-colors"
+          >
+            <X className="w-3.5 h-3.5 text-white" />
+          </button>
+          <div className="flex items-start gap-4">
+            <div className="text-center bg-white/15 border border-white/20 rounded-xl px-3 py-2 flex-shrink-0 min-w-[52px]">
+              <div className="text-[9px] font-bold text-brand-300 uppercase tracking-wide">{event.date.month}</div>
+              <div className="font-black text-white text-2xl leading-none">{event.date.day}</div>
+            </div>
+            <div>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block ${
+                event.tag === 'Free' ? 'bg-brand-400/30 text-brand-200' : 'bg-blue-400/30 text-blue-200'
+              }`}>{event.tag}</span>
+              <h3 className="text-white font-bold text-base leading-tight">{event.title}</h3>
+            </div>
+          </div>
+        </div>
+
+        {/* Details */}
+        <div className="p-5 space-y-4">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2.5">
+              <MapPin className="w-4 h-4 text-brand-600 flex-shrink-0" />
+              <div>
+                <p className="text-[9px] text-gray-400 font-semibold uppercase tracking-wide">Venue</p>
+                <p className="text-xs font-semibold text-gray-800">{event.location}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2.5">
+              <Clock className="w-4 h-4 text-brand-600 flex-shrink-0" />
+              <div>
+                <p className="text-[9px] text-gray-400 font-semibold uppercase tracking-wide">Time</p>
+                <p className="text-xs font-semibold text-gray-800">{event.time}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2.5">
+            <Users className="w-4 h-4 text-brand-600 flex-shrink-0" />
+            <div>
+              <p className="text-[9px] text-gray-400 font-semibold uppercase tracking-wide">Organizer</p>
+              <p className="text-xs font-semibold text-gray-800">{event.organizer}</p>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs font-bold text-gray-700 mb-1.5">About this event</p>
+            <p className="text-xs text-gray-600 leading-relaxed">{event.description}</p>
+          </div>
+
+          <button
+            onClick={onClose}
+            className="w-full bg-brand-700 hover:bg-brand-800 text-white font-bold py-3 rounded-xl text-sm transition-colors"
+          >
+            Got it
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
 
 // ── SGPA Trend Chart (SVG) ────────────────────────────────────────────────────
 
@@ -167,6 +277,7 @@ export default function StudentDashboard() {
   const [pendingPayments, setPendingPayments] = useState(0);
   const [gpa, setGpa] = useState<GpaSummary | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeEvent, setActiveEvent] = useState<EventItem | null>(null);
 
   useEffect(() => {
     Promise.allSettled([
@@ -210,6 +321,7 @@ export default function StudentDashboard() {
 
   return (
     <div className="p-4 md:p-6 max-w-6xl mx-auto space-y-5">
+      {activeEvent && <EventModal event={activeEvent} onClose={() => setActiveEvent(null)} />}
 
       {/* ── Hero greeting row ───────────────────────────────────────────────── */}
       <motion.div
@@ -456,11 +568,19 @@ export default function StudentDashboard() {
                   </span>
                 </div>
               </div>
-              <span className={`flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                ev.tag === 'Free' ? 'bg-brand-100 text-brand-700' : 'bg-blue-100 text-blue-700'
-              }`}>
-                {ev.tag}
-              </span>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                  ev.tag === 'Free' ? 'bg-brand-100 text-brand-700' : 'bg-blue-100 text-blue-700'
+                }`}>
+                  {ev.tag}
+                </span>
+                <button
+                  onClick={() => setActiveEvent(ev)}
+                  className="text-[10px] font-semibold text-brand-700 hover:text-brand-900 border border-brand-200 hover:border-brand-400 px-2.5 py-1 rounded-lg transition-colors"
+                >
+                  More Info
+                </button>
+              </div>
             </div>
           ))}
         </div>

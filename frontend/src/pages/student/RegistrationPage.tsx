@@ -27,12 +27,14 @@ export default function RegistrationPage() {
   const [file, setFile] = useState<File | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // NACOS dues receipt upload state
+  // School Fee receipt upload state
   const [duesFile, setDuesFile] = useState<File | null>(null);
   const duesFileRef = useRef<HTMLInputElement>(null);
   const [duesSubmitting, setDuesSubmitting] = useState(false);
   const [duesSuccess, setDuesSuccess] = useState('');
   const [duesError, setDuesError] = useState('');
+  const [duesSession, setDuesSession] = useState('');
+  const [duesSemester, setDuesSemester] = useState('first');
 
   const load = () => {
     registrationApi.list()
@@ -67,17 +69,19 @@ export default function RegistrationPage() {
   };
 
   const handleDuesUpload = async () => {
-    if (!duesFile) return;
+    if (!duesFile || !duesSession.match(/^\d{4}\/\d{4}$/)) {
+      setDuesError('Please enter a valid session (YYYY/YYYY) and select a file.');
+      return;
+    }
     setDuesSubmitting(true);
     setDuesError('');
     setDuesSuccess('');
     try {
-      // Phase 3: will call schoolFeesApi.uploadReceipt(duesFile)
-      // For now simulate async submission
+      // Phase 3: will call schoolFeesApi.uploadReceipt(duesFile, duesSession, duesSemester)
       await new Promise<void>((resolve) => setTimeout(resolve, 1200));
       setDuesFile(null);
       if (duesFileRef.current) duesFileRef.current.value = '';
-      setDuesSuccess('NACOS dues receipt uploaded. The finance team will verify within 24 hours.');
+      setDuesSuccess(`School fee receipt for ${duesSession} ${duesSemester} semester uploaded. The finance team will verify within 24 hours.`);
     } catch (err) {
       setDuesError(extractApiError(err));
     } finally {
@@ -210,15 +214,15 @@ export default function RegistrationPage() {
         </div>
       )}
 
-      {/* ── NACOS Dues Receipt Upload ─────────────────────────────────────────── */}
+      {/* ── School Fee Receipt Upload ─────────────────────────────────────────── */}
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-3">
           <div className="w-8 h-8 rounded-xl bg-brand-100 flex items-center justify-center flex-shrink-0">
-            <span className="text-base">💰</span>
+            <span className="text-base">🏫</span>
           </div>
           <div>
-            <p className="text-sm font-bold text-gray-900">NACOS Dues Receipt</p>
-            <p className="text-xs text-gray-400">Already paid offline? Upload your payment receipt for verification.</p>
+            <p className="text-sm font-bold text-gray-900">School Fee Receipt</p>
+            <p className="text-xs text-gray-400">Already paid offline? Upload your school fee receipt for verification.</p>
           </div>
         </div>
 
@@ -243,6 +247,31 @@ export default function RegistrationPage() {
                 Accepted: PDF, JPG, PNG · Max 5 MB · Include your bank teller or transfer screenshot.
               </p>
 
+              {/* Session + Semester fields */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Session</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 2024/2025"
+                    value={duesSession}
+                    onChange={(e) => setDuesSession(e.target.value)}
+                    className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Semester</label>
+                  <select
+                    value={duesSemester}
+                    onChange={(e) => setDuesSemester(e.target.value)}
+                    className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  >
+                    <option value="first">First Semester</option>
+                    <option value="second">Second Semester</option>
+                  </select>
+                </div>
+              </div>
+
               <label className="flex items-center gap-3 border-2 border-dashed border-gray-200 rounded-xl px-4 py-3 cursor-pointer hover:border-brand-400 hover:bg-brand-50 transition-colors">
                 <Upload className="w-4 h-4 text-gray-400 flex-shrink-0" />
                 <span className="text-sm text-gray-500 truncate">
@@ -265,7 +294,7 @@ export default function RegistrationPage() {
                 {duesSubmitting ? (
                   <><div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" /> Uploading…</>
                 ) : (
-                  <><Upload className="w-4 h-4" /> Upload NACOS Dues Receipt</>
+                  <><Upload className="w-4 h-4" /> Upload School Fee Receipt</>
                 )}
               </button>
             </>

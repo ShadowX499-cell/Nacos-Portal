@@ -98,6 +98,7 @@ export interface DashboardStats {
   draftGradebooksReady: number;
   monthlyRevenue: { month: string; total: number }[];
   studentsByLevel: { level: string; count: number }[];
+  studentsByProgram: { program: string; count: number }[];
   recentActivity: {
     type: 'registered' | 'activated' | 'payment' | 'result_published';
     label: string;
@@ -353,4 +354,37 @@ export interface DepartmentSettings {
   faculty: string | null;
   currentSession: string | null;
   currentSemester: string | null;
+}
+
+// ── Academic DTOs ─────────────────────────────────────────────────────────────
+
+export interface AcademicAdvancePreview {
+  currentSession: string;
+  currentSemester: string;
+  targetSession: string;
+  targetSemester: string;
+  type: 'semester' | 'session';
+  studentsToAdvance: number;
+  studentsToGraduate: number;
+  unpublishedGradebooks: number;
+}
+
+export interface AcademicTransitionPublic {
+  id: string;
+  fromSession: string;
+  fromSemester: string;
+  toSession: string;
+  toSemester: string;
+  studentsAdvanced: number;
+  studentsGraduated: number;
+  initiatedAt: string;
+  initiatedByName: string;
+}
+
+// ── Compliance DTOs ───────────────────────────────────────────────────────────
+
+export interface ComplianceSummary {
+  nacosDue: { paid: number; total: number };
+  schoolFees: { paid: number; total: number };
+  courseForm: { verified: number; total: number };
 }

@@ -277,14 +277,61 @@ export class GradebookService {
       this.db.auditLog.create({
         data: {
           actorId,
-          action: 'GRADEBOOK_PUBLISHED',
+          action: 'RESULT_PUBLISHED',
           entityType: 'gradebook',
           entityId: id,
         },
       }),
     ]);
 
+    // ── Carryover computation (post-publish, fire-and-forget) ─────────────────
+    this.computeCarryovers(id, gradebook.session).catch((e) =>
+      console.error('[GradebookService] Carryover computation failed:', e)
+    );
+
     return this.toPublicGradebook(updated);
+  }
+
+  private async computeCarryovers(gradebookId: string, session: string): Promise<void> {
+    const allGrades = await this.db.studentGrade.findMany({
+      where: { course: { gradebookId } },
+      select: { id: true, userId: true, grade: true, isCarryover: true, resolvedAt: true },
+    });
+
+    const nowFailed = allGrades.filter((g) => g.grade === 'F' && !g.isCarryover);
+    const nowPassed = allGrades.filter((g) => g.grade !== 'F' && g.grade !== null && g.isCarryover && !g.resolvedAt);
+
+    // Mark newly failed grades as carryover
+    if (nowFailed.length > 0) {
+      await this.db.studentGrade.updateMany({
+        where: { id: { in: nowFailed.map((g) => g.id) } },
+        data: { isCarryover: true, carriedFromSession: session },
+      });
+    }
+
+    // Resolve previously failed grades that are now passing
+    if (nowPassed.length > 0) {
+      await this.db.studentGrade.updateMany({
+        where: { id: { in: nowPassed.map((g) => g.id) } },
+        data: { resolvedAt: new Date() },
+      });
+    }
+
+    // Collect affected student IDs
+    const affectedStudentIds = [
+      ...new Set([...nowFailed.map((g) => g.userId), ...nowPassed.map((g) => g.userId)]),
+    ];
+
+    // Update studentStatus for affected students
+    for (const userId of affectedStudentIds) {
+      const unresolvedCount = await this.db.studentGrade.count({
+        where: { userId, isCarryover: true, resolvedAt: null },
+      });
+      await this.db.user.update({
+        where: { id: userId },
+        data: { studentStatus: unresolvedCount > 0 ? 'carryover' : 'active' },
+      });
+    }
   }
 
   // ── CSV Jobs ─────────────────────────────────────────────────────────────────

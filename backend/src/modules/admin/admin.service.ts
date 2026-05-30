@@ -237,6 +237,7 @@ export class AdminService {
     draftGradebooksReady: number;
     monthlyRevenue: { month: string; total: number }[];
     studentsByLevel: { level: string; count: number }[];
+    studentsByProgram: { program: string; count: number }[];
     recentActivity: {
       type: 'registered' | 'activated' | 'payment' | 'result_published';
       label: string;
@@ -264,6 +265,7 @@ export class AdminService {
       recentPayments,
       recentGradebooks,
       levelCounts,
+      programCounts,
       successPayments,
     ] = await Promise.all([
       this.db.user.count({ where: { departmentId, role: UserRole.student } }),
@@ -299,6 +301,12 @@ export class AdminService {
         (['L100', 'L200', 'L300', 'L400'] as const).map(async (level) => ({
           level,
           count: await this.db.user.count({ where: { departmentId, role: UserRole.student, level } }),
+        }))
+      ),
+      Promise.all(
+        (['CSC', 'ICT', 'CRE'] as const).map(async (program) => ({
+          program,
+          count: await this.db.user.count({ where: { departmentId, role: UserRole.student, program } }),
         }))
       ),
       this.db.payment.findMany({
@@ -366,6 +374,7 @@ export class AdminService {
       draftGradebooksReady,
       monthlyRevenue,
       studentsByLevel: levelCounts,
+      studentsByProgram: programCounts,
       recentActivity: activities,
     };
   }

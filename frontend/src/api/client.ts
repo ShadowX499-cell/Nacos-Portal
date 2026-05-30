@@ -156,6 +156,17 @@ export const adminApi = {
     api.patch<{ success: true; data: import('../types').User }>(`/admin/users/${id}`, body),
 };
 
+// ── Academic API (HOD) ────────────────────────────────────────────────────────
+
+export const academicApi = {
+  preview: () =>
+    api.get<{ success: true; data: import('../types').AcademicAdvancePreview }>('/admin/academic/preview'),
+  advance: (body: { type: 'semester' | 'session'; confirm: boolean; force?: boolean }) =>
+    api.post<{ success: true; data: import('../types').AcademicTransitionPublic }>('/admin/academic/advance', body),
+  listTransitions: () =>
+    api.get<{ success: true; data: import('../types').AcademicTransitionPublic[] }>('/admin/academic/transitions'),
+};
+
 // ── Super Admins API ──────────────────────────────────────────────────────────
 
 export const superAdminsApi = {

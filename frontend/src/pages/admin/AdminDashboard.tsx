@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
@@ -115,6 +115,52 @@ function LevelDonut({ data }: { data: { level: string; count: number }[] }) {
   );
 }
 
+// ── Students-by-Program Donut ─────────────────────────────────────────────────
+
+const PROGRAM_COLORS: Record<string, string> = {
+  CSC: '#2563eb', ICT: '#16a34a', CRE: '#d97706',
+};
+
+function ProgramDonut({ data }: { data: { program: string; count: number }[] }) {
+  const total = data.reduce((s, d) => s + d.count, 0);
+  if (total === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-20 gap-2">
+        <p className="text-xs text-gray-400">No students yet</p>
+      </div>
+    );
+  }
+  let cumul = 0;
+  const stops = data.map((d) => {
+    const pct = (d.count / total) * 100;
+    const stop = `${PROGRAM_COLORS[d.program] ?? '#e5e7eb'} ${cumul.toFixed(1)}% ${(cumul + pct).toFixed(1)}%`;
+    cumul += pct;
+    return stop;
+  }).join(', ');
+
+  return (
+    <div className="flex items-center gap-5">
+      <div className="relative flex-shrink-0" style={{ width: 72, height: 72 }}>
+        <div className="w-full h-full rounded-full"
+          style={{ background: `conic-gradient(${stops})` }} />
+        <div className="absolute inset-[16px] rounded-full bg-white flex items-center justify-center shadow-inner">
+          <span className="text-[10px] font-bold text-gray-700">{total}</span>
+        </div>
+      </div>
+      <div className="space-y-1.5 flex-1">
+        {data.map((d) => (
+          <div key={d.program} className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0"
+              style={{ background: PROGRAM_COLORS[d.program] ?? '#e5e7eb' }} />
+            <span className="text-xs text-gray-600">{d.program}</span>
+            <span className="text-xs font-bold text-gray-900 ml-auto">{d.count}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── KPI card config ───────────────────────────────────────────────────────────
 
 function buildCards(s: DashboardStats) {
@@ -149,7 +195,7 @@ function buildCards(s: DashboardStats) {
       border: 'border-brand-200',
       bg: 'bg-brand-50',
       text: 'text-brand-700',
-      href: null,
+      href: '/admin/revenue',
       urgent: false,
     },
     {
@@ -185,7 +231,7 @@ function buildCards(s: DashboardStats) {
       href: '/admin/attendance',
       urgent: false,
     },
-  ] as const;
+  ] satisfies { label: string; value: string; icon: React.ElementType; iconBg: string; border: string; bg: string; text: string; href: string | null; urgent: boolean }[];
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
@@ -330,17 +376,22 @@ export default function AdminDashboard() {
           <RevenueBarChart data={stats.monthlyRevenue} />
         </motion.div>
 
-        {/* Students by level donut */}
+        {/* Students by level + program donuts */}
         <motion.div
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35 }}
-          className="md:col-span-2 bg-white rounded-2xl border border-gray-200 p-5 shadow-sm"
+          className="md:col-span-2 bg-white rounded-2xl border border-gray-200 p-5 shadow-sm space-y-5"
         >
-          <div className="mb-4">
+          <div>
             <h2 className="text-sm font-bold text-gray-900">Students by Level</h2>
             <p className="text-xs text-gray-400 mt-0.5">Current enrollment breakdown</p>
+            <div className="mt-3"><LevelDonut data={stats.studentsByLevel} /></div>
           </div>
-          <LevelDonut data={stats.studentsByLevel} />
+          <div className="border-t border-gray-100 pt-4">
+            <h2 className="text-sm font-bold text-gray-900">Students by Program</h2>
+            <p className="text-xs text-gray-400 mt-0.5">CSC · ICT · CRE distribution</p>
+            <div className="mt-3"><ProgramDonut data={stats.studentsByProgram ?? []} /></div>
+          </div>
         </motion.div>
       </div>
 

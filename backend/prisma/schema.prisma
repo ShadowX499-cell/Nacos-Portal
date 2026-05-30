@@ -138,11 +138,12 @@ model Department {
   currentSemester Semester? @map("current_semester")
   createdAt       DateTime  @default(now()) @map("created_at")
 
-  users              User[]
-  gradebooks         Gradebook[]
-  elections          Election[]
-  attendanceSessions AttendanceSession[]
-  notifications      Notification[]
+  users                User[]
+  gradebooks           Gradebook[]
+  elections            Election[]
+  attendanceSessions   AttendanceSession[]
+  notifications        Notification[]
+  academicTransitions  AcademicTransition[]
 
   @@map("departments")
 }
@@ -199,6 +200,7 @@ model User {
   registeredBiometrics  Biometric[]          @relation("RegisteredBy")
   courseRegistrations   CourseRegistration[] @relation("UserRegistrations")
   reviewedRegistrations CourseRegistration[] @relation("ReviewedRegistrations")
+  initiatedTransitions  AcademicTransition[]
 
   @@map("users")
 }
@@ -268,8 +270,11 @@ model StudentGrade {
   uploadMethod     UploadMethod @default(manual) @map("upload_method")
   enteredById      String       @map("entered_by")
   enteredAt        DateTime     @default(now()) @map("entered_at")
-  lastModifiedById String?      @map("last_modified_by")
-  lastModifiedAt   DateTime?    @map("last_modified_at")
+  lastModifiedById    String?   @map("last_modified_by")
+  lastModifiedAt      DateTime? @map("last_modified_at")
+  isCarryover         Boolean   @default(false) @map("is_carryover")
+  carriedFromSession  String?   @map("carried_from_session") @db.VarChar(20)
+  resolvedAt          DateTime? @map("resolved_at")
 
   course         Course @relation(fields: [courseId], references: [id])
   student        User   @relation("StudentGrades", fields: [userId], references: [id])
@@ -498,4 +503,22 @@ model CourseRegistration {
 
   @@unique([userId, session, semester])
   @@map("course_registrations")
+}
+
+model AcademicTransition {
+  id                String   @id @default(uuid())
+  departmentId      String   @map("department_id")
+  fromSession       String   @map("from_session")    @db.VarChar(20)
+  fromSemester      Semester @map("from_semester")
+  toSession         String   @map("to_session")      @db.VarChar(20)
+  toSemester        Semester @map("to_semester")
+  studentsAdvanced  Int      @map("students_advanced")
+  studentsGraduated Int      @map("students_graduated")
+  initiatedById     String   @map("initiated_by")
+  initiatedAt       DateTime @default(now()) @map("initiated_at")
+
+  department  Department @relation(fields: [departmentId], references: [id])
+  initiatedBy User       @relation(fields: [initiatedById], references: [id])
+
+  @@map("academic_transitions")
 }

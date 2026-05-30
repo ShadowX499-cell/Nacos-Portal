@@ -7,6 +7,7 @@ import { requirePermission } from '../../middleware/permission.middleware';
 import { createUserRules, listUsersRules, updateUserRules } from './admin.validation';
 import { listSuperAdmins, assignSuperAdmin, revokeSuperAdmin } from './super-admins.controller';
 import { listAuditLogs, listOwnAuditLogs, getAuditLogById } from './audit-logs.controller';
+import { previewAdvance, advanceSemester, listTransitions } from './academic.controller';
 import {
   getDashboard,
   createUser,
@@ -83,6 +84,17 @@ router.patch(
   ]),
   updateDepartmentSettings
 );
+
+// ── Academic Calendar (HOD only) ─────────────────────────────────────────────
+
+/** GET  /api/v1/admin/academic/preview */
+router.get('/academic/preview', requirePermission('advance_semester'), previewAdvance);
+
+/** POST /api/v1/admin/academic/advance */
+router.post('/academic/advance', requirePermission('advance_semester'), advanceSemester);
+
+/** GET  /api/v1/admin/academic/transitions */
+router.get('/academic/transitions', requirePermission('advance_semester'), listTransitions);
 
 // ── Super Admins (HOD only) ───────────────────────────────────────────────────
 

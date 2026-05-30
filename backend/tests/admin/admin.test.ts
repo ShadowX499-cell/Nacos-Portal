@@ -53,7 +53,7 @@ const prismaMock = {
   },
   election: { count: vi.fn() },
   gradebook: { count: vi.fn(), findMany: vi.fn() },
-  auditLog: { create: vi.fn() },
+  auditLog: { create: vi.fn().mockResolvedValue({}) },
   payment: {
     aggregate: vi.fn(),
     findMany: vi.fn(),

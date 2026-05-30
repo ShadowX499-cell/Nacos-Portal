@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { authenticate, requireAdmin } from '../../middleware/auth.middleware';
 import { validate } from '../../middleware/validate.middleware';
 import { apiRateLimit } from '../../middleware/rate-limit.middleware';
+import { photoUpload } from '../../config/multer';
 import { createUserRules, listUsersRules, updateUserRules } from './admin.validation';
 import {
   getDashboard,
@@ -34,7 +35,7 @@ router.use(authenticate, requireAdmin, apiRateLimit);
 router.get('/dashboard', getDashboard);
 
 /** POST /api/v1/admin/users */
-router.post('/users', validate(createUserRules), createUser);
+router.post('/users', photoUpload.single('photo'), validate(createUserRules), createUser);
 
 /** GET  /api/v1/admin/users */
 router.get('/users', validate(listUsersRules), listUsers);
@@ -43,7 +44,7 @@ router.get('/users', validate(listUsersRules), listUsers);
 router.get('/users/:id', getUserById);
 
 /** PATCH /api/v1/admin/users/:id */
-router.patch('/users/:id', validate(updateUserRules), updateUser);
+router.patch('/users/:id', photoUpload.single('photo'), validate(updateUserRules), updateUser);
 
 // ── Notifications ─────────────────────────────────────────────────────────────
 

@@ -14,8 +14,15 @@ export const getDashboard = asyncHandler(async (req: Request, res: Response) => 
 /** POST /api/v1/admin/users */
 export const createUser = asyncHandler(async (req: Request, res: Response) => {
   const { sub, departmentId } = (req as AuthRequest).user;
+  const file = (req as Request & { file?: Express.Multer.File }).file;
+  const profilePhotoUrl = file ? `/api/v1/uploads/${file.filename}` : undefined;
+
   const result = await adminService.createUser(
-    { ...(req.body as Omit<import('../../types').CreateUserDto, 'departmentId'>), departmentId },
+    {
+      ...(req.body as Omit<import('../../types').CreateUserDto, 'departmentId'>),
+      departmentId,
+      profilePhotoUrl,
+    },
     sub
   );
   sendSuccess(res, result, `User created. ID: ${result.userId} sent to ${result.user.email}`, 201);
@@ -47,10 +54,14 @@ export const getUserById = asyncHandler(async (req: Request, res: Response) => {
 /** PATCH /api/v1/admin/users/:id */
 export const updateUser = asyncHandler(async (req: Request, res: Response) => {
   const { sub, departmentId } = (req as AuthRequest).user;
+  const file = (req as Request & { file?: Express.Multer.File }).file;
+  const profilePhotoUrl = file ? `/api/v1/uploads/${file.filename}` : undefined;
+
+  const body = req.body as Parameters<typeof adminService.updateUser>[2];
   const user = await adminService.updateUser(
     req.params.id,
     departmentId,
-    req.body as Parameters<typeof adminService.updateUser>[2],
+    { ...body, ...(profilePhotoUrl ? { profilePhotoUrl } : {}) },
     sub
   );
   sendSuccess(res, user, 'User updated');

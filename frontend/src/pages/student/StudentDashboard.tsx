@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { TrendingUp, TrendingDown, MapPin, ArrowRight, BookOpen, FileText, Bell, X, Clock, Users } from 'lucide-react';
 import { profileApi, resultsApi, notificationsApi, registrationApi, paymentsApi } from '../../api/client';
-import type { User, ResultListItem, Registration, GpaSummary } from '../../types';
+import type { User, ResultListItem, Registration, GpaSummary, StudentResultView } from '../../types';
 
 // ── Upcoming events (static — will be from API in Phase 3) ───────────────────
 
@@ -276,6 +276,7 @@ export default function StudentDashboard() {
   const [latestReg, setLatestReg] = useState<Registration | null>(null);
   const [pendingPayments, setPendingPayments] = useState(0);
   const [gpa, setGpa] = useState<GpaSummary | null>(null);
+  const [latestResult, setLatestResult] = useState<StudentResultView | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeEvent, setActiveEvent] = useState<EventItem | null>(null);
 
@@ -283,7 +284,17 @@ export default function StudentDashboard() {
     Promise.allSettled([
       profileApi.getMe().then((r) => setProfile(r.data.data)),
       resultsApi.list().then((r) => setResults(r.data.data)),
-      resultsApi.getGpa().then((r) => setGpa(r.data.data)),
+      resultsApi.getGpa().then((r) => {
+        const g = r.data.data;
+        setGpa(g);
+        // Load latest paid semester for histogram
+        if (g.semesters.length > 0) {
+          const sorted = [...g.semesters].sort((a, b) =>
+            b.session.localeCompare(a.session) || b.semester.localeCompare(a.semester)
+          );
+          return resultsApi.get(sorted[0].gradebookId).then((rr) => setLatestResult(rr.data.data));
+        }
+      }),
       notificationsApi.getUnreadCount().then((r) => setUnread(r.data.data.count)),
       registrationApi.list().then((r) => setLatestReg(r.data.data[0] ?? null)),
       paymentsApi.history().then((r) =>
@@ -349,12 +360,30 @@ export default function StudentDashboard() {
               <p className="text-brand-300 text-sm mt-1">{profile?.program} · {profile?.level} · {profile?.userId}</p>
             </div>
           </div>
-          {/* CGPA — always visible */}
-          <div className="flex-shrink-0 text-center bg-white/15 border border-white/25 rounded-2xl px-5 py-4 backdrop-blur-sm">
-            <div className="text-4xl font-black text-white leading-none">
-              {gpa && gpa.cgpa > 0 ? gpa.cgpa.toFixed(2) : '—'}
+          {/* CGPA + Semester GPA breakdown */}
+          <div className="flex-shrink-0 bg-white/15 border border-white/25 rounded-2xl px-4 py-4 backdrop-blur-sm min-w-[130px]">
+            <div className="text-center mb-2">
+              <div className="text-4xl font-black text-white leading-none">
+                {gpa && gpa.cgpa > 0 ? gpa.cgpa.toFixed(2) : '—'}
+              </div>
+              <div className="text-brand-300 text-xs font-bold uppercase tracking-widest mt-1">CGPA</div>
             </div>
-            <div className="text-brand-300 text-xs font-bold uppercase tracking-widest mt-1">CGPA</div>
+            {gpa && gpa.semesters.length > 0 && (
+              <div className="border-t border-white/20 pt-2 mt-2 space-y-1">
+                {[...gpa.semesters]
+                  .sort((a, b) => a.session.localeCompare(b.session) || a.semester.localeCompare(b.semester))
+                  .map((s, i) => (
+                    <div key={i} className="flex items-center justify-between gap-3">
+                      <span className="text-[10px] text-brand-300 whitespace-nowrap">
+                        {s.session.split('/')[0]} {s.semester === 'first' ? 'S1' : 'S2'}
+                      </span>
+                      <span className={`text-xs font-bold ${s.sgpa >= 3.5 ? 'text-green-300' : s.sgpa >= 2.5 ? 'text-yellow-300' : 'text-red-300'}`}>
+                        {s.sgpa.toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -457,6 +486,72 @@ export default function StudentDashboard() {
           )}
         </motion.div>
       </div>
+
+      {/* ── Course Performance Histogram ───────────────────────────────────── */}
+      {latestResult && latestResult.courses.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.22 }}
+          className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-sm font-bold text-gray-900">Course Performance</h2>
+              <p className="text-xs text-gray-400 mt-0.5">
+                {latestResult.gradebookName} — scores out of 100
+              </p>
+            </div>
+            <span className="text-xs font-bold text-brand-700 bg-brand-50 px-2 py-1 rounded-lg">
+              SGPA {latestResult.sgpa.toFixed(2)}
+            </span>
+          </div>
+          <div className="space-y-2.5">
+            {latestResult.courses.map((c) => {
+              const score = c.total ?? 0;
+              const pct = Math.min((score / 100) * 100, 100);
+              const barColor =
+                score >= 70 ? '#16a34a' :
+                score >= 60 ? '#2563eb' :
+                score >= 50 ? '#7c3aed' :
+                score >= 40 ? '#d97706' : '#dc2626';
+              return (
+                <div key={c.courseCode} className="flex items-center gap-3">
+                  <span className="font-mono text-[10px] text-gray-400 w-14 flex-shrink-0 text-right">{c.courseCode}</span>
+                  <div className="flex-1 bg-gray-100 rounded-full h-5 overflow-hidden">
+                    <div
+                      className="h-full rounded-full flex items-center justify-end pr-2 transition-all duration-700"
+                      style={{ width: `${pct}%`, background: barColor, minWidth: score > 0 ? '2rem' : 0 }}
+                    >
+                      {score > 0 && (
+                        <span className="text-white text-[9px] font-bold leading-none">{score}</span>
+                      )}
+                    </div>
+                  </div>
+                  <span className={`text-xs font-bold w-6 flex-shrink-0 text-center`} style={{ color: barColor }}>
+                    {c.grade ?? '—'}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+          {/* Score legend */}
+          <div className="flex flex-wrap gap-3 mt-4 pt-3 border-t border-gray-100">
+            {[
+              { range: '70–100', label: 'A', color: '#16a34a' },
+              { range: '60–69', label: 'B', color: '#2563eb' },
+              { range: '50–59', label: 'C', color: '#7c3aed' },
+              { range: '40–49', label: 'D/E', color: '#d97706' },
+              { range: '0–39', label: 'F', color: '#dc2626' },
+            ].map((l) => (
+              <div key={l.label} className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ background: l.color }} />
+                <span className="text-[10px] text-gray-500">{l.range} = {l.label}</span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
 
       {/* ── Action Required + Recent Results ───────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

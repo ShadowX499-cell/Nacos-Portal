@@ -55,3 +55,20 @@ export const updateUser = asyncHandler(async (req: Request, res: Response) => {
   );
   sendSuccess(res, user, 'User updated');
 });
+
+/** GET /api/v1/admin/settings/department */
+export const getDepartmentSettings = asyncHandler(async (req: Request, res: Response) => {
+  const { departmentId } = (req as AuthRequest).user;
+  const settings = await adminService.getDepartmentSettings(departmentId);
+  sendSuccess(res, settings, 'Department settings retrieved');
+});
+
+/** PATCH /api/v1/admin/settings/department */
+export const updateDepartmentSettings = asyncHandler(async (req: Request, res: Response) => {
+  const { departmentId } = (req as AuthRequest).user;
+  const settings = await adminService.updateDepartmentSettings(departmentId, {
+    currentSession: req.body.currentSession as string | undefined,
+    currentSemester: req.body.currentSemester as 'first' | 'second' | undefined,
+  });
+  sendSuccess(res, settings, 'Department settings updated');
+});

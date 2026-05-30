@@ -116,12 +116,14 @@ enum RegistrationStatus {
 // ────────────────────────────────────────────────────────────────────────────
 
 model Department {
-  id        String   @id @default(uuid())
-  name      String   @db.VarChar(100)
-  code      String   @unique @db.VarChar(20)
-  faculty   String?  @db.VarChar(100)
-  isActive  Boolean  @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at")
+  id              String    @id @default(uuid())
+  name            String    @db.VarChar(100)
+  code            String    @unique @db.VarChar(20)
+  faculty         String?   @db.VarChar(100)
+  isActive        Boolean   @default(true) @map("is_active")
+  currentSession  String?   @map("current_session") @db.VarChar(20)
+  currentSemester Semester? @map("current_semester")
+  createdAt       DateTime  @default(now()) @map("created_at")
 
   users              User[]
   gradebooks         Gradebook[]

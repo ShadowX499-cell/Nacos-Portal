@@ -331,6 +331,52 @@ export class AdminService {
     };
   }
 
+  // ── Department settings ──────────────────────────────────────────────────
+
+  async getDepartmentSettings(departmentId: string): Promise<{
+    id: string;
+    name: string;
+    code: string;
+    faculty: string | null;
+    currentSession: string | null;
+    currentSemester: string | null;
+  }> {
+    const dept = await this.db.department.findUnique({ where: { id: departmentId } });
+    if (!dept) throw new AppError(404, 'RESOURCE_NOT_FOUND', 'Department not found');
+    return {
+      id: dept.id,
+      name: dept.name,
+      code: dept.code,
+      faculty: dept.faculty,
+      currentSession: dept.currentSession,
+      currentSemester: dept.currentSemester,
+    };
+  }
+
+  async updateDepartmentSettings(
+    departmentId: string,
+    updates: { currentSession?: string; currentSemester?: 'first' | 'second' }
+  ): Promise<{ id: string; name: string; code: string; faculty: string | null; currentSession: string | null; currentSemester: string | null }> {
+    const dept = await this.db.department.findUnique({ where: { id: departmentId } });
+    if (!dept) throw new AppError(404, 'RESOURCE_NOT_FOUND', 'Department not found');
+
+    const updated = await this.db.department.update({
+      where: { id: departmentId },
+      data: {
+        ...(updates.currentSession !== undefined ? { currentSession: updates.currentSession } : {}),
+        ...(updates.currentSemester !== undefined ? { currentSemester: updates.currentSemester as import('@prisma/client').Semester } : {}),
+      },
+    });
+    return {
+      id: updated.id,
+      name: updated.name,
+      code: updated.code,
+      faculty: updated.faculty,
+      currentSession: updated.currentSession,
+      currentSemester: updated.currentSemester,
+    };
+  }
+
   // ── Private ─────────────────────────────────────────────────────────────
 
   private toPublic(user: {

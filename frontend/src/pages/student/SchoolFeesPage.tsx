@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { schoolFeesApi, extractApiError } from '../../api/client';
 import type { SchoolFeesStatus } from '../../types';
+import { CheckCircle, AlertCircle, CreditCard } from 'lucide-react';
+
+const NACOS_DUE_AMOUNT = 3000;
 
 export default function SchoolFeesPage() {
   const [feesStatus, setFeesStatus] = useState<SchoolFeesStatus | null>(null);
@@ -30,52 +33,121 @@ export default function SchoolFeesPage() {
   const isPaid = feesStatus?.status === 'success';
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 mb-1">School Fees</h1>
-      <p className="text-sm text-gray-500 mb-6">Pay and manage your tuition fees</p>
+    <div className="p-4 md:p-6 max-w-2xl mx-auto">
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">NACOS Due</h1>
+        <p className="text-sm text-gray-500 mt-1">
+          Pay your NACOS departmental dues to access all member benefits and the student portal.
+        </p>
+      </div>
 
-      {error && <div className="bg-red-50 border border-red-200 rounded p-3 text-red-700 text-sm mb-4">{error}</div>}
+      {error && (
+        <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl p-4 mb-5 text-red-700 text-sm">
+          <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+          {error}
+        </div>
+      )}
 
       {loading ? (
-        <div className="card p-8 text-center text-gray-400">Loading…</div>
+        <div className="bg-white rounded-2xl border border-gray-200 p-10 text-center text-gray-400">
+          <div className="w-8 h-8 rounded-full border-4 border-gray-200 border-t-brand-600 animate-spin mx-auto mb-3" />
+          Loading…
+        </div>
       ) : feesStatus ? (
         <>
-          <div className={`card p-6 mb-4 border-l-4 ${isPaid ? 'border-green-500' : 'border-orange-400'}`}>
-            <div className="flex items-start justify-between">
+          {/* Status card */}
+          <div className={`bg-white rounded-2xl border-2 shadow-sm p-6 mb-4 ${
+            isPaid ? 'border-brand-500' : 'border-orange-400'
+          }`}>
+            <div className="flex items-start justify-between gap-4 mb-5">
               <div>
-                <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">Current Session</p>
-                <p className="text-lg font-bold text-gray-900">{feesStatus.currentSession}</p>
-                <p className="text-sm text-gray-500 mt-0.5">
-                  Amount: <span className="font-semibold text-gray-900">₦{feesStatus.amount.toLocaleString()}</span>
+                <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-1">Current Session</p>
+                <p className="text-2xl font-bold text-gray-900">{feesStatus.currentSession}</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Due Amount:{' '}
+                  <span className="font-bold text-gray-900">
+                    ₦{NACOS_DUE_AMOUNT.toLocaleString()}
+                  </span>
                 </p>
               </div>
-              <span className={`badge text-sm px-3 py-1 ${isPaid ? 'badge-green' : 'badge-yellow'}`}>
-                {isPaid ? '✅ Paid' : '⚠️ Unpaid'}
-              </span>
+              <div className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm ${
+                isPaid ? 'bg-brand-100 text-brand-800' : 'bg-orange-100 text-orange-800'
+              }`}>
+                {isPaid ? (
+                  <><CheckCircle className="w-4 h-4" /> Paid</>
+                ) : (
+                  <><AlertCircle className="w-4 h-4" /> Unpaid</>
+                )}
+              </div>
             </div>
 
-            {isPaid && feesStatus.paidAt && (
-              <div className="mt-4 pt-4 border-t border-gray-100 text-sm text-gray-600">
-                <p>Paid on: <strong>{new Date(feesStatus.paidAt).toLocaleDateString()}</strong></p>
-                <p className="font-mono text-xs text-gray-400 mt-0.5">Ref: {feesStatus.reference}</p>
-              </div>
-            )}
+            {/* Benefits list */}
+            <div className="bg-gray-50 rounded-xl p-4 mb-5">
+              <p className="text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">
+                What you get with NACOS Due
+              </p>
+              <ul className="space-y-2">
+                {[
+                  'Access to NACOS student portal and all features',
+                  'Eligibility to vote and contest in departmental elections',
+                  'Free entry to NACOS Week workshops and events',
+                  'NACOS membership certificate for the session',
+                  'Priority access to career fairs and job placements',
+                ].map((b) => (
+                  <li key={b} className="flex items-start gap-2 text-xs text-gray-600">
+                    <CheckCircle className="w-3.5 h-3.5 text-brand-600 flex-shrink-0 mt-0.5" />
+                    {b}
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-            {!isPaid && (
+            {isPaid ? (
+              <div className="pt-4 border-t border-gray-100 space-y-2 text-sm text-gray-600">
+                {feesStatus.paidAt && (
+                  <p>Paid on: <strong>{new Date(feesStatus.paidAt).toLocaleDateString('en-NG', { dateStyle: 'long' })}</strong></p>
+                )}
+                {feesStatus.reference && (
+                  <p className="font-mono text-xs text-gray-400">Ref: {feesStatus.reference}</p>
+                )}
+                <div className="flex items-center gap-2 bg-brand-50 border border-brand-200 rounded-xl px-4 py-3 mt-3">
+                  <CheckCircle className="w-5 h-5 text-brand-600 flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-semibold text-brand-800">NACOS Due cleared for {feesStatus.currentSession}</p>
+                    <p className="text-xs text-brand-600">You have full member access for this session.</p>
+                  </div>
+                </div>
+              </div>
+            ) : (
               <button
                 onClick={() => void handlePay()}
                 disabled={paying}
-                className="btn-primary mt-4 w-full disabled:opacity-60"
+                className="w-full flex items-center justify-center gap-3 bg-brand-700 hover:bg-brand-800 text-white font-bold py-4 rounded-xl transition-all disabled:opacity-60 shadow-lg shadow-brand-900/20 text-sm"
               >
-                {paying ? 'Redirecting to payment…' : `Pay ₦${feesStatus.amount.toLocaleString()} Now`}
+                {paying ? (
+                  <>
+                    <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                    Redirecting to payment…
+                  </>
+                ) : (
+                  <>
+                    <CreditCard className="w-5 h-5" />
+                    Pay ₦{NACOS_DUE_AMOUNT.toLocaleString()} via Paystack
+                  </>
+                )}
               </button>
             )}
           </div>
 
-          <div className="card p-4">
+          {/* Note */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-4">
             <p className="text-xs text-gray-400 leading-relaxed">
-              School fees payments are processed securely via Paystack. After payment, your receipt will be
-              available on this page. For queries, contact the department office.
+              NACOS Due payments are processed securely via Paystack. Payment is per academic session.
+              For payment issues, contact the NACOS Financial Secretary at{' '}
+              <a href="mailto:finance@nacos-aifue.org" className="text-brand-700 font-medium hover:underline">
+                finance@nacos-aifue.org
+              </a>
             </p>
           </div>
         </>

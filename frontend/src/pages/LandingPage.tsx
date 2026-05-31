@@ -101,48 +101,44 @@ function PortalMockup() {
         </div>
 
         {/* Dashboard layout */}
-        <div className="flex" style={{ height: '360px' }}>
+        <div className="flex" style={{ height: '400px' }}>
           {/* Sidebar */}
-          <div className="w-44 flex-shrink-0 flex flex-col" style={{ background: 'linear-gradient(180deg, #052e16 0%, #14532d 100%)' }}>
-            {/* Brand */}
+          <div className="w-40 flex-shrink-0 flex flex-col" style={{ background: 'linear-gradient(180deg, #052e16 0%, #14532d 100%)' }}>
             <div className="flex items-center gap-2 px-3 py-3 border-b border-white/10">
               <div className="w-7 h-7 rounded-lg bg-brand-500 flex items-center justify-center flex-shrink-0">
                 <span className="text-white font-bold text-[10px]">N</span>
               </div>
               <div>
                 <p className="text-white font-bold text-[11px] leading-tight">NACOS Portal</p>
-                <p className="text-brand-400 text-[9px]">AIFUE Chapter</p>
+                <p className="text-brand-400 text-[9px]">AIFUE · Student</p>
               </div>
             </div>
-
-            {/* Nav */}
             <nav className="flex-1 p-2 space-y-0.5 overflow-hidden">
               {[
-                { icon: '🏠', label: 'Dashboard',      active: true  },
-                { icon: '📊', label: 'My Results',     active: false },
-                { icon: '📈', label: 'Transcript',     active: false },
-                { icon: '💰', label: 'School Fees',    active: false },
-                { icon: '💳', label: 'Payments',       active: false },
-                { icon: '📝', label: 'Registration',   active: false },
-                { icon: '🔔', label: 'Notifications',  active: false },
-                { icon: '👤', label: 'Profile',        active: false },
+                { icon: '🏠', label: 'Dashboard',     active: true  },
+                { icon: '📋', label: 'My Results',    active: false },
+                { icon: '📈', label: 'Transcript',    active: false },
+                { icon: '💰', label: 'School Fees',   active: false },
+                { icon: '📝', label: 'Registration',  active: false },
+                { icon: '🗳️', label: 'Elections',     active: false },
+                { icon: '🔔', label: 'Notifications', active: false },
+                { icon: '👤', label: 'Profile',       active: false },
               ].map((item) => (
                 <div key={item.label}
-                  className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] font-medium transition-all ${
-                    item.active
-                      ? 'bg-brand-500/25 text-white ring-1 ring-brand-500/30'
-                      : 'text-white/50'
+                  className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11px] font-medium ${
+                    item.active ? 'bg-brand-500/25 text-white ring-1 ring-brand-500/30' : 'text-white/50'
                   }`}>
                   <span className="text-sm leading-none">{item.icon}</span>
                   <span>{item.label}</span>
                 </div>
               ))}
             </nav>
-
-            {/* User */}
             <div className="p-2 border-t border-white/10">
               <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-white/5">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-bold text-[9px] flex-shrink-0">VC</div>
+                {/* Passport photo avatar */}
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-bold text-[9px] flex-shrink-0 overflow-hidden">
+                  <span>VC</span>
+                </div>
                 <div className="min-w-0">
                   <p className="text-white text-[10px] font-semibold truncate">Victor C.</p>
                   <p className="text-brand-400 text-[9px]">400L · CSC</p>
@@ -154,67 +150,85 @@ function PortalMockup() {
           {/* Main area */}
           <div className="flex-1 flex flex-col bg-[#f4f6f9] overflow-hidden">
             {/* Top bar */}
-            <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-200 flex-shrink-0">
-              <div>
-                <h2 className="text-gray-900 font-bold text-sm">Dashboard</h2>
-              </div>
+            <div className="flex items-center justify-between px-3 py-2 bg-white border-b border-gray-200 flex-shrink-0">
+              <h2 className="text-gray-900 font-bold text-[11px]">Dashboard</h2>
               <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1.5 bg-gray-100 rounded-lg px-2.5 py-1">
-                  <svg className="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                  <span className="text-[10px] text-gray-400">Search...</span>
-                </div>
                 <div className="relative">
                   <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
                     <Bell className="w-3 h-3 text-gray-500" />
                   </div>
-                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-red-500 rounded-full flex items-center justify-center text-white text-[7px] font-bold">3</span>
+                  <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center text-white text-[7px] font-bold">3</span>
                 </div>
-                <span className="text-[10px] text-gray-400 hidden sm:block">May 30, 2025</span>
+                <span className="text-[10px] text-gray-400 hidden sm:block">May 2025</span>
               </div>
             </div>
 
             {/* Content */}
-            <div className="flex-1 p-3 overflow-hidden">
-              <p className="text-gray-700 font-semibold text-[11px] mb-2.5">Good morning, Victor 👋</p>
+            <div className="flex-1 p-2.5 overflow-hidden space-y-2.5">
 
-              {/* Stat cards */}
-              <div className="grid grid-cols-4 gap-2 mb-3">
-                {[
-                  { label: 'CGPA',     value: '4.51',  change: '+0.12',      gradient: 'from-brand-600 to-emerald-400' },
-                  { label: 'Credits',  value: '48',    change: '+6 this sem', gradient: 'from-blue-600 to-cyan-400'    },
-                  { label: 'Fees',     value: '₦500',  change: 'Due soon',    gradient: 'from-orange-500 to-amber-400' },
-                  { label: 'Alerts',   value: '5',     change: '3 unread',    gradient: 'from-violet-600 to-purple-400' },
-                ].map((s) => (
-                  <div key={s.label}
-                    className={`bg-gradient-to-br ${s.gradient} rounded-xl p-2.5 text-white shadow-md`}>
-                    <div className="text-[11px] opacity-80 font-medium mb-0.5">{s.label}</div>
-                    <div className="font-bold text-base leading-tight">{s.value}</div>
-                    <div className="text-[9px] opacity-70 mt-0.5 flex items-center gap-0.5">
-                      <TrendingUp className="w-2.5 h-2.5" />{s.change}
+              {/* Hero banner — green gradient like real dashboard */}
+              <div className="rounded-xl overflow-hidden relative" style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 60%, #16a34a 100%)' }}>
+                {/* Orb */}
+                <div className="absolute top-0 right-0 w-20 h-20 rounded-full opacity-20 blur-xl" style={{ background: 'radial-gradient(circle, #4ade80, transparent)' }} />
+                <div className="relative p-3">
+                  {/* Top row: avatar + name + CGPA */}
+                  <div className="flex items-center justify-between mb-2.5">
+                    <div className="flex items-center gap-2">
+                      {/* Passport photo (simulated) */}
+                      <div className="w-9 h-9 rounded-xl flex-shrink-0 overflow-hidden shadow-lg" style={{ background: 'linear-gradient(135deg,#16a34a,#052e16)' }}>
+                        <div className="w-full h-full flex items-center justify-center text-white font-bold text-[11px]">VC</div>
+                      </div>
+                      <div>
+                        <p className="text-brand-300 text-[8px] font-medium">Good morning 👋</p>
+                        <p className="text-white font-bold text-[11px] leading-tight">Victor Chibuike</p>
+                        <p className="text-brand-300 text-[8px]">CSC · 400L · NACOS/CSC/2024/47291</p>
+                      </div>
+                    </div>
+                    {/* CGPA pill */}
+                    <div className="bg-white/15 border border-white/20 rounded-xl px-2.5 py-1.5 text-center backdrop-blur-sm flex-shrink-0">
+                      <div className="text-white font-black text-base leading-none">4.51</div>
+                      <div className="text-brand-300 text-[8px] font-bold uppercase tracking-widest mt-0.5">CGPA</div>
                     </div>
                   </div>
-                ))}
+
+                  {/* 6 stat cards: Credits, Semesters, Results | NACOS Due, School Fees, Course Form */}
+                  <div className="grid grid-cols-6 gap-1.5">
+                    {[
+                      { label: 'Credits',      value: '48',  sub: 'earned' },
+                      { label: 'Semesters',    value: '4',   sub: 'done'   },
+                      { label: 'Results',      value: '3/5', sub: 'subscribed' },
+                      { label: 'NACOS Due',    value: '2/8', sub: 'semesters', amber: true  },
+                      { label: 'School Fees',  value: '1/8', sub: 'semesters', red: true    },
+                      { label: 'Course Form',  value: '3/8', sub: 'verified',  amber: true  },
+                    ].map((s) => (
+                      <div key={s.label} className="bg-white/10 border border-white/15 rounded-lg px-1 py-1.5 text-center">
+                        <div className={`font-black text-[11px] leading-none ${s.red ? 'text-red-300' : s.amber ? 'text-yellow-300' : 'text-white'}`}>{s.value}</div>
+                        <div className="text-brand-300 text-[7px] font-semibold mt-0.5 leading-tight truncate">{s.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
 
-              {/* Panels row */}
-              <div className="grid grid-cols-2 gap-2.5">
-                {/* Results */}
+              {/* Bottom panels row */}
+              <div className="grid grid-cols-2 gap-2">
+                {/* Recent Results */}
                 <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                  <div className="flex items-center justify-between px-3 py-2 border-b border-gray-100">
-                    <span className="text-[11px] font-bold text-gray-800">Recent Results</span>
-                    <span className="text-[9px] text-brand-600 font-semibold">View All →</span>
+                  <div className="flex items-center justify-between px-2.5 py-1.5 border-b border-gray-100">
+                    <span className="text-[10px] font-bold text-gray-800">📋 Recent Results</span>
+                    <span className="text-[8px] text-brand-600 font-semibold">View All →</span>
                   </div>
                   <div className="p-2 space-y-1.5">
                     {[
-                      { code: 'CSC 301', name: 'Data Structures',  grade: 'A', pct: 78, color: 'bg-green-500'  },
-                      { code: 'CSC 305', name: 'Web Engineering',   grade: 'B', pct: 65, color: 'bg-blue-500'   },
-                      { code: 'CSC 311', name: 'Networks',          grade: 'A', pct: 81, color: 'bg-green-500'  },
+                      { code: 'CSC 301', name: 'Data Structures', grade: 'A', pct: 78, color: 'bg-green-500' },
+                      { code: 'CSC 305', name: 'Web Engineering',  grade: 'B', pct: 65, color: 'bg-blue-500'  },
+                      { code: 'CSC 311', name: 'Networks',         grade: 'A', pct: 81, color: 'bg-green-500' },
                     ].map((r) => (
-                      <div key={r.code} className="flex items-center gap-2">
+                      <div key={r.code} className="flex items-center gap-1.5">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-0.5">
-                            <span className="text-[10px] font-semibold text-gray-700 truncate">{r.code} · {r.name}</span>
-                            <span className={`text-[10px] font-bold ml-1 flex-shrink-0 ${r.grade === 'A' ? 'text-green-600' : 'text-blue-600'}`}>{r.grade}</span>
+                            <span className="text-[9px] font-semibold text-gray-700 truncate">{r.code}</span>
+                            <span className={`text-[9px] font-bold ml-1 flex-shrink-0 ${r.grade === 'A' ? 'text-green-600' : 'text-blue-600'}`}>{r.grade}</span>
                           </div>
                           <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
                             <div className={`h-full ${r.color} rounded-full`} style={{ width: `${r.pct}%` }} />
@@ -225,22 +239,22 @@ function PortalMockup() {
                   </div>
                 </div>
 
-                {/* Actions */}
+                {/* Action Required */}
                 <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                  <div className="flex items-center justify-between px-3 py-2 border-b border-gray-100">
-                    <span className="text-[11px] font-bold text-gray-800">Action Required</span>
-                    <span className="bg-orange-100 text-orange-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full">2 urgent</span>
+                  <div className="flex items-center justify-between px-2.5 py-1.5 border-b border-gray-100">
+                    <span className="text-[10px] font-bold text-gray-800">⚡ Action Required</span>
+                    <span className="bg-orange-100 text-orange-700 text-[8px] font-bold px-1 py-0.5 rounded-full">2 urgent</span>
                   </div>
                   <div className="p-2 space-y-1.5">
                     {[
-                      { dot: 'bg-orange-400', text: 'Pay for CSC 301 result',    urgent: true  },
-                      { dot: 'bg-orange-400', text: 'Pay for CSC 305 result',    urgent: true  },
-                      { dot: 'bg-brand-400',  text: 'Submit course registration', urgent: false },
-                      { dot: 'bg-blue-400',   text: '3 new notifications',        urgent: false },
+                      { dot: 'bg-orange-400', text: 'Pay for CSC 301 result',   urgent: true  },
+                      { dot: 'bg-orange-400', text: 'NACOS due outstanding',     urgent: true  },
+                      { dot: 'bg-brand-400',  text: 'Course form pending',       urgent: false },
+                      { dot: 'bg-blue-400',   text: '3 new notifications',       urgent: false },
                     ].map((a, i) => (
-                      <div key={i} className="flex items-center gap-2">
+                      <div key={i} className="flex items-center gap-1.5">
                         <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${a.dot}`} />
-                        <span className={`text-[10px] ${a.urgent ? 'text-orange-700 font-semibold' : 'text-gray-500'}`}>{a.text}</span>
+                        <span className={`text-[9px] ${a.urgent ? 'text-orange-700 font-semibold' : 'text-gray-500'}`}>{a.text}</span>
                       </div>
                     ))}
                   </div>
@@ -344,7 +358,7 @@ export default function LandingPage() {
       </header>
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-10"
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-32 sm:pb-24"
         style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 35%, #166534 65%, #15803d 100%)' }}>
 
         {/* Photo overlay — real image showing through */}

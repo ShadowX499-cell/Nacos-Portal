@@ -237,6 +237,18 @@ function CsvTab({ gradebookId, courses, isDraft }: { gradebookId: string; course
   const fileRef = useRef<HTMLInputElement>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  const downloadTemplate = () => {
+    if (!selectedCourse) return;
+    gradebookApi.getCsvTemplate(gradebookId, selectedCourse)
+      .then((res) => {
+        const url = URL.createObjectURL(res.data as Blob);
+        const a = document.createElement('a'); a.href = url;
+        a.download = 'grade-template.csv'; a.click();
+        URL.revokeObjectURL(url);
+      })
+      .catch(() => alert('Failed to download template'));
+  };
+
   useEffect(() => {
     gradebookApi.listCsvJobs(gradebookId)
       .then((res) => setJobs(res.data.data))
@@ -287,10 +299,24 @@ function CsvTab({ gradebookId, courses, isDraft }: { gradebookId: string; course
 
       {isDraft && (
         <div className="card p-5">
-          <h3 className="text-sm font-semibold text-gray-800 mb-1">Upload CSV</h3>
-          <p className="text-xs text-gray-500 mb-4">
-            Required columns: <code className="bg-gray-100 px-1 rounded">student_id, ca_score, exam_score</code>
-          </p>
+          <div className="flex items-start justify-between mb-3">
+            <div>
+              <h3 className="text-sm font-semibold text-gray-800">Upload CSV</h3>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Required columns: <code className="bg-gray-100 px-1 rounded">student_id, ca_score, exam_score</code>
+              </p>
+            </div>
+            <button
+              onClick={downloadTemplate}
+              disabled={!selectedCourse}
+              className="flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-lg border border-brand-300 bg-brand-50 hover:bg-brand-100 text-brand-800 transition-colors disabled:opacity-40"
+            >
+              ⬇ Download Template
+            </button>
+          </div>
+          <div className="bg-blue-50 border border-blue-200 rounded p-3 text-xs text-blue-800 mb-4">
+            <strong>Tip:</strong> Click <strong>Download Template</strong> to get a pre-filled CSV with the correct column names and student IDs. Just add the scores and upload.
+          </div>
           <div className="space-y-3">
             <div>
               <label className="block text-xs font-medium text-gray-700 mb-1">Course</label>
@@ -339,14 +365,21 @@ function CsvTab({ gradebookId, courses, isDraft }: { gradebookId: string; course
                   </p>
                 )}
                 {job.errorLog && job.errorLog.length > 0 && (
-                  <details className="mt-2">
-                    <summary className="text-xs text-red-600 cursor-pointer">{job.errorLog.length} errors</summary>
-                    <div className="mt-1 space-y-0.5">
-                      {job.errorLog.map((e, i) => (
-                        <p key={i} className="text-xs text-red-500">Row {e.row}: {e.field} — {e.message}</p>
-                      ))}
-                    </div>
-                  </details>
+                  <div className="mt-2 bg-red-50 border border-red-200 rounded p-2 space-y-1">
+                    <p className="text-xs font-semibold text-red-700">
+                      {job.errorLog.length} error{job.errorLog.length !== 1 ? 's' : ''}:
+                    </p>
+                    {job.errorLog.map((e, i) => (
+                      <p key={i} className="text-xs text-red-600">
+                        {e.row === 0 ? '⚠' : `Row ${e.row}`} · <strong>{e.field}</strong> — {e.message}
+                      </p>
+                    ))}
+                    {job.errorLog.some((e) => e.field === 'headers') && (
+                      <p className="text-xs text-red-800 font-medium mt-1">
+                        Fix: Download the Template above — it has the exact column names pre-filled.
+                      </p>
+                    )}
+                  </div>
                 )}
               </div>
             ))}

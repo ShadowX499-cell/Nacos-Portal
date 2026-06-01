@@ -179,6 +179,45 @@ export class GradebookService {
     }));
   }
 
+  async getCsvTemplate(gradebookId: string, courseId: string, departmentId: string): Promise<string> {
+    const gradebook = await this.db.gradebook.findFirst({ where: { id: gradebookId, departmentId } });
+    if (!gradebook) throw new AppError(404, 'RESOURCE_NOT_FOUND', 'Gradebook not found');
+
+    const course = await this.db.course.findFirst({ where: { id: courseId, gradebookId } });
+    if (!course) throw new AppError(404, 'RESOURCE_NOT_FOUND', 'Course not found');
+
+    // Existing grades — pre-fill their scores
+    const existing = await this.db.studentGrade.findMany({
+      where: { courseId },
+      include: { student: true },
+      orderBy: { student: { name: 'asc' } },
+    });
+
+    const rows: string[][] = [['student_id', 'ca_score', 'exam_score']];
+
+    if (existing.length > 0) {
+      for (const g of existing) {
+        rows.push([
+          g.student.userId,
+          g.caScore ? String(Number(g.caScore)) : '',
+          g.examScore ? String(Number(g.examScore)) : '',
+        ]);
+      }
+    } else {
+      // No grades yet — fetch eligible students by gradebook level
+      const students = await this.db.user.findMany({
+        where: { departmentId, level: gradebook.level, role: 'student', status: 'validated' },
+        select: { userId: true, name: true },
+        orderBy: { name: 'asc' },
+      });
+      for (const s of students) {
+        rows.push([s.userId, '', '']);
+      }
+    }
+
+    return rows.map((r) => r.join(',')).join('\n');
+  }
+
   async exportResultsCsv(gradebookId: string, departmentId: string): Promise<string> {
     const gradebook = await this.db.gradebook.findFirst({
       where: { id: gradebookId, departmentId },

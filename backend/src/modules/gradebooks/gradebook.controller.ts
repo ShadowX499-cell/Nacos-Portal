@@ -108,6 +108,15 @@ export const getCsvJob = asyncHandler(async (req: Request, res: Response) => {
   sendSuccess(res, job, 'CSV job retrieved');
 });
 
+/** GET /api/v1/gradebooks/:id/export/csv */
+export const exportResultsCsv = asyncHandler(async (req: Request, res: Response) => {
+  const { departmentId } = (req as AuthRequest).user;
+  const csv = await gradebookService.exportResultsCsv(req.params.id, departmentId);
+  res.setHeader('Content-Type', 'text/csv');
+  res.setHeader('Content-Disposition', `attachment; filename="results-${req.params.id}.csv"`);
+  res.send(csv);
+});
+
 /** GET /api/v1/gradebooks/:id/courses/:courseId/eligible-students */
 export const getEligibleStudents = asyncHandler(async (req: Request, res: Response) => {
   const { departmentId } = (req as AuthRequest).user;

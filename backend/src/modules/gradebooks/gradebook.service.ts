@@ -179,6 +179,90 @@ export class GradebookService {
     }));
   }
 
+  async exportResultsCsv(gradebookId: string, departmentId: string): Promise<string> {
+    const gradebook = await this.db.gradebook.findFirst({
+      where: { id: gradebookId, departmentId },
+      include: { courses: { orderBy: { createdAt: 'asc' } } },
+    });
+    if (!gradebook) throw new AppError(404, 'RESOURCE_NOT_FOUND', 'Gradebook not found');
+
+    const grades = await this.db.studentGrade.findMany({
+      where: { course: { gradebookId } },
+      include: { student: true, course: true },
+      orderBy: [{ student: { name: 'asc' } }, { course: { courseCode: 'asc' } }],
+    });
+
+    // Group by student
+    const studentMap = new Map<string, {
+      userId: string; name: string; program: string; level: string;
+      courses: Record<string, { ca: number | null; exam: number | null; total: number | null; grade: string | null }>;
+    }>();
+
+    for (const g of grades) {
+      if (!studentMap.has(g.userId)) {
+        studentMap.set(g.userId, {
+          userId: g.student.userId,
+          name: g.student.name,
+          program: g.student.program,
+          level: g.student.level,
+          courses: {},
+        });
+      }
+      studentMap.get(g.userId)!.courses[g.courseId] = {
+        ca: g.caScore ? Number(g.caScore) : null,
+        exam: g.examScore ? Number(g.examScore) : null,
+        total: g.total ? Number(g.total) : null,
+        grade: g.grade,
+      };
+    }
+
+    const courses = gradebook.courses;
+
+    // CSV header
+    const headers = [
+      'Student ID', 'Name', 'Program', 'Level',
+      ...courses.flatMap((c) => [`${c.courseCode} CA`, `${c.courseCode} Exam`, `${c.courseCode} Total`, `${c.courseCode} Grade`]),
+      'Overall Total', 'GPA',
+    ];
+
+    const rows: string[][] = [headers];
+
+    for (const s of studentMap.values()) {
+      let overallTotal = 0;
+      let gradePoints = 0;
+      let totalUnits = 0;
+      const courseFields: string[] = [];
+
+      for (const c of courses) {
+        const g = s.courses[c.id];
+        const ca    = g?.ca    ?? '';
+        const exam  = g?.exam  ?? '';
+        const total = g?.total ?? '';
+        const grade = g?.grade ?? '';
+
+        if (g?.total !== null && g?.total !== undefined) {
+          overallTotal += g.total;
+          const { gradePoint } = computeGrade(g.total);
+          gradePoints  += gradePoint * c.creditUnits;
+          totalUnits   += c.creditUnits;
+        }
+
+        courseFields.push(String(ca), String(exam), String(total), String(grade));
+      }
+
+      const gpa = totalUnits > 0 ? (gradePoints / totalUnits).toFixed(2) : '';
+
+      rows.push([
+        s.userId, s.name, s.program, s.level.replace('L', '') + ' Level',
+        ...courseFields,
+        overallTotal > 0 ? String(overallTotal) : '',
+        gpa,
+      ]);
+    }
+
+    return rows.map((r) => r.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+  }
+
   async getEligibleStudents(
     gradebookId: string,
     courseId: string,

@@ -25,6 +25,7 @@ import {
   getCsvJob,
   publishGradebook,
   getEligibleStudents,
+  exportResultsCsv,
 } from './gradebook.controller';
 
 const router = Router();
@@ -64,6 +65,9 @@ router.put('/:id/courses/:courseId/grades', validate([...gradebookIdRule, ...cou
 
 /** POST   /api/v1/gradebooks/:id/courses/:courseId/csv */
 router.post('/:id/courses/:courseId/csv', validate([...gradebookIdRule, ...courseIdRule]), upload.single('file'), uploadGradeCsv);
+
+/** GET    /api/v1/gradebooks/:id/export/csv */
+router.get('/:id/export/csv', validate(gradebookIdRule), exportResultsCsv);
 
 /** GET    /api/v1/gradebooks/:id/csv-jobs */
 router.get('/:id/csv-jobs', validate(gradebookIdRule), listCsvJobs);

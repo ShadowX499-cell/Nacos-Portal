@@ -179,6 +179,39 @@ export class GradebookService {
     }));
   }
 
+  async getEligibleStudents(
+    gradebookId: string,
+    courseId: string,
+    program: string,
+    level: string,
+    departmentId: string
+  ): Promise<{ id: string; userId: string; name: string }[]> {
+    const gradebook = await this.db.gradebook.findFirst({ where: { id: gradebookId, departmentId } });
+    if (!gradebook) throw new AppError(404, 'RESOURCE_NOT_FOUND', 'Gradebook not found');
+
+    const course = await this.db.course.findFirst({ where: { id: courseId, gradebookId } });
+    if (!course) throw new AppError(404, 'RESOURCE_NOT_FOUND', 'Course not found');
+
+    const alreadyGraded = await this.db.studentGrade.findMany({
+      where: { courseId },
+      select: { userId: true },
+    });
+    const excludeIds = alreadyGraded.map((g) => g.userId);
+
+    return this.db.user.findMany({
+      where: {
+        departmentId,
+        program: program as import('@prisma/client').Program,
+        level: level as import('@prisma/client').Level,
+        role: 'student',
+        status: 'validated',
+        ...(excludeIds.length > 0 ? { id: { notIn: excludeIds } } : {}),
+      },
+      select: { id: true, userId: true, name: true },
+      orderBy: { name: 'asc' },
+    });
+  }
+
   async upsertGrades(
     gradebookId: string,
     courseId: string,

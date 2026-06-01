@@ -66,11 +66,9 @@ export default function GradebookDetailPage() {
             </button>
             <a
               href={`/admin/gradebooks/${gradebook.id}/print`}
-              target="_blank"
-              rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border border-brand-300 bg-brand-50 hover:bg-brand-100 text-brand-800 transition-colors"
             >
-              🖨 Print / PDF
+              👁 Preview Results
             </a>
           </div>
         </div>

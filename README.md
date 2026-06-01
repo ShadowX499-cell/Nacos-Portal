@@ -136,12 +136,32 @@ nacos-portal/
 
 ## 🔑 Default Credentials (after seed)
 
+### Admin Accounts
+
+| Role | User ID | Email | Password |
+|------|---------|-------|----------|
+| Super Admin | `NACOS/ADMIN/2024/001` | `admin@nacos-aifue.edu.ng` | `Admin@12345` |
+| Head of Department (HOD) | `NACOS/ADMIN/2024/002` | `hod@nacos-aifue.edu.ng` | `Hod@Nacos2026` |
+| Examinations Officer | `NACOS/ADMIN/2024/003` | `examofficer@nacos-aifue.edu.ng` | `Exams@Nacos2026` |
+
+> All three accounts have `super_admin` role. HOD and Examinations Officer have their `superAdminType` set accordingly.
+
+### Test Student Account
+
 | Field | Value |
 |-------|-------|
-| User ID | `NACOS/ADMIN/2024/001` |
-| Password | `Admin@12345` |
+| User ID | `NACOS/CSC/2024/001` |
+| Email | `student@nacos-aifue.edu.ng` |
+| Password | `Student@12345` |
 
-**⚠️ Change the password immediately after first login!**
+### Bulk Student Accounts (300 seeded)
+
+Run `cd backend && npx ts-node prisma/seed-students.ts` to create/verify 300 student accounts:
+- **100 per program**: CSC, ICT, CRE
+- **25 per level**: 100 Level, 200 Level, 300 Level, 400 Level
+- **Password format**: `Nacos@<5-digit-ID-suffix>` — e.g. user `NACOS/CSC/2026/47291` → password `Nacos@47291`
+
+**⚠️ Change all passwords immediately in production!**
 
 ---
 

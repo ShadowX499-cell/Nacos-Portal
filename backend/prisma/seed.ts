@@ -41,7 +41,49 @@ async function main() {
   });
   console.log(`✅ Super admin: ${admin.email} (password: Admin@12345)`);
 
-  // ── 3. Test Student ──────────────────────────────────────────────────────────
+  // ── 3. HOD + Examinations Officer ───────────────────────────────────────────
+  const hodHash  = await bcrypt.hash('Hod@Nacos2026', 12);
+  const examHash = await bcrypt.hash('Exams@Nacos2026', 12);
+
+  const hod = await prisma.user.upsert({
+    where: { userId: 'NACOS/ADMIN/2024/002' },
+    update: {},
+    create: {
+      userId: 'NACOS/ADMIN/2024/002',
+      departmentId: dept.id,
+      name: 'Head of Department',
+      email: 'hod@nacos-aifue.edu.ng',
+      program: Program.CSC,
+      level: Level.L400,
+      role: UserRole.super_admin,
+      superAdminType: 'hod',
+      passwordHash: hodHash,
+      status: UserStatus.validated,
+      createdById: admin.id,
+    },
+  });
+  console.log(`✅ HOD: ${hod.email} (password: Hod@Nacos2026)`);
+
+  const examOfficer = await prisma.user.upsert({
+    where: { userId: 'NACOS/ADMIN/2024/003' },
+    update: {},
+    create: {
+      userId: 'NACOS/ADMIN/2024/003',
+      departmentId: dept.id,
+      name: 'Examinations Officer',
+      email: 'examofficer@nacos-aifue.edu.ng',
+      program: Program.CSC,
+      level: Level.L400,
+      role: UserRole.super_admin,
+      superAdminType: 'result_exam_officer',
+      passwordHash: examHash,
+      status: UserStatus.validated,
+      createdById: admin.id,
+    },
+  });
+  console.log(`✅ Examinations Officer: ${examOfficer.email} (password: Exams@Nacos2026)`);
+
+  // ── 4. Test Student ──────────────────────────────────────────────────────────
   const studentHash = await bcrypt.hash('Student@12345', 12);
   const student = await prisma.user.upsert({
     where: { userId: 'NACOS/CSC/2024/001' },

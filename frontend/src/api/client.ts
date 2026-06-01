@@ -215,6 +215,13 @@ export const superAdminsApi = {
     api.delete<{ success: true; data: import('../types').User }>(`/admin/super-admins/${id}`),
 };
 
+// ── Export API ───────────────────────────────────────────────────────────────
+
+export const exportApi = {
+  studentLoginsPdf: () =>
+    api.get('/admin/export/student-logins.pdf', { responseType: 'blob' }),
+};
+
 // ── Audit Logs API ────────────────────────────────────────────────────────────
 
 export interface AuditLogEntry {

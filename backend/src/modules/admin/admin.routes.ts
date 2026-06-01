@@ -17,6 +17,7 @@ import {
   updateUser,
   getDepartmentSettings,
   updateDepartmentSettings,
+  exportStudentLoginsPdf,
 } from './admin.controller';
 import {
   createNotificationRules,
@@ -41,6 +42,9 @@ router.get('/dashboard', getDashboard);
 
 /** POST /api/v1/admin/users */
 router.post('/users', photoUpload.single('photo'), validate(createUserRules), createUser);
+
+/** GET  /api/v1/admin/export/student-logins.pdf */
+router.get('/export/student-logins.pdf', exportStudentLoginsPdf);
 
 /** GET  /api/v1/admin/users */
 router.get('/users', validate(listUsersRules), listUsers);

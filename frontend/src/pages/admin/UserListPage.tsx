@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { adminApi, extractApiError } from '../../api/client';
+import { adminApi, exportApi, extractApiError } from '../../api/client';
 import type { PaginationMeta, User, Level, Program, UserStatus, StudentStatus } from '../../types';
 
 const API_BASE = import.meta.env.VITE_API_URL ?? '/api/v1';
@@ -81,11 +81,30 @@ export default function UserListPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-8">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
         <h1 className="text-2xl font-bold text-gray-900">
           Students{meta ? ` (${meta.total})` : ''}
         </h1>
-        <Link to="/admin/users/new" className="btn-primary btn-sm">+ Add Student</Link>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              exportApi.studentLoginsPdf()
+                .then((res) => {
+                  const url = URL.createObjectURL(res.data as Blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = 'student-logins.pdf';
+                  a.click();
+                  URL.revokeObjectURL(url);
+                })
+                .catch(() => alert('PDF download failed'));
+            }}
+            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 text-gray-700 transition-colors"
+          >
+            ⬇ Student Logins PDF
+          </button>
+          <Link to="/admin/users/new" className="btn-primary btn-sm">+ Add Student</Link>
+        </div>
       </div>
 
       {/* Program tab filter */}

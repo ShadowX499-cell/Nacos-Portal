@@ -165,6 +165,32 @@ Run `cd backend && npx ts-node prisma/seed-students.ts` to create/verify 300 stu
 
 ---
 
+## 📄 PDF Exports
+
+Pre-generated PDF files are in the `docs/` folder.
+
+### Student Login Credentials PDF
+
+```bash
+cd backend && npx ts-node prisma/export-logins-pdf.ts
+```
+
+Output: `docs/student-logins.pdf`
+All student accounts with User ID + Password, grouped by Program → Level. Marked **CONFIDENTIAL**.
+
+### Results PDF (per Gradebook / Level)
+
+```bash
+cd backend && npx ts-node prisma/export-results-pdf.ts
+```
+
+Output: `docs/results-<level>-<session>-<semester>.pdf` — one PDF per gradebook.
+Each PDF contains: CA, Exam score, Grade per course, GPA per student, and signature lines for Examinations Officer, HOD, and Dean.
+
+> Re-run either script at any time to regenerate. PDFs are not committed to git.
+
+---
+
 ## 📡 Key API Endpoints (Phase 1)
 
 | Method | Endpoint | Description |

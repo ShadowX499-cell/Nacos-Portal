@@ -114,7 +114,11 @@ export const authApi = {
     ),
 
   refresh: () =>
-    api.post<{ success: true; data: { accessToken: string } }>('/auth/refresh'),
+    axios.post<{ success: true; data: { accessToken: string } }>(
+      `${BASE_URL}/auth/refresh`,
+      {},
+      { withCredentials: true }
+    ),
 
   logout: () => api.post('/auth/logout'),
 
@@ -252,6 +256,12 @@ export const gradebookApi = {
 
   getGrades: (id: string, courseId: string) =>
     api.get<{ success: true; data: import('../types').Grade[] }>(`/gradebooks/${id}/courses/${courseId}/grades`),
+
+  getEligibleStudents: (id: string, courseId: string, program: string, level: string) =>
+    api.get<{ success: true; data: { id: string; userId: string; name: string }[] }>(
+      `/gradebooks/${id}/courses/${courseId}/eligible-students`,
+      { params: { program, level } }
+    ),
 
   upsertGrades: (id: string, courseId: string, grades: Array<{ userId: string; caScore: number | null; examScore: number | null }>) =>
     api.put(`/gradebooks/${id}/courses/${courseId}/grades`, { grades }),

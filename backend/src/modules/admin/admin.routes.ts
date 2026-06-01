@@ -14,6 +14,7 @@ import {
   createUser,
   listUsers,
   getUserById,
+  getStudentProfile,
   updateUser,
   getDepartmentSettings,
   updateDepartmentSettings,
@@ -51,6 +52,9 @@ router.get('/users', validate(listUsersRules), listUsers);
 
 /** GET  /api/v1/admin/users/:id */
 router.get('/users/:id', getUserById);
+
+/** GET  /api/v1/admin/users/:id/profile */
+router.get('/users/:id/profile', getStudentProfile);
 
 /** PATCH /api/v1/admin/users/:id */
 router.patch('/users/:id', photoUpload.single('photo'), validate(updateUserRules), updateUser);

@@ -5,11 +5,13 @@ import { gradebookApi, extractApiError } from '../../api/client';
 
 interface FormValues {
   name: string;
+  program: string;
   level: string;
   session: string;
   semester: string;
 }
 
+const PROGRAMS = ['CSC', 'ICT', 'CRE'];
 const LEVELS = ['L100', 'L200', 'L300', 'L400'];
 const SEMESTERS = [
   { value: 'first', label: 'First Semester' },
@@ -25,7 +27,7 @@ export default function CreateGradebookPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
-    defaultValues: { semester: 'first', level: 'L100' },
+    defaultValues: { semester: 'first', level: 'L100', program: 'CSC' },
   });
 
   const onSubmit = async (data: FormValues) => {
@@ -58,11 +60,18 @@ export default function CreateGradebookPage() {
             {errors.name && <p className="text-red-600 text-xs mt-1">{errors.name.message}</p>}
           </div>
 
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Program</label>
+            <select {...register('program', { required: true })} className="input w-full">
+              {PROGRAMS.map((p) => <option key={p} value={p}>{p}</option>)}
+            </select>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Level</label>
               <select {...register('level', { required: true })} className="input w-full">
-                {LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
+                {LEVELS.map((l) => <option key={l} value={l}>{l.replace('L', '')} Level</option>)}
               </select>
             </div>
             <div>

@@ -34,6 +34,7 @@ export class GradebookService {
     const existing = await this.db.gradebook.findFirst({
       where: {
         departmentId: dto.departmentId,
+        ...(dto.program ? { program: dto.program as import('@prisma/client').Program } : {}),
         level: dto.level,
         session: dto.session,
         semester: dto.semester,
@@ -43,7 +44,7 @@ export class GradebookService {
       throw new AppError(
         409,
         'CONFLICT',
-        `A gradebook for ${dto.level} ${dto.session} ${dto.semester} semester already exists`
+        `A gradebook for ${dto.program ? dto.program + ' ' : ''}${dto.level} ${dto.session} ${dto.semester} semester already exists`
       );
     }
 
@@ -51,6 +52,7 @@ export class GradebookService {
       data: {
         departmentId: dto.departmentId,
         name: dto.name,
+        program: dto.program ? (dto.program as import('@prisma/client').Program) : null,
         level: dto.level,
         session: dto.session,
         semester: dto.semester,
@@ -321,10 +323,13 @@ export class GradebookService {
     });
     const excludeIds = alreadyGraded.map((g) => g.userId);
 
+    // If the gradebook is program-specific, use its program; otherwise use the caller's filter
+    const effectiveProgram = (gradebook as { program?: string | null }).program ?? program;
+
     return this.db.user.findMany({
       where: {
         departmentId,
-        program: program as import('@prisma/client').Program,
+        program: effectiveProgram as import('@prisma/client').Program,
         level: level as import('@prisma/client').Level,
         role: 'student',
         status: 'validated',
@@ -596,6 +601,7 @@ export class GradebookService {
   private toPublicGradebook(gb: {
     id: string;
     name: string;
+    program?: import('@prisma/client').Program | null;
     level: import('@prisma/client').Level;
     session: string;
     semester: import('@prisma/client').Semester;
@@ -607,6 +613,7 @@ export class GradebookService {
     return {
       id: gb.id,
       name: gb.name,
+      program: gb.program ?? null,
       level: gb.level,
       session: gb.session,
       semester: gb.semester,

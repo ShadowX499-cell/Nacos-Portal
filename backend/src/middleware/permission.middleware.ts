@@ -21,7 +21,7 @@ type RoleKey = 'admin' | 'course_adviser' | 'result_exam_officer' | 'hod';
 
 const PERMISSION_MAP: Record<RoleKey, Permission[]> = {
   admin: ['manage_exam_attendance', 'view_own_audit_log'],
-  course_adviser: ['approve_registrations', 'view_own_audit_log'],
+  course_adviser: ['approve_registrations', 'view_revenue', 'view_own_audit_log'],
   result_exam_officer: ['publish_results', 'manage_exam_attendance', 'view_own_audit_log'],
   hod: [
     'publish_results',

@@ -427,6 +427,86 @@ export class AdminService {
 
   // ── Private ─────────────────────────────────────────────────────────────
 
+  // ── Full student profile (admin view) ──────────────────────────────────
+
+  async getStudentProfile(id: string, departmentId: string) {
+    const user = await this.db.user.findFirst({ where: { id, departmentId, role: 'student' } });
+    if (!user) throw new AppError(404, 'RESOURCE_NOT_FOUND', 'Student not found');
+
+    // CGPA from all published gradebooks
+    const grades = await this.db.studentGrade.findMany({
+      where: { userId: id, course: { gradebook: { status: 'published' } } },
+      include: { course: true },
+    });
+    let totalPoints = 0, totalUnits = 0;
+    for (const g of grades) {
+      if (g.gradePoint !== null && g.total !== null) {
+        totalPoints += Number(g.gradePoint) * g.course.creditUnits;
+        totalUnits  += g.course.creditUnits;
+      }
+    }
+    const cgpa = totalUnits > 0 ? Number((totalPoints / totalUnits).toFixed(2)) : null;
+
+    // Payments
+    const payments = await this.db.payment.findMany({
+      where: { userId: id },
+      orderBy: { createdAt: 'desc' },
+    });
+    const nacosDues = payments.filter((p) => p.type === 'nacos_dues').map((p) => ({
+      id: p.id, session: p.sessionYear, status: p.status, amount: Number(p.amount), paidAt: p.paidAt,
+    }));
+    const schoolFees = payments.filter((p) => p.type === 'school_fees').map((p) => ({
+      id: p.id, session: p.sessionYear, semester: p.semester, status: p.status, amount: Number(p.amount), paidAt: p.paidAt,
+    }));
+    const resultSubscriptions = payments.filter((p) => p.type === 'result_subscription').map((p) => ({
+      id: p.id, session: p.sessionYear, status: p.status, amount: Number(p.amount), paidAt: p.paidAt,
+    }));
+
+    // Course registrations
+    const registrations = await this.db.courseRegistration.findMany({
+      where: { userId: id },
+      orderBy: { submittedAt: 'desc' },
+    });
+    const courseRegistrations = registrations.map((r) => ({
+      id: r.id, session: r.session, semester: r.semester, status: r.status,
+      fileUrl: r.fileUrl, submittedAt: r.submittedAt, reviewedAt: r.reviewedAt,
+    }));
+
+    // Published results summary per gradebook
+    const gradebookIds = [...new Set(grades.map((g) => g.course.gradebookId))];
+    const gradebooks = gradebookIds.length > 0
+      ? await this.db.gradebook.findMany({
+          where: { id: { in: gradebookIds } },
+          select: { id: true, name: true, session: true, semester: true, level: true, program: true },
+        })
+      : [];
+
+    const resultsByGradebook = gradebooks.map((gb) => {
+      const gbGrades = grades.filter((g) => g.course.gradebookId === gb.id);
+      let pts = 0, units = 0;
+      for (const g of gbGrades) {
+        if (g.gradePoint !== null) { pts += Number(g.gradePoint) * g.course.creditUnits; units += g.course.creditUnits; }
+      }
+      const paid = resultSubscriptions.some((p) => p.status === 'success' && p.session === gb.session);
+      return {
+        gradebookId: gb.id, name: gb.name, session: gb.session,
+        semester: gb.semester, level: gb.level, program: gb.program,
+        gpa: units > 0 ? Number((pts / units).toFixed(2)) : null,
+        paid,
+      };
+    });
+
+    return {
+      profile: this.toPublic(user),
+      cgpa,
+      nacosDues,
+      schoolFees,
+      courseRegistrations,
+      resultSubscriptions,
+      results: resultsByGradebook,
+    };
+  }
+
   private toPublic(user: {
     id: string;
     userId: string;

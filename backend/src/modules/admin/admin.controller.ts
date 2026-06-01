@@ -115,6 +115,13 @@ export const getUserById = asyncHandler(async (req: Request, res: Response) => {
   sendSuccess(res, user, 'User retrieved');
 });
 
+/** GET /api/v1/admin/users/:id/profile */
+export const getStudentProfile = asyncHandler(async (req: Request, res: Response) => {
+  const { departmentId } = (req as AuthRequest).user;
+  const profile = await adminService.getStudentProfile(req.params.id, departmentId);
+  sendSuccess(res, profile, 'Student profile retrieved');
+});
+
 /** PATCH /api/v1/admin/users/:id */
 export const updateUser = asyncHandler(async (req: Request, res: Response) => {
   const { sub, departmentId } = (req as AuthRequest).user;

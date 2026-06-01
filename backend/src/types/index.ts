@@ -124,6 +124,7 @@ export interface ListUsersQuery {
 
 export interface CreateGradebookDto {
   name: string;
+  program?: string | null;
   level: Level;
   session: string;
   semester: 'first' | 'second';
@@ -145,6 +146,7 @@ export interface GradeEntryRow {
 export interface GradebookPublic {
   id: string;
   name: string;
+  program: string | null;
   level: Level;
   session: string;
   semester: 'first' | 'second';

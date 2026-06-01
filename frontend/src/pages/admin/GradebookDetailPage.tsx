@@ -41,7 +41,7 @@ export default function GradebookDetailPage() {
     <div>
       <div className="max-w-5xl mx-auto px-4 md:px-6 py-8">
         {/* Header */}
-        <div className="flex items-start justify-between mb-6 gap-4 flex-wrap">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-6 gap-3">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">{gradebook.name}</h1>
             <p className="text-sm text-gray-500 mt-0.5">
@@ -53,7 +53,7 @@ export default function GradebookDetailPage() {
               </span>
             </p>
           </div>
-          <div className="flex gap-2 flex-shrink-0">
+          <div className="flex gap-2 flex-wrap sm:flex-shrink-0">
             <button
               onClick={() => {
                 gradebookApi.exportCsv(gradebook.id)
@@ -179,7 +179,7 @@ function CoursesTab({
       {gradebook.courses.length === 0 ? (
         <div className="card p-8 text-center text-gray-400">No courses added yet.</div>
       ) : (
-        <div className="card overflow-hidden">
+        <div className="card overflow-hidden overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>

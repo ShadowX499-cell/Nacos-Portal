@@ -1,8 +1,9 @@
 import { body, param, query } from 'express-validator';
-import { Level, Semester } from '@prisma/client';
+import { Level, Semester, Program } from '@prisma/client';
 
 export const createGradebookRules = [
   body('name').trim().isLength({ min: 2, max: 150 }).withMessage('Name must be 2–150 characters'),
+  body('program').optional({ nullable: true }).isIn(Object.values(Program)).withMessage(`Program must be one of: ${Object.values(Program).join(', ')}`),
   body('level').isIn(Object.values(Level)).withMessage(`Level must be one of: ${Object.values(Level).join(', ')}`),
   body('session')
     .trim()

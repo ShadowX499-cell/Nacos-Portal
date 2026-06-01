@@ -114,6 +114,7 @@ export type Semester = 'first' | 'second';
 export interface Gradebook {
   id: string;
   name: string;
+  program: Program | null;
   level: Level;
   session: string;
   semester: Semester;
@@ -387,4 +388,16 @@ export interface ComplianceSummary {
   nacosDue: { paid: number; total: number };
   schoolFees: { paid: number; total: number };
   courseForm: { verified: number; total: number };
+}
+
+// ── Student profile (admin view) ─────────────────────────────────────────────
+
+export interface StudentProfile {
+  profile: User;
+  cgpa: number | null;
+  nacosDues: { id: string; session: string | null; status: PaymentStatus; amount: number; paidAt: string | null }[];
+  schoolFees: { id: string; session: string | null; semester: string | null; status: PaymentStatus; amount: number; paidAt: string | null }[];
+  courseRegistrations: { id: string; session: string; semester: string; status: 'pending' | 'verified' | 'rejected'; fileUrl: string | null; submittedAt: string; reviewedAt: string | null }[];
+  resultSubscriptions: { id: string; session: string | null; status: PaymentStatus; amount: number; paidAt: string | null }[];
+  results: { gradebookId: string; name: string; session: string; semester: string; level: string; program: string | null; gpa: number | null; paid: boolean }[];
 }

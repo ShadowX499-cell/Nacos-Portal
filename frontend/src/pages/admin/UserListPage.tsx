@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { adminApi, exportApi, extractApiError } from '../../api/client';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { adminApi, extractApiError } from '../../api/client';
 import type { PaginationMeta, User, Level, Program, UserStatus, StudentStatus } from '../../types';
 
 const API_BASE = import.meta.env.VITE_API_URL ?? '/api/v1';
@@ -51,6 +51,7 @@ function Avatar({ user }: { user: User }) {
 
 export default function UserListPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [users, setUsers] = useState<User[]>([]);
   const [meta, setMeta] = useState<PaginationMeta | null>(null);
   const [error, setError] = useState('');
@@ -59,7 +60,8 @@ export default function UserListPage() {
   const [search, setSearch] = useState('');
   const [levelFilter, setLevelFilter] = useState<Level | ''>('');
   const [programFilter, setProgramFilter] = useState<Program | ''>('');
-  const [statusFilter, setStatusFilter] = useState<UserStatus | ''>('');
+  // Initialise from URL param so ?status=pending from the dashboard card works
+  const [statusFilter, setStatusFilter] = useState<UserStatus | ''>((searchParams.get('status') as UserStatus) ?? '');
   const [page, setPage] = useState(1);
 
   const fetchUsers = useCallback(() => {
@@ -85,26 +87,7 @@ export default function UserListPage() {
         <h1 className="text-2xl font-bold text-gray-900">
           Students{meta ? ` (${meta.total})` : ''}
         </h1>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => {
-              exportApi.studentLoginsPdf()
-                .then((res) => {
-                  const url = URL.createObjectURL(res.data as Blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = 'student-logins.pdf';
-                  a.click();
-                  URL.revokeObjectURL(url);
-                })
-                .catch(() => alert('PDF download failed'));
-            }}
-            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 text-gray-700 transition-colors"
-          >
-            ⬇ Student Logins PDF
-          </button>
-          <Link to="/admin/users/new" className="btn-primary btn-sm">+ Add Student</Link>
-        </div>
+        <Link to="/admin/users/new" className="btn-primary btn-sm">+ Add Student</Link>
       </div>
 
       {/* Program tab filter */}

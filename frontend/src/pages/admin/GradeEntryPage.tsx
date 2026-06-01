@@ -194,9 +194,9 @@ export default function GradeEntryPage() {
             No students found. Upload a CSV to add grades in bulk, or ensure students are enrolled.
           </div>
         ) : rows.length > 0 ? (
-          <div className="card overflow-hidden">
+          <div className="card overflow-hidden overflow-x-auto">
             {isDraft && (
-              <div className="px-4 py-2 bg-blue-50 border-b border-blue-100 flex items-center justify-between">
+              <div className="px-4 py-2 bg-blue-50 border-b border-blue-100 flex flex-wrap items-center justify-between gap-2">
                 <span className="text-xs text-blue-700">
                   {rows.length} student{rows.length !== 1 ? 's' : ''} loaded
                   {importAttempted && ` — ${importProgram} ${levelLabel(importLevel)}`}

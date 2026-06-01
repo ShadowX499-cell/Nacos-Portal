@@ -158,6 +158,9 @@ export const adminApi = {
 
   updateUser: (id: string, body: Partial<import('../types').User>) =>
     api.patch<{ success: true; data: import('../types').User }>(`/admin/users/${id}`, body),
+
+  getStudentProfile: (id: string) =>
+    api.get<{ success: true; data: import('../types').StudentProfile }>(`/admin/users/${id}/profile`),
 };
 
 // ── Student Compliance API ────────────────────────────────────────────────────
@@ -246,7 +249,7 @@ export const gradebookApi = {
   list: (params?: Record<string, string>) =>
     api.get<{ success: true; data: import('../types').Gradebook[] }>('/gradebooks', { params }),
 
-  create: (body: { name: string; level: string; session: string; semester: string }) =>
+  create: (body: { name: string; program?: string; level: string; session: string; semester: string }) =>
     api.post<{ success: true; data: import('../types').Gradebook }>('/gradebooks', body),
 
   get: (id: string) =>

@@ -11,6 +11,7 @@ interface NavItem {
   to: string;
   phase: string | null;
   hodOnly?: boolean;
+  revenueAllowed?: boolean;
 }
 
 interface NavSection {
@@ -39,7 +40,7 @@ const NAV_SECTIONS: NavSection[] = [
     label: 'System',
     items: [
       { icon: Bell,          label: 'Notifications', to: '/admin/notifications', phase: null },
-      { icon: TrendingUp,    label: 'Revenue',       to: '/admin/revenue',       phase: null, hodOnly: true },
+      { icon: TrendingUp,    label: 'Revenue',       to: '/admin/revenue',       phase: null, revenueAllowed: true },
       { icon: ClipboardList, label: 'Audit Logs',    to: '/admin/audit-logs',    phase: null, hodOnly: true },
       { icon: Shield,        label: 'Super Admins',  to: '/admin/super-admins',  phase: null, hodOnly: true },
       { icon: Settings,      label: 'Settings',      to: '/admin/settings',      phase: null },
@@ -64,7 +65,9 @@ export default function AdminLayout() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const isHod = (user?.superAdminType as SuperAdminType | null) === 'hod';
+  const superAdminType = user?.superAdminType as SuperAdminType | null;
+  const isHod = superAdminType === 'hod';
+  const canViewRevenue = isHod || superAdminType === 'course_adviser';
 
   const initials = user?.name
     ? user.name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase()
@@ -101,7 +104,11 @@ export default function AdminLayout() {
             <p className="px-3 mb-1 text-white/40 text-[11px] font-bold uppercase tracking-widest">
               {section.label}
             </p>
-            {section.items.filter((item) => !item.hodOnly || isHod).map((item) => (
+            {section.items.filter((item) => {
+              if (item.hodOnly) return isHod;
+              if (item.revenueAllowed) return canViewRevenue;
+              return true;
+            }).map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}

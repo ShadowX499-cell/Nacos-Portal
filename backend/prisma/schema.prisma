@@ -223,6 +223,7 @@ model Gradebook {
   id            String          @id @default(uuid())
   departmentId  String          @map("department_id")
   name          String          @db.VarChar(150)
+  program       Program?
   level         Level
   session       String          @db.VarChar(20)
   semester      Semester

@@ -1,9 +1,11 @@
 import rateLimit from 'express-rate-limit';
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 /** 5 attempts per 15 minutes — used on auth endpoints */
 export const authRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5,
+  max: isDev ? 1000 : 5,
   standardHeaders: true,
   legacyHeaders: false,
   message: {

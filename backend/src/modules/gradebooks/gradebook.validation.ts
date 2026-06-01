@@ -45,3 +45,12 @@ export const gradebookIdRule = [
 export const courseIdRule = [
   param('courseId').isUUID().withMessage('Course ID must be a valid UUID'),
 ];
+
+export const eligibleStudentsRules = [
+  query('program')
+    .isIn(['CSC', 'ICT', 'CRE'])
+    .withMessage('program must be one of: CSC, ICT, CRE'),
+  query('level')
+    .isIn(Object.values(Level))
+    .withMessage(`level must be one of: ${Object.values(Level).join(', ')}`),
+];

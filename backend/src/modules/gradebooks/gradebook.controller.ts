@@ -108,6 +108,20 @@ export const getCsvJob = asyncHandler(async (req: Request, res: Response) => {
   sendSuccess(res, job, 'CSV job retrieved');
 });
 
+/** GET /api/v1/gradebooks/:id/courses/:courseId/eligible-students */
+export const getEligibleStudents = asyncHandler(async (req: Request, res: Response) => {
+  const { departmentId } = (req as AuthRequest).user;
+  const { program, level } = req.query as { program: string; level: string };
+  const students = await gradebookService.getEligibleStudents(
+    req.params.id,
+    req.params.courseId,
+    program,
+    level,
+    departmentId
+  );
+  sendSuccess(res, students, 'Eligible students retrieved');
+});
+
 /** POST /api/v1/gradebooks/:id/publish */
 export const publishGradebook = asyncHandler(async (req: Request, res: Response) => {
   const { sub, departmentId } = (req as AuthRequest).user;

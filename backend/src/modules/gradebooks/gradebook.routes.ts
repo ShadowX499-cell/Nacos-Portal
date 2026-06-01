@@ -9,6 +9,7 @@ import {
   listGradebooksRules,
   gradebookIdRule,
   courseIdRule,
+  eligibleStudentsRules,
 } from './gradebook.validation';
 import {
   upload,
@@ -23,6 +24,7 @@ import {
   listCsvJobs,
   getCsvJob,
   publishGradebook,
+  getEligibleStudents,
 } from './gradebook.controller';
 
 const router = Router();
@@ -49,6 +51,13 @@ router.delete('/:id/courses/:courseId', validate([...gradebookIdRule, ...courseI
 
 /** GET    /api/v1/gradebooks/:id/courses/:courseId/grades */
 router.get('/:id/courses/:courseId/grades', validate([...gradebookIdRule, ...courseIdRule]), getGrades);
+
+/** GET    /api/v1/gradebooks/:id/courses/:courseId/eligible-students */
+router.get(
+  '/:id/courses/:courseId/eligible-students',
+  validate([...gradebookIdRule, ...courseIdRule, ...eligibleStudentsRules]),
+  getEligibleStudents
+);
 
 /** PUT    /api/v1/gradebooks/:id/courses/:courseId/grades */
 router.put('/:id/courses/:courseId/grades', validate([...gradebookIdRule, ...courseIdRule, ...upsertGradesRules]), upsertGrades);

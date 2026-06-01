@@ -26,6 +26,7 @@ import GradebookListPage from './pages/admin/GradebookListPage';
 import CreateGradebookPage from './pages/admin/CreateGradebookPage';
 import GradebookDetailPage from './pages/admin/GradebookDetailPage';
 import GradeEntryPage from './pages/admin/GradeEntryPage';
+import GradebookPrintPage from './pages/admin/GradebookPrintPage';
 import ElectionListPage from './pages/admin/ElectionListPage';
 import CreateElectionPage from './pages/admin/CreateElectionPage';
 import ElectionDetailPage from './pages/admin/ElectionDetailPage';
@@ -68,6 +69,11 @@ export default function App() {
         <Route path="/auth/validate" element={<ValidatePage />} />
         <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
+
+        {/* ── Admin — fullscreen (no shell) ──────────────────────────── */}
+        <Route element={<ProtectedRoute roles={['admin', 'super_admin']} />}>
+          <Route path="/admin/gradebooks/:id/print" element={<GradebookPrintPage />} />
+        </Route>
 
         {/* ── Admin ────────────────────────────────────────────────────── */}
         <Route element={<ProtectedRoute roles={['admin', 'super_admin']} />}>

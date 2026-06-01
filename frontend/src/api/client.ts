@@ -274,6 +274,9 @@ export const gradebookApi = {
     });
   },
 
+  exportCsv: (id: string) =>
+    api.get(`/gradebooks/${id}/export/csv`, { responseType: 'blob' }),
+
   listCsvJobs: (id: string) =>
     api.get<{ success: true; data: import('../types').CsvJob[] }>(`/gradebooks/${id}/csv-jobs`),
 

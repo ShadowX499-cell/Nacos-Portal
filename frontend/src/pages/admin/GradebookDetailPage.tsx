@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { gradebookApi, extractApiError } from '../../api/client';
+
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
 import { useAuth } from '../../context/AuthContext';
 import type { Gradebook, Course, CsvJob } from '../../types';
 
@@ -34,7 +41,7 @@ export default function GradebookDetailPage() {
     <div>
       <div className="max-w-5xl mx-auto px-4 md:px-6 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-start justify-between mb-6 gap-4 flex-wrap">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">{gradebook.name}</h1>
             <p className="text-sm text-gray-500 mt-0.5">
@@ -45,6 +52,26 @@ export default function GradebookDetailPage() {
                 {gradebook.status}
               </span>
             </p>
+          </div>
+          <div className="flex gap-2 flex-shrink-0">
+            <button
+              onClick={() => {
+                gradebookApi.exportCsv(gradebook.id)
+                  .then((res) => downloadBlob(res.data as Blob, `results-${gradebook.name}.csv`))
+                  .catch(() => alert('CSV export failed'));
+              }}
+              className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border border-gray-300 hover:bg-gray-50 text-gray-700 transition-colors"
+            >
+              ⬇ Download CSV
+            </button>
+            <a
+              href={`/admin/gradebooks/${gradebook.id}/print`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border border-brand-300 bg-brand-50 hover:bg-brand-100 text-brand-800 transition-colors"
+            >
+              🖨 Print / PDF
+            </a>
           </div>
         </div>
 

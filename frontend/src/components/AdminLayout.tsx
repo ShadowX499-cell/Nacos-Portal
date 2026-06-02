@@ -1,6 +1,6 @@
 import { NavLink, Link, Outlet, useLocation } from 'react-router-dom';
 import { useState } from 'react';
-import { Menu, X, Lock, LayoutDashboard, Users, BookOpen, Vote, Fingerprint, Bell, Settings, Shield, ClipboardList, TrendingUp, CalendarDays } from 'lucide-react';
+import { Menu, X, Lock, LayoutDashboard, Users, BookOpen, Vote, Fingerprint, Bell, Settings, Shield, ClipboardList, TrendingUp, CalendarDays, FileText } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import NacosLogo from './NacosLogo';
 import type { SuperAdminType } from '../types';
@@ -31,9 +31,10 @@ const NAV_SECTIONS: NavSection[] = [
   {
     label: 'Modules',
     items: [
-      { icon: Vote,         label: 'Elections',  to: '/admin/elections',  phase: null },
-      { icon: Fingerprint,  label: 'Attendance', to: '/admin/attendance', phase: 'Phase 4' },
-      { icon: CalendarDays, label: 'Academic Calendar', to: '/admin/academic', phase: null, hodOnly: true },
+      { icon: Vote,         label: 'Elections',     to: '/admin/elections',     phase: null },
+      { icon: FileText,     label: 'Registrations', to: '/admin/registrations', phase: null },
+      { icon: Fingerprint,  label: 'Attendance',    to: '/admin/attendance',    phase: 'Phase 4' },
+      { icon: CalendarDays, label: 'Academic Calendar', to: '/admin/academic',  phase: null, hodOnly: true },
     ],
   },
   {
@@ -41,7 +42,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { icon: Bell,          label: 'Notifications', to: '/admin/notifications', phase: null },
       { icon: TrendingUp,    label: 'Revenue',       to: '/admin/revenue',       phase: null, revenueAllowed: true },
-      { icon: ClipboardList, label: 'Audit Logs',    to: '/admin/audit-logs',    phase: null, hodOnly: true },
+      { icon: ClipboardList, label: 'Audit Logs',    to: '/admin/audit-logs',    phase: null },
       { icon: Shield,        label: 'Super Admins',  to: '/admin/super-admins',  phase: null, hodOnly: true },
       { icon: Settings,      label: 'Settings',      to: '/admin/settings',      phase: null },
     ],
@@ -55,8 +56,11 @@ const PAGE_TITLES: Record<string, string> = {
   '/admin/gradebooks/new': 'New Gradebook',
   '/admin/gradebooks':     'Gradebooks',
   '/admin/elections':      'Elections',
+  '/admin/registrations':  'Registrations',
   '/admin/attendance':     'Attendance',
   '/admin/notifications':  'Notifications',
+  '/admin/audit-logs':     'Audit Logs',
+  '/admin/activity':       'Activity Feed',
   '/admin/settings':       'Settings',
 };
 

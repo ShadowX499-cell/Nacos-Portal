@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown, ChevronUp, Filter } from 'lucide-react';
 import { auditLogsApi, type AuditLogEntry, extractApiError } from '../../api/client';
+import { useAuth } from '../../context/AuthContext';
 import type { PaginationMeta } from '../../types';
 
 const ACTION_COLOR: Record<string, string> = {
@@ -89,6 +90,9 @@ function LogRow({ log }: { log: AuditLogEntry }) {
 }
 
 export default function AuditLogsPage() {
+  const { user } = useAuth();
+  const isHod = user?.superAdminType === 'hod';
+
   const [logs, setLogs] = useState<AuditLogEntry[]>([]);
   const [meta, setMeta] = useState<PaginationMeta | null>(null);
   const [loading, setLoading] = useState(true);
@@ -107,11 +111,12 @@ export default function AuditLogsPage() {
     if (dateFrom) params.dateFrom = dateFrom;
     if (dateTo) params.dateTo = dateTo;
 
-    auditLogsApi.list(params)
+    const apiFn = isHod ? auditLogsApi.list(params) : auditLogsApi.listOwn(params);
+    apiFn
       .then((r) => { setLogs(r.data.data); setMeta(r.data.meta ?? null); })
       .catch((err) => setError(extractApiError(err)))
       .finally(() => setLoading(false));
-  }, [page, actionFilter, entityFilter, dateFrom, dateTo]);
+  }, [page, actionFilter, entityFilter, dateFrom, dateTo, isHod]);
 
   useEffect(() => { load(); }, [load]);
   useEffect(() => { setPage(1); }, [actionFilter, entityFilter, dateFrom, dateTo]);
@@ -120,7 +125,9 @@ export default function AuditLogsPage() {
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Audit Logs</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Complete record of all admin actions</p>
+        <p className="text-sm text-gray-500 mt-0.5">
+          {isHod ? 'All Admin Activity' : 'Your Activity Trail'}
+        </p>
       </div>
 
       {/* Filter bar */}

@@ -1,4 +1,4 @@
-import { PrismaClient, RegistrationStatus, RegistrationType, Semester } from '@prisma/client';
+import { Prisma, PrismaClient, RegistrationStatus, RegistrationType, Semester } from '@prisma/client';
 import { prisma as defaultPrisma } from '../../config/prisma';
 import { AppError } from '../../utils/response';
 
@@ -41,23 +41,28 @@ export class RegistrationService {
       throw new AppError(409, 'REGISTRATION_ALREADY_VERIFIED', 'This submission is already verified and cannot be replaced');
     }
 
+    let reg;
     if (existing) {
-      const updated = await this.db.courseRegistration.update({
+      reg = await this.db.courseRegistration.update({
         where: { id: existing.id },
-        data: {
-          fileUrl,
-          status: RegistrationStatus.pending,
-          reviewNote: null,
-          reviewedById: null,
-          reviewedAt: null,
-        },
+        data: { fileUrl, status: RegistrationStatus.pending, reviewNote: null, reviewedById: null, reviewedAt: null },
       });
-      return this.toPublic(updated);
+    } else {
+      reg = await this.db.courseRegistration.create({
+        data: { userId, session, semester: semester as Semester, type, fileUrl, status: RegistrationStatus.pending },
+      });
     }
 
-    const reg = await this.db.courseRegistration.create({
-      data: { userId, session, semester: semester as Semester, type, fileUrl, status: RegistrationStatus.pending },
-    });
+    this.db.auditLog.create({
+      data: {
+        actorId: userId,
+        action: 'REGISTRATION_SUBMITTED',
+        entityType: 'registration',
+        entityId: reg.id,
+        newValue: { type, session, semester, status: 'pending' } as Prisma.InputJsonValue,
+      },
+    }).catch((e: unknown) => console.error('[RegistrationService] Audit log failed:', e));
+
     return this.toPublic(reg);
   }
 
@@ -79,13 +84,20 @@ export class RegistrationService {
 
     const updated = await this.db.courseRegistration.update({
       where: { id },
-      data: {
-        status: status as RegistrationStatus,
-        reviewedById: reviewerId,
-        reviewNote: reviewNote ?? null,
-        reviewedAt: new Date(),
-      },
+      data: { status: status as RegistrationStatus, reviewedById: reviewerId, reviewNote: reviewNote ?? null, reviewedAt: new Date() },
     });
+
+    const action = status === 'verified' ? 'REGISTRATION_APPROVED' : 'REGISTRATION_REJECTED';
+    this.db.auditLog.create({
+      data: {
+        actorId: reviewerId,
+        action,
+        entityType: 'registration',
+        entityId: id,
+        newValue: { status, reviewNote } as Prisma.InputJsonValue,
+      },
+    }).catch((e: unknown) => console.error('[RegistrationService] Audit log failed:', e));
+
     return this.toPublic(updated);
   }
 

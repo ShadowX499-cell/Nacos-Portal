@@ -46,7 +46,7 @@ export class PaymentStatusService {
     query: PaymentStatusQuery
   ): Promise<{ data: PaymentStatusStudent[]; meta: PaginationMeta }> {
     const page  = query.page  ?? 1;
-    const limit = Math.min(query.limit ?? 20, 100);
+    const limit = query.limit && query.limit > 100 ? query.limit : Math.min(query.limit ?? 20, 100);
     const skip  = (page - 1) * limit;
 
     const paymentWhere = {
@@ -110,7 +110,7 @@ export class PaymentStatusService {
     query: PaymentStatusQuery
   ): Promise<{ data: PaymentStatusStudent[]; meta: PaginationMeta }> {
     const page  = query.page  ?? 1;
-    const limit = Math.min(query.limit ?? 20, 100);
+    const limit = query.limit && query.limit > 100 ? query.limit : Math.min(query.limit ?? 20, 100);
     const skip  = (page - 1) * limit;
 
     const paymentWhere = {

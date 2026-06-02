@@ -10,6 +10,12 @@ import { listAuditLogs, listOwnAuditLogs, getAuditLogById } from './audit-logs.c
 import { previewAdvance, advanceSemester, listTransitions } from './academic.controller';
 import { getRevenue, exportRevenue } from './revenue.controller';
 import {
+  getNacosStudents,
+  exportNacosPdf,
+  getResultSubStudents,
+  exportResultSubPdf,
+} from './payment-status.controller';
+import {
   getDashboard,
   getActivityFeed,
   createUser,
@@ -51,6 +57,20 @@ router.post('/users', photoUpload.single('photo'), validate(createUserRules), cr
 
 /** GET  /api/v1/admin/export/student-logins.pdf */
 router.get('/export/student-logins.pdf', exportStudentLoginsPdf);
+
+// ── Payment status ────────────────────────────────────────────────────────────
+
+/** GET /api/v1/admin/payments/nacos-dues/students */
+router.get('/payments/nacos-dues/students', getNacosStudents);
+
+/** GET /api/v1/admin/payments/nacos-dues/students/export.pdf */
+router.get('/payments/nacos-dues/students/export.pdf', exportNacosPdf);
+
+/** GET /api/v1/admin/payments/result-sub/students */
+router.get('/payments/result-sub/students', getResultSubStudents);
+
+/** GET /api/v1/admin/payments/result-sub/students/export.pdf */
+router.get('/payments/result-sub/students/export.pdf', exportResultSubPdf);
 
 /** GET  /api/v1/admin/users */
 router.get('/users', validate(listUsersRules), listUsers);

@@ -13,10 +13,14 @@ const mockReg = {
 
 const prismaMock = {
   courseRegistration: {
+    findFirst: vi.fn(),
     findUnique: vi.fn(),
     findMany: vi.fn(),
     create: vi.fn(),
     update: vi.fn(),
+  },
+  auditLog: {
+    create: vi.fn().mockResolvedValue({}),
   },
 };
 
@@ -29,7 +33,7 @@ beforeEach(() => {
 
 describe('RegistrationService.submitRegistration', () => {
   it('creates a new registration when none exists', async () => {
-    prismaMock.courseRegistration.findUnique.mockResolvedValue(null);
+    prismaMock.courseRegistration.findFirst.mockResolvedValue(null);
     prismaMock.courseRegistration.create.mockResolvedValue(mockReg);
 
     const result = await service.submitRegistration('user-1', '2024/2025', 'first', 'https://s3.url/file.pdf');
@@ -38,7 +42,7 @@ describe('RegistrationService.submitRegistration', () => {
   });
 
   it('updates an existing pending registration (re-upload)', async () => {
-    prismaMock.courseRegistration.findUnique.mockResolvedValue(mockReg);
+    prismaMock.courseRegistration.findFirst.mockResolvedValue(mockReg);
     prismaMock.courseRegistration.update.mockResolvedValue({ ...mockReg, fileUrl: 'https://new.url/file.pdf' });
 
     const result = await service.submitRegistration('user-1', '2024/2025', 'first', 'https://new.url/file.pdf');
@@ -47,7 +51,7 @@ describe('RegistrationService.submitRegistration', () => {
   });
 
   it('throws 409 when replacing a verified registration', async () => {
-    prismaMock.courseRegistration.findUnique.mockResolvedValue({ ...mockReg, status: RegistrationStatus.verified });
+    prismaMock.courseRegistration.findFirst.mockResolvedValue({ ...mockReg, status: RegistrationStatus.verified });
     await expect(
       service.submitRegistration('user-1', '2024/2025', 'first', 'https://new.url/file.pdf')
     ).rejects.toMatchObject({ statusCode: 409, code: 'REGISTRATION_ALREADY_VERIFIED' });

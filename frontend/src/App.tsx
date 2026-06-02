@@ -40,6 +40,8 @@ import AcademicCalendarPage from './pages/admin/AcademicCalendarPage';
 import RevenuePage from './pages/admin/RevenuePage';
 import AdminRegistrationsPage from './pages/admin/AdminRegistrationsPage';
 import ActivityLogPage from './pages/admin/ActivityLogPage';
+import NacosDuesStatusPage  from './pages/admin/NacosDuesStatusPage';
+import ResultSubStatusPage  from './pages/admin/ResultSubStatusPage';
 
 // Student pages
 import StudentDashboard from './pages/student/StudentDashboard';
@@ -101,6 +103,8 @@ export default function App() {
             <Route path="/admin/revenue"        element={<RevenuePage />} />
             <Route path="/admin/registrations" element={<AdminRegistrationsPage />} />
             <Route path="/admin/activity" element={<ActivityLogPage />} />
+            <Route path="/admin/payments/nacos-dues" element={<NacosDuesStatusPage />} />
+            <Route path="/admin/payments/result-sub" element={<ResultSubStatusPage />} />
           </Route>
         </Route>
 

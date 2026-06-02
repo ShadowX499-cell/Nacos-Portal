@@ -1,5 +1,6 @@
 import { NavLink, Link, Outlet, useLocation } from 'react-router-dom';
 import { useState } from 'react';
+import { usePendingRegistrations } from '../hooks/usePendingRegistrations';
 import { Menu, X, Lock, LayoutDashboard, Users, BookOpen, Vote, Fingerprint, Bell, Settings, Shield, ClipboardList, TrendingUp, CalendarDays, FileText } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import NacosLogo from './NacosLogo';
@@ -73,6 +74,8 @@ export default function AdminLayout() {
   const isHod = superAdminType === 'hod';
   const canViewRevenue = isHod || superAdminType === 'course_adviser';
 
+  const pendingRegistrations = usePendingRegistrations();
+
   const initials = user?.name
     ? user.name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase()
     : 'AD';
@@ -128,6 +131,11 @@ export default function AdminLayout() {
               >
                 <item.icon className="w-4 h-4 flex-shrink-0" />
                 <span className="flex-1 truncate">{item.label}</span>
+                {item.to === '/admin/registrations' && pendingRegistrations > 0 && (
+                  <span className="flex-shrink-0 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                    {pendingRegistrations > 99 ? '99+' : pendingRegistrations}
+                  </span>
+                )}
                 {item.phase && (
                   <span className="flex items-center gap-1 text-[9px] font-bold text-white/30 bg-white/8 px-1.5 py-0.5 rounded-full flex-shrink-0">
                     <Lock className="w-2.5 h-2.5" />

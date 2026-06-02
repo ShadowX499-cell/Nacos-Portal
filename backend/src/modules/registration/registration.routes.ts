@@ -11,6 +11,7 @@ import {
   submitSchoolFeeReceipt,
   listAllRegistrations,
   reviewRegistration,
+  getPendingCount,
 } from './registration.controller';
 
 const router = Router();
@@ -40,6 +41,9 @@ router.post(
 );
 
 /** Admin routes */
+/** GET /api/v1/registration/admin/pending-count */
+router.get('/admin/pending-count', authenticate, requireAdmin, apiRateLimit, getPendingCount);
+
 router.get('/admin', authenticate, requireAdmin, apiRateLimit, listAllRegistrations);
 
 router.patch(

@@ -69,6 +69,13 @@ export const listAllRegistrations = asyncHandler(async (req: Request, res: Respo
   sendSuccess(res, regs, 'Registrations retrieved');
 });
 
+/** GET /api/v1/registration/admin/pending-count */
+export const getPendingCount = asyncHandler(async (req: Request, res: Response) => {
+  const { departmentId } = (req as AuthRequest).user;
+  const count = await registrationService.getPendingCount(departmentId);
+  sendSuccess(res, { count }, 'Pending count retrieved');
+});
+
 /** PATCH /api/v1/registration/admin/:id/review */
 export const reviewRegistration = asyncHandler(async (req: Request, res: Response) => {
   const { sub, departmentId } = (req as AuthRequest).user;

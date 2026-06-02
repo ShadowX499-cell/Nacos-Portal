@@ -111,6 +111,15 @@ export class RegistrationService {
     }));
   }
 
+  async getPendingCount(departmentId: string): Promise<number> {
+    return this.db.courseRegistration.count({
+      where: {
+        user: { departmentId },
+        status: RegistrationStatus.pending,
+      },
+    });
+  }
+
   private toPublic(r: {
     id: string; userId: string; session: string; semester: Semester;
     type: RegistrationType; fileUrl: string | null; status: RegistrationStatus;

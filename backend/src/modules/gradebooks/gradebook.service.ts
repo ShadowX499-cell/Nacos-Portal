@@ -61,6 +61,16 @@ export class GradebookService {
       },
     });
 
+    this.db.auditLog.create({
+      data: {
+        actorId,
+        action: 'GRADEBOOK_CREATED',
+        entityType: 'gradebook',
+        entityId: gradebook.id,
+        newValue: { name: gradebook.name, level: gradebook.level, session: gradebook.session, semester: gradebook.semester } as Prisma.InputJsonValue,
+      },
+    }).catch((e: unknown) => console.error('[GradebookService] Audit log failed:', e));
+
     return this.toPublicGradebook(gradebook);
   }
 

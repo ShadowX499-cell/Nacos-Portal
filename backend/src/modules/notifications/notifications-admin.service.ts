@@ -1,4 +1,5 @@
 import { PrismaClient, NotificationType, NotificationTarget, Level } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { prisma as defaultPrisma } from '../../config/prisma';
 import { AppError } from '../../utils/response';
 
@@ -50,6 +51,17 @@ export class AdminNotificationsService {
     });
 
     const recipientCount = await this.countRecipients(departmentId, dto.target, dto.targetLevel);
+
+    this.db.auditLog.create({
+      data: {
+        actorId: adminId,
+        action: dto.send ? 'NOTIFICATION_SENT' : 'NOTIFICATION_CREATED',
+        entityType: 'notification',
+        entityId: notification.id,
+        newValue: { title: dto.title, type: dto.type, target: dto.target, sent: dto.send } as Prisma.InputJsonValue,
+      },
+    }).catch((e: unknown) => console.error('[NotificationsService] Audit log failed:', e));
+
     return this.toPublic(notification, recipientCount);
   }
 
@@ -82,7 +94,7 @@ export class AdminNotificationsService {
     );
   }
 
-  async sendNotification(id: string, departmentId: string): Promise<AdminNotification> {
+  async sendNotification(id: string, departmentId: string, adminId: string): Promise<AdminNotification> {
     const notification = await this.db.notification.findFirst({
       where: { id, departmentId },
     });
@@ -99,15 +111,37 @@ export class AdminNotificationsService {
       updated.target,
       updated.targetLevel ?? undefined
     );
+
+    this.db.auditLog.create({
+      data: {
+        actorId: adminId,
+        action: 'NOTIFICATION_SENT',
+        entityType: 'notification',
+        entityId: id,
+        newValue: { sentAt: updated.sentAt?.toISOString() } as Prisma.InputJsonValue,
+      },
+    }).catch((e: unknown) => console.error('[NotificationsService] Audit log failed:', e));
+
     return this.toPublic(updated, recipientCount);
   }
 
-  async deleteNotification(id: string, departmentId: string): Promise<void> {
+  async deleteNotification(id: string, departmentId: string, adminId: string): Promise<void> {
     const notification = await this.db.notification.findFirst({
       where: { id, departmentId },
     });
     if (!notification) throw new AppError(404, 'RESOURCE_NOT_FOUND', 'Notification not found');
     if (notification.isSent) throw new AppError(400, 'NOTIFICATION_SENT', 'Cannot delete a sent notification');
+
+    this.db.auditLog.create({
+      data: {
+        actorId: adminId,
+        action: 'NOTIFICATION_DELETED',
+        entityType: 'notification',
+        entityId: id,
+        newValue: { title: notification.title } as Prisma.InputJsonValue,
+      },
+    }).catch((e: unknown) => console.error('[NotificationsService] Audit log failed:', e));
+
     await this.db.notification.delete({ where: { id } });
   }
 

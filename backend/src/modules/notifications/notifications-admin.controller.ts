@@ -50,13 +50,13 @@ export const listNotifications = asyncHandler(async (req: Request, res: Response
 });
 
 export const sendNotification = asyncHandler(async (req: Request, res: Response) => {
-  const { departmentId } = (req as AuthRequest).user;
-  const notification = await adminNotificationsService.sendNotification(req.params.id, departmentId);
+  const { sub, departmentId } = (req as AuthRequest).user;
+  const notification = await adminNotificationsService.sendNotification(req.params.id, departmentId, sub);
   sendSuccess(res, notification, 'Notification sent');
 });
 
 export const deleteNotification = asyncHandler(async (req: Request, res: Response) => {
-  const { departmentId } = (req as AuthRequest).user;
-  await adminNotificationsService.deleteNotification(req.params.id, departmentId);
+  const { sub, departmentId } = (req as AuthRequest).user;
+  await adminNotificationsService.deleteNotification(req.params.id, departmentId, sub);
   sendSuccess(res, null, 'Draft deleted');
 });

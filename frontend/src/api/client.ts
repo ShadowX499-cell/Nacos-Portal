@@ -485,6 +485,32 @@ export const adminNotificationsApi = {
     api.delete(`/admin/notifications/${id}`),
 };
 
+// ── Payment Status API ────────────────────────────────────────────────────────
+
+export const paymentStatusApi = {
+  getNacosStudents: (params?: Record<string, string | number>) =>
+    api.get<{ success: true; data: import('../types').PaymentStatusStudent[]; meta: import('../types').PaginationMeta }>(
+      '/admin/payments/nacos-dues/students',
+      { params }
+    ),
+
+  getResultSubStudents: (params?: Record<string, string | number>) =>
+    api.get<{ success: true; data: import('../types').PaymentStatusStudent[]; meta: import('../types').PaginationMeta }>(
+      '/admin/payments/result-sub/students',
+      { params }
+    ),
+
+  exportNacosPdf: (params?: Record<string, string>) => {
+    const qs = params ? '?' + new URLSearchParams(params).toString() : '';
+    window.open(`${api.defaults.baseURL}/admin/payments/nacos-dues/students/export.pdf${qs}`, '_blank');
+  },
+
+  exportResultSubPdf: (params?: Record<string, string>) => {
+    const qs = params ? '?' + new URLSearchParams(params).toString() : '';
+    window.open(`${api.defaults.baseURL}/admin/payments/result-sub/students/export.pdf${qs}`, '_blank');
+  },
+};
+
 // ── Admin Settings API ────────────────────────────────────────────────────────
 
 export const adminSettingsApi = {

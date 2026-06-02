@@ -161,6 +161,12 @@ export const adminApi = {
 
   getStudentProfile: (id: string) =>
     api.get<{ success: true; data: import('../types').StudentProfile }>(`/admin/users/${id}/profile`),
+
+  getActivityFeed: (params?: { page?: number; limit?: number; type?: string; from?: string; to?: string }) =>
+    api.get<{ success: true; data: import('../types').ActivityItem[]; meta: import('../types').PaginationMeta }>(
+      '/admin/dashboard/activity',
+      { params }
+    ),
 };
 
 // ── Student Compliance API ────────────────────────────────────────────────────
@@ -354,6 +360,29 @@ export const registrationApi = {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
+
+  submitSchoolFeeReceipt: (session: string, semester: string, file: File) => {
+    const form = new FormData();
+    form.append('file', file);
+    form.append('session', session);
+    form.append('semester', semester);
+    return api.post<{ success: true; data: import('../types').Registration }>('/registration/school-fee-receipt', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+};
+
+export const adminRegistrationApi = {
+  list: (params?: { status?: string; session?: string; semester?: string; type?: string }) =>
+    api.get<{ success: true; data: import('../types').AdminRegistration[] }>('/registration/admin', { params }),
+
+  review: (id: string, status: 'verified' | 'rejected', reviewNote?: string) =>
+    api.patch<{ success: true; data: import('../types').AdminRegistration }>(
+      `/registration/admin/${id}/review`, { status, reviewNote }
+    ),
+
+  getPendingCount: () =>
+    api.get<{ success: true; data: { count: number } }>('/registration/admin/pending-count'),
 };
 
 // ── School Fees API ───────────────────────────────────────────────────────────
@@ -425,11 +454,27 @@ export const adminNotificationsApi = {
       { params: status ? { status } : {} }
     ),
 
-  create: (body: import('../types').CreateAdminNotificationForm) =>
-    api.post<{ success: true; data: import('../types').AdminNotification }>(
+  create: (body: import('../types').CreateAdminNotificationForm) => {
+    if (body.image) {
+      const form = new FormData();
+      form.append('title', body.title);
+      form.append('body', body.body);
+      form.append('type', body.type);
+      form.append('target', body.target);
+      if (body.targetLevel) form.append('targetLevel', body.targetLevel);
+      form.append('send', String(body.send));
+      form.append('image', body.image);
+      return api.post<{ success: true; data: import('../types').AdminNotification }>(
+        '/admin/notifications',
+        form,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+    }
+    return api.post<{ success: true; data: import('../types').AdminNotification }>(
       '/admin/notifications',
       body
-    ),
+    );
+  },
 
   send: (id: string) =>
     api.patch<{ success: true; data: import('../types').AdminNotification }>(

@@ -241,11 +241,17 @@ export interface Registration {
   userId: string;
   session: string;
   semester: string;
+  type: 'course_form' | 'school_fee_receipt';
   fileUrl: string | null;
   status: RegistrationStatus;
   reviewNote: string | null;
   submittedAt: string;
   reviewedAt: string | null;
+}
+
+export interface AdminRegistration extends Registration {
+  studentUserId: string;
+  studentName: string;
 }
 
 // ── School Fees ───────────────────────────────────────────────────────────────
@@ -331,6 +337,7 @@ export interface AdminNotification {
   type: string;
   target: string;
   targetLevel: string | null;
+  imageUrl: string | null;
   isSent: boolean;
   recipientCount: number;
   createdAt: string;
@@ -344,6 +351,13 @@ export interface CreateAdminNotificationForm {
   target: 'all' | 'level';
   targetLevel?: string;
   send: boolean;
+  image?: File;
+}
+
+export interface ActivityItem {
+  type: 'registered' | 'activated' | 'payment' | 'result_published';
+  label: string;
+  time: string;
 }
 
 // ── Department Settings ───────────────────────────────────────────────────────

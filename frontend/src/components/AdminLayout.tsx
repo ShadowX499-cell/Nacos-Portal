@@ -63,6 +63,8 @@ const PAGE_TITLES: Record<string, string> = {
   '/admin/audit-logs':     'Audit Logs',
   '/admin/activity':       'Activity Feed',
   '/admin/settings':       'Settings',
+  '/admin/payments/nacos-dues':  'NACOS Dues',
+  '/admin/payments/result-sub':  'Result Subscription',
 };
 
 export default function AdminLayout() {

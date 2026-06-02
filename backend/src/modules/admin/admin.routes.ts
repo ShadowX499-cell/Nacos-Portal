@@ -11,6 +11,7 @@ import { previewAdvance, advanceSemester, listTransitions } from './academic.con
 import { getRevenue, exportRevenue } from './revenue.controller';
 import {
   getDashboard,
+  getActivityFeed,
   createUser,
   listUsers,
   getUserById,
@@ -40,6 +41,9 @@ router.use(authenticate, requireAdmin, apiRateLimit);
 
 /** GET  /api/v1/admin/dashboard */
 router.get('/dashboard', getDashboard);
+
+/** GET /api/v1/admin/dashboard/activity */
+router.get('/dashboard/activity', getActivityFeed);
 
 /** POST /api/v1/admin/users */
 router.post('/users', photoUpload.single('photo'), validate(createUserRules), createUser);

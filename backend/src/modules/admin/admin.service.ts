@@ -379,6 +379,94 @@ export class AdminService {
     };
   }
 
+  async getActivityFeed(
+    departmentId: string,
+    query: { page?: number; limit?: number; type?: string; from?: string; to?: string }
+  ): Promise<{
+    data: { type: string; label: string; time: string }[];
+    meta: { page: number; limit: number; total: number; totalPages: number };
+  }> {
+    const page = query.page ?? 1;
+    const limit = Math.min(query.limit ?? 20, 100);
+    const fromDate = query.from ? new Date(query.from) : undefined;
+    const toDate = query.to ? new Date(query.to) : undefined;
+
+    const dateFilter = fromDate || toDate
+      ? { gte: fromDate, lte: toDate }
+      : undefined;
+
+    const fetchUsers    = !query.type || query.type === 'registered' || query.type === 'activated';
+    const fetchPayments = !query.type || query.type === 'payment';
+    const fetchResults  = !query.type || query.type === 'result_published';
+
+    const [recentUsers, recentPayments, recentGradebooks] = await Promise.all([
+      fetchUsers
+        ? this.db.user.findMany({
+            where: {
+              departmentId,
+              role: UserRole.student,
+              ...(dateFilter ? { createdAt: dateFilter } : {}),
+            },
+            orderBy: { createdAt: 'desc' },
+            take: 200,
+            select: { name: true, status: true, createdAt: true, updatedAt: true },
+          })
+        : Promise.resolve([]),
+      fetchPayments
+        ? this.db.payment.findMany({
+            where: {
+              status: 'success',
+              user: { departmentId },
+              ...(dateFilter ? { paidAt: dateFilter } : {}),
+            },
+            orderBy: { paidAt: 'desc' },
+            take: 200,
+            include: { user: { select: { name: true } } },
+          })
+        : Promise.resolve([]),
+      fetchResults
+        ? this.db.gradebook.findMany({
+            where: {
+              departmentId,
+              status: 'published',
+              ...(dateFilter ? { publishedAt: dateFilter } : {}),
+            },
+            orderBy: { publishedAt: 'desc' },
+            take: 200,
+            select: { name: true, publishedAt: true },
+          })
+        : Promise.resolve([]),
+    ]);
+
+    const activities: { type: string; label: string; time: string }[] = [
+      ...(recentUsers as Array<{ name: string; status: string; createdAt: Date; updatedAt: Date }>).map((u) => ({
+        type: u.status === UserStatus.validated ? 'activated' : 'registered',
+        label: u.status === UserStatus.validated ? `${u.name} account activated` : `${u.name} registered`,
+        time: (u.status === UserStatus.validated ? u.updatedAt : u.createdAt).toISOString(),
+      })),
+      ...(recentPayments as Array<{ amount: unknown; user: { name: string }; paidAt: Date | null; createdAt: Date }>).map((p) => ({
+        type: 'payment',
+        label: `₦${Number(p.amount).toLocaleString()} payment — ${p.user.name}`,
+        time: (p.paidAt ?? p.createdAt).toISOString(),
+      })),
+      ...(recentGradebooks as Array<{ name: string; publishedAt: Date | null }>).map((g) => ({
+        type: 'result_published',
+        label: `${g.name} result published`,
+        time: (g.publishedAt ?? new Date()).toISOString(),
+      })),
+    ]
+      .filter((a) => !query.type || a.type === query.type)
+      .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+
+    const total = activities.length;
+    const paged = activities.slice((page - 1) * limit, page * limit);
+
+    return {
+      data: paged,
+      meta: { page, limit, total, totalPages: Math.ceil(total / limit) },
+    };
+  }
+
   // ── Department settings ──────────────────────────────────────────────────
 
   async getDepartmentSettings(departmentId: string): Promise<{

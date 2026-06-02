@@ -75,6 +75,19 @@ export const getDashboard = asyncHandler(async (req: Request, res: Response) => 
   sendSuccess(res, stats, 'Dashboard stats retrieved');
 });
 
+/** GET /api/v1/admin/dashboard/activity */
+export const getActivityFeed = asyncHandler(async (req: Request, res: Response) => {
+  const { departmentId } = (req as AuthRequest).user;
+  const result = await adminService.getActivityFeed(departmentId, {
+    page: req.query.page ? Number(req.query.page) : undefined,
+    limit: req.query.limit ? Number(req.query.limit) : undefined,
+    type: req.query.type as string | undefined,
+    from: req.query.from as string | undefined,
+    to: req.query.to as string | undefined,
+  });
+  sendSuccess(res, result.data, 'Activity feed retrieved', 200, result.meta);
+});
+
 /** POST /api/v1/admin/users */
 export const createUser = asyncHandler(async (req: Request, res: Response) => {
   const { sub, departmentId } = (req as AuthRequest).user;

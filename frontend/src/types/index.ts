@@ -104,6 +104,21 @@ export interface DashboardStats {
     label: string;
     time: string;
   }[];
+  nacosPaymentStats: { paid: number; unpaid: number; session: string };
+  resultSubStats:    { paid: number; unpaid: number; session: string; semester: string };
+}
+
+export interface PaymentStatusStudent {
+  id: string;
+  userId: string;
+  name: string;
+  program: string;
+  level: string;
+  hasPaid: boolean;
+  paidAt: string | null;
+  amount: number | null;
+  reference: string | null;
+  semester: string | null;
 }
 
 // ── Gradebooks ────────────────────────────────────────────────────────────────

@@ -19,7 +19,11 @@ export const validateAccount = asyncHandler(async (req: Request, res: Response) 
 
 /** POST /api/v1/auth/login */
 export const login = asyncHandler(async (req: Request, res: Response) => {
-  const result = await authService.login(req.body);
+  const result = await authService.login(
+    req.body,
+    req.ip ?? req.socket.remoteAddress,
+    req.headers['user-agent']
+  );
 
   // Set refresh token as HttpOnly cookie
   res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, cookieOptions);

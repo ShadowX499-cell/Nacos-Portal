@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { PrismaClient, UserStatus } from '@prisma/client';
+import { PrismaClient, UserStatus, Prisma } from '@prisma/client';
 import { prisma as defaultPrisma } from '../../config/prisma';
 import { redis as defaultRedis } from '../../config/redis';
 import {
@@ -61,7 +61,7 @@ export class AuthService {
 
   // ── Login ─────────────────────────────────────────────────────────────────
 
-  async login(dto: LoginDto): Promise<{ user: UserPublic } & TokenPair> {
+  async login(dto: LoginDto, ipAddress?: string, userAgent?: string): Promise<{ user: UserPublic } & TokenPair> {
     const user = await this.db.user.findUnique({
       where: { userId: dto.userId },
     });
@@ -101,6 +101,21 @@ export class AuthService {
 
     const tokens = await this.issueTokens(user);
     const userPublic = this.toPublic(user);
+
+    // Only audit admin logins to avoid flooding with student events
+    if (user.role === 'super_admin') {
+      this.db.auditLog.create({
+        data: {
+          actorId: user.id,
+          action: 'ADMIN_LOGIN',
+          entityType: 'auth',
+          entityId: user.id,
+          newValue: { userId: user.userId, role: user.role } as Prisma.InputJsonValue,
+          ipAddress: ipAddress ?? null,
+          userAgent: userAgent ?? null,
+        },
+      }).catch((e: unknown) => console.error('[AuthService] Audit log failed:', e));
+    }
 
     return { ...tokens, user: userPublic };
   }

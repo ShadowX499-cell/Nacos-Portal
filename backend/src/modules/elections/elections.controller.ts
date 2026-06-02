@@ -28,7 +28,8 @@ export const updateStatus = asyncHandler(async (req: Request, res: Response) => 
   const election = await electionsService.updateStatus(
     req.params.id,
     departmentId,
-    req.body.action as 'activate' | 'close' | 'publish'
+    req.body.action as 'activate' | 'close' | 'publish',
+    sub
   );
   sendSuccess(res, election, `Election ${req.body.action}d`);
 });

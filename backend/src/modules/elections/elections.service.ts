@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { PrismaClient, ElectionStatus, UserRole } from '@prisma/client';
+import { PrismaClient, ElectionStatus, UserRole, Prisma } from '@prisma/client';
 import { prisma as defaultPrisma } from '../../config/prisma';
 import { AppError } from '../../utils/response';
 
@@ -82,6 +82,17 @@ export class ElectionsService {
         createdById: adminId,
       },
     });
+
+    this.db.auditLog.create({
+      data: {
+        actorId: adminId,
+        action: 'ELECTION_CREATED',
+        entityType: 'election',
+        entityId: election.id,
+        newValue: { title: election.title, status: election.status } as Prisma.InputJsonValue,
+      },
+    }).catch((e: unknown) => console.error('[ElectionsService] Audit log failed:', e));
+
     return this.toElectionPublic(election, 0, 0, 0);
   }
 
@@ -138,7 +149,7 @@ export class ElectionsService {
     };
   }
 
-  async updateStatus(id: string, departmentId: string, action: 'activate' | 'close' | 'publish'): Promise<ElectionPublic> {
+  async updateStatus(id: string, departmentId: string, action: 'activate' | 'close' | 'publish', adminId?: string): Promise<ElectionPublic> {
     const election = await this.db.election.findFirst({ where: { id, departmentId } });
     if (!election) throw new AppError(404, 'RESOURCE_NOT_FOUND', 'Election not found');
 
@@ -169,6 +180,25 @@ export class ElectionsService {
         ...(action === 'publish' ? { finalizedAt: new Date() } : {}),
       },
     });
+
+    if (adminId) {
+      const newStatus = validTransitions[action];
+      const auditAction =
+        newStatus === ElectionStatus.active
+          ? 'ELECTION_OPENED'
+          : newStatus === ElectionStatus.closed
+          ? 'ELECTION_CLOSED'
+          : 'ELECTION_RESULTS_PUBLISHED';
+      this.db.auditLog.create({
+        data: {
+          actorId: adminId,
+          action: auditAction,
+          entityType: 'election',
+          entityId: id,
+          newValue: { status: newStatus } as Prisma.InputJsonValue,
+        },
+      }).catch((e: unknown) => console.error('[ElectionsService] Audit log failed:', e));
+    }
 
     return this.toElectionPublic(updated, 0, 0, 0);
   }

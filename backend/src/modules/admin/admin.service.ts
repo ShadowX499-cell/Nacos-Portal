@@ -243,6 +243,8 @@ export class AdminService {
       label: string;
       time: string;
     }[];
+    nacosPaymentStats: { paid: number; unpaid: number; session: string };
+    resultSubStats: { paid: number; unpaid: number; session: string; semester: string };
   }> {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
@@ -251,6 +253,13 @@ export class AdminService {
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
     sixMonthsAgo.setDate(1);
     sixMonthsAgo.setHours(0, 0, 0, 0);
+
+    const dept = await this.db.department.findUnique({
+      where: { id: departmentId },
+      select: { currentSession: true, currentSemester: true },
+    });
+    const currentSession  = dept?.currentSession  ?? null;
+    const currentSemester = dept?.currentSemester ?? null;
 
     const [
       totalStudents,
@@ -267,6 +276,8 @@ export class AdminService {
       levelCounts,
       programCounts,
       successPayments,
+      nacosPaymentPaid,
+      resultSubPaid,
     ] = await Promise.all([
       this.db.user.count({ where: { departmentId, role: UserRole.student } }),
       this.db.user.count({ where: { departmentId, role: UserRole.student, status: UserStatus.pending } }),
@@ -313,6 +324,29 @@ export class AdminService {
         where: { status: 'success', paidAt: { gte: sixMonthsAgo } },
         select: { amount: true, paidAt: true },
       }),
+      // nacosPaymentPaid — count of students who paid nacos_dues for currentSession
+      currentSession
+        ? this.db.payment.count({
+            where: {
+              type: 'nacos_dues',
+              status: 'success',
+              sessionYear: currentSession,
+              user: { departmentId },
+            },
+          })
+        : Promise.resolve(0),
+      // resultSubPaid — count of students who paid result_subscription for currentSession+currentSemester
+      currentSession && currentSemester
+        ? this.db.payment.count({
+            where: {
+              type: 'result_subscription',
+              status: 'success',
+              sessionYear: currentSession,
+              semester: currentSemester,
+              user: { departmentId },
+            },
+          })
+        : Promise.resolve(0),
     ]);
 
     // Draft gradebooks where every course has at least one grade entered
@@ -376,6 +410,17 @@ export class AdminService {
       studentsByLevel: levelCounts,
       studentsByProgram: programCounts,
       recentActivity: activities,
+      nacosPaymentStats: {
+        paid:    nacosPaymentPaid,
+        unpaid:  totalStudents - nacosPaymentPaid,
+        session: currentSession ?? '—',
+      },
+      resultSubStats: {
+        paid:     resultSubPaid,
+        unpaid:   totalStudents - resultSubPaid,
+        session:  currentSession ?? '—',
+        semester: currentSemester ?? '—',
+      },
     };
   }
 

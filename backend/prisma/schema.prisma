@@ -111,6 +111,11 @@ enum RegistrationStatus {
   rejected
 }
 
+enum RegistrationType {
+  course_form
+  school_fee_receipt
+}
+
 enum StudentStatus {
   active
   carryover
@@ -427,6 +432,7 @@ model Notification {
   isSent       Boolean            @default(false) @map("is_sent")
   sentAt       DateTime?          @map("sent_at")
   createdById  String             @map("created_by")
+  imageUrl     String?            @map("image_url") @db.VarChar(500)
   createdAt    DateTime           @default(now()) @map("created_at")
 
   department Department         @relation(fields: [departmentId], references: [id])
@@ -492,6 +498,7 @@ model CourseRegistration {
   userId       String             @map("user_id")
   session      String             @db.VarChar(20)
   semester     Semester
+  type         RegistrationType   @default(course_form)
   fileUrl      String?            @map("file_url") @db.VarChar(500)
   status       RegistrationStatus @default(pending)
   reviewedById String?            @map("reviewed_by")
@@ -502,7 +509,7 @@ model CourseRegistration {
   user       User  @relation("UserRegistrations", fields: [userId], references: [id])
   reviewedBy User? @relation("ReviewedRegistrations", fields: [reviewedById], references: [id])
 
-  @@unique([userId, session, semester])
+  @@unique([userId, session, semester, type])
   @@map("course_registrations")
 }
 

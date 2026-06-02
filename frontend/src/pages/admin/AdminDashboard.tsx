@@ -20,6 +20,12 @@ function timeAgo(iso: string): string {
   return `${Math.floor(h / 24)}d ago`;
 }
 
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('en-NG', {
+    month: 'short', day: 'numeric', year: 'numeric',
+  });
+}
+
 const ACTIVITY_ICONS: Record<string, string> = {
   registered:       '👤',
   activated:        '✅',
@@ -422,11 +428,21 @@ export default function AdminDashboard() {
                   </span>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium text-gray-800 truncate">{event.label}</p>
-                    <p className="text-[10px] text-gray-400 mt-0.5">{timeAgo(event.time)}</p>
+                    <p className="text-[10px] text-gray-400 mt-0.5">
+                        {timeAgo(event.time)} · {formatDate(event.time)}
+                      </p>
                   </div>
                 </div>
               ))
             )}
+          </div>
+          <div className="px-5 py-3 border-t border-gray-100">
+            <Link
+              to="/admin/activity"
+              className="text-xs font-semibold text-brand-700 hover:text-brand-900 flex items-center gap-1"
+            >
+              View All Activity <ArrowRight className="w-3 h-3" />
+            </Link>
           </div>
         </motion.div>
 

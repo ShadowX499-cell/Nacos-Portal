@@ -1,4 +1,4 @@
-import { PrismaClient, RegistrationStatus, Semester } from '@prisma/client';
+import { PrismaClient, RegistrationStatus, RegistrationType, Semester } from '@prisma/client';
 import { prisma as defaultPrisma } from '../../config/prisma';
 import { AppError } from '../../utils/response';
 
@@ -7,6 +7,7 @@ export interface RegistrationPublic {
   userId: string;
   session: string;
   semester: string;
+  type: string;
   fileUrl: string | null;
   status: string;
   reviewNote: string | null;
@@ -29,14 +30,15 @@ export class RegistrationService {
     userId: string,
     session: string,
     semester: string,
-    fileUrl: string
+    fileUrl: string,
+    type: RegistrationType = RegistrationType.course_form
   ): Promise<RegistrationPublic> {
-    const existing = await this.db.courseRegistration.findUnique({
-      where: { userId_session_semester: { userId, session, semester: semester as Semester } },
+    const existing = await this.db.courseRegistration.findFirst({
+      where: { userId, session, semester: semester as Semester, type },
     });
 
     if (existing?.status === RegistrationStatus.verified) {
-      throw new AppError(409, 'REGISTRATION_ALREADY_VERIFIED', 'Your course form is already verified and cannot be replaced');
+      throw new AppError(409, 'REGISTRATION_ALREADY_VERIFIED', 'This submission is already verified and cannot be replaced');
     }
 
     if (existing) {
@@ -54,7 +56,7 @@ export class RegistrationService {
     }
 
     const reg = await this.db.courseRegistration.create({
-      data: { userId, session, semester: semester as Semester, fileUrl, status: RegistrationStatus.pending },
+      data: { userId, session, semester: semester as Semester, type, fileUrl, status: RegistrationStatus.pending },
     });
     return this.toPublic(reg);
   }
@@ -89,17 +91,18 @@ export class RegistrationService {
 
   async listAllForAdmin(
     departmentId: string,
-    filters: { status?: string; session?: string; semester?: string }
+    filters: { status?: string; session?: string; semester?: string; type?: string }
   ): Promise<(RegistrationPublic & { studentUserId: string; studentName: string })[]> {
     const regs = await this.db.courseRegistration.findMany({
       where: {
         user: { departmentId },
-        ...(filters.status ? { status: filters.status as RegistrationStatus } : {}),
-        ...(filters.session ? { session: filters.session } : {}),
+        ...(filters.status   ? { status:   filters.status   as RegistrationStatus } : {}),
+        ...(filters.session  ? { session:  filters.session  } : {}),
         ...(filters.semester ? { semester: filters.semester as Semester } : {}),
+        ...(filters.type     ? { type:     filters.type     as RegistrationType } : {}),
       },
       include: { user: { select: { userId: true, name: true } } },
-      orderBy: { submittedAt: 'desc' },
+      orderBy: [{ status: 'asc' }, { submittedAt: 'desc' }],
     });
     return regs.map((r) => ({
       ...this.toPublic(r),
@@ -110,13 +113,13 @@ export class RegistrationService {
 
   private toPublic(r: {
     id: string; userId: string; session: string; semester: Semester;
-    fileUrl: string | null; status: RegistrationStatus; reviewNote: string | null;
-    submittedAt: Date; reviewedAt: Date | null;
+    type: RegistrationType; fileUrl: string | null; status: RegistrationStatus;
+    reviewNote: string | null; submittedAt: Date; reviewedAt: Date | null;
   }): RegistrationPublic {
     return {
       id: r.id, userId: r.userId, session: r.session, semester: r.semester,
-      fileUrl: r.fileUrl, status: r.status, reviewNote: r.reviewNote,
-      submittedAt: r.submittedAt, reviewedAt: r.reviewedAt,
+      type: r.type, fileUrl: r.fileUrl, status: r.status,
+      reviewNote: r.reviewNote, submittedAt: r.submittedAt, reviewedAt: r.reviewedAt,
     };
   }
 }

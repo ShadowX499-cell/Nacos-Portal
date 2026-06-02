@@ -4,32 +4,47 @@ import { authenticate, requireStudent, requireAdmin } from '../../middleware/aut
 import { validate } from '../../middleware/validate.middleware';
 import { apiRateLimit } from '../../middleware/rate-limit.middleware';
 import { Semester } from '@prisma/client';
-import { upload, listRegistrations, submitRegistration, listAllRegistrations, reviewRegistration } from './registration.controller';
+import {
+  upload,
+  listRegistrations,
+  submitRegistration,
+  submitSchoolFeeReceipt,
+  listAllRegistrations,
+  reviewRegistration,
+} from './registration.controller';
 
 const router = Router();
 
+const sessionSemesterRules = [
+  body('session').matches(/^\d{4}\/\d{4}$/).withMessage('Session must be YYYY/YYYY'),
+  body('semester').isIn(Object.values(Semester)).withMessage('Invalid semester'),
+];
+
 /** Student routes */
 router.get('/', authenticate, requireStudent, apiRateLimit, listRegistrations);
+
 router.post(
   '/',
-  authenticate,
-  requireStudent,
-  apiRateLimit,
+  authenticate, requireStudent, apiRateLimit,
   upload.single('file'),
-  validate([
-    body('session').matches(/^\d{4}\/\d{4}$/).withMessage('Session must be YYYY/YYYY'),
-    body('semester').isIn(Object.values(Semester)).withMessage('Invalid semester'),
-  ]),
+  validate(sessionSemesterRules),
   submitRegistration
+);
+
+router.post(
+  '/school-fee-receipt',
+  authenticate, requireStudent, apiRateLimit,
+  upload.single('file'),
+  validate(sessionSemesterRules),
+  submitSchoolFeeReceipt
 );
 
 /** Admin routes */
 router.get('/admin', authenticate, requireAdmin, apiRateLimit, listAllRegistrations);
+
 router.patch(
   '/admin/:id/review',
-  authenticate,
-  requireAdmin,
-  apiRateLimit,
+  authenticate, requireAdmin, apiRateLimit,
   validate([
     body('status').isIn(['verified', 'rejected']).withMessage('Status must be verified or rejected'),
     body('reviewNote').optional().isString().isLength({ max: 500 }),

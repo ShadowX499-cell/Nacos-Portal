@@ -15,6 +15,26 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:5000',
         changeOrigin: true,
+        configure: (proxy) => {
+          // Return 503 instead of ECONNREFUSED when backend isn't ready yet.
+          // Vite registers its own error logger after configure(), so we use
+          // setImmediate to remove it and keep only this silent handler.
+          const silentHandler = (
+            _err: Error,
+            _req: unknown,
+            res: { headersSent: boolean; writeHead: (...a: unknown[]) => unknown; end: (...a: unknown[]) => unknown },
+          ) => {
+            if (!res.headersSent) {
+              res.writeHead(503, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ success: false, error: { code: 'BACKEND_UNAVAILABLE', message: 'Backend not ready' } }));
+            }
+          };
+          proxy.on('error', silentHandler);
+          setImmediate(() => {
+            proxy.removeAllListeners('error');
+            proxy.on('error', silentHandler);
+          });
+        },
       },
     },
   },

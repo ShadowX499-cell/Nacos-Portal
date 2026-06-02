@@ -47,6 +47,12 @@ export default function AdminNotificationsPage() {
 
   useEffect(() => { load(); }, [load]);
 
+  useEffect(() => {
+    return () => {
+      if (flyerPreview) URL.revokeObjectURL(flyerPreview);
+    };
+  }, [flyerPreview]);
+
   const handleSubmit = async (send: boolean) => {
     if (!form.title.trim() || !form.body.trim()) {
       setFormError('Title and message are required.');

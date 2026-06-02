@@ -167,6 +167,29 @@ function ProgramDonut({ data }: { data: { program: string; count: number }[] }) 
   );
 }
 
+// ── Payment Compliance Mini Donut ─────────────────────────────────────────────
+
+function PaymentDonut({ paid, unpaid }: { paid: number; unpaid: number }) {
+  const total = paid + unpaid;
+  if (total === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-16 gap-1">
+        <p className="text-xs text-gray-400">No data</p>
+      </div>
+    );
+  }
+  const pct = (paid / total) * 100;
+  const gradient = `conic-gradient(#16a34a 0% ${pct.toFixed(1)}%, #e5e7eb ${pct.toFixed(1)}% 100%)`;
+  return (
+    <div className="relative w-16 h-16 flex-shrink-0">
+      <div className="w-full h-full rounded-full" style={{ background: gradient }} />
+      <div className="absolute inset-[14px] rounded-full bg-white flex items-center justify-center shadow-inner">
+        <span className="text-[9px] font-bold text-gray-700">{Math.round(pct)}%</span>
+      </div>
+    </div>
+  );
+}
+
 // ── KPI card config ───────────────────────────────────────────────────────────
 
 function buildCards(s: DashboardStats) {
@@ -400,6 +423,63 @@ export default function AdminDashboard() {
           </div>
         </motion.div>
       </div>
+
+      {/* Payment Compliance */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.38 }}
+        className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-sm font-bold text-gray-900">Payment Compliance</h2>
+            <p className="text-xs text-gray-400 mt-0.5">
+              Session: {stats.nacosPaymentStats.session}
+            </p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+          {/* NACOS Dues panel */}
+          <Link
+            to={`/admin/payments/nacos-dues?session=${encodeURIComponent(stats.nacosPaymentStats.session)}`}
+            className="flex items-center gap-4 p-4 rounded-xl border-l-4 border-amber-400 bg-amber-50 hover:bg-amber-100 transition-colors"
+          >
+            <PaymentDonut paid={stats.nacosPaymentStats.paid} unpaid={stats.nacosPaymentStats.unpaid} />
+            <div className="min-w-0">
+              <p className="text-sm font-bold text-gray-900 mb-1">NACOS Dues</p>
+              <p className="text-xs text-green-700 font-semibold">
+                {stats.nacosPaymentStats.paid} paid
+              </p>
+              <p className="text-xs text-red-600 font-semibold">
+                {stats.nacosPaymentStats.unpaid} unpaid
+              </p>
+              <p className="text-[10px] text-gray-400 mt-1">Click to view full list →</p>
+            </div>
+          </Link>
+
+          {/* Result Sub panel */}
+          <Link
+            to={`/admin/payments/result-sub?session=${encodeURIComponent(stats.resultSubStats.session)}&semester=${encodeURIComponent(stats.resultSubStats.semester)}`}
+            className="flex items-center gap-4 p-4 rounded-xl border-l-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-colors"
+          >
+            <PaymentDonut paid={stats.resultSubStats.paid} unpaid={stats.resultSubStats.unpaid} />
+            <div className="min-w-0">
+              <p className="text-sm font-bold text-gray-900 mb-1">Result Subscription</p>
+              <p className="text-xs text-green-700 font-semibold">
+                {stats.resultSubStats.paid} paid
+              </p>
+              <p className="text-xs text-red-600 font-semibold">
+                {stats.resultSubStats.unpaid} unpaid
+              </p>
+              <p className="text-[10px] text-gray-400 mt-1">
+                {stats.resultSubStats.semester !== '—' ? `${stats.resultSubStats.semester} semester · ` : ''}Click to view →
+              </p>
+            </div>
+          </Link>
+
+        </div>
+      </motion.div>
 
       {/* Activity + Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

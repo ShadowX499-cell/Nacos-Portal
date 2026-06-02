@@ -35,6 +35,8 @@ export default function AdminNotificationsPage() {
   const [form, setForm] = useState<CreateAdminNotificationForm>(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
+  const [flyerFile, setFlyerFile] = useState<File | null>(null);
+  const [flyerPreview, setFlyerPreview] = useState<string | null>(null);
 
   const load = useCallback(() => {
     adminNotificationsApi.list()
@@ -57,8 +59,10 @@ export default function AdminNotificationsPage() {
     setSubmitting(true);
     setFormError('');
     try {
-      await adminNotificationsApi.create({ ...form, send });
+      await adminNotificationsApi.create({ ...form, send, image: flyerFile ?? undefined });
       setForm(EMPTY_FORM);
+      setFlyerFile(null);
+      setFlyerPreview(null);
       setComposing(false);
       setTab(send ? 'sent' : 'draft');
       load();
@@ -102,7 +106,7 @@ export default function AdminNotificationsPage() {
           <p className="text-sm text-gray-500 mt-0.5">Send announcements to students</p>
         </div>
         <button
-          onClick={() => { setComposing((c) => !c); setFormError(''); }}
+          onClick={() => { setComposing((c) => { if (c) { setFlyerFile(null); setFlyerPreview(null); } return !c; }); setFormError(''); }}
           className="flex items-center gap-2 bg-brand-700 hover:bg-brand-800 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition-colors shadow-sm"
         >
           {composing ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
@@ -154,6 +158,44 @@ export default function AdminNotificationsPage() {
                     placeholder="Write your announcement here…"
                     className="w-full rounded-xl border border-brand-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
                   />
+                </div>
+
+                {/* Flyer upload */}
+                <div>
+                  <label className="block text-xs font-semibold text-brand-900 mb-1">
+                    Attach Flyer <span className="font-normal text-gray-400">(optional)</span>
+                  </label>
+                  {flyerPreview ? (
+                    <div className="flex items-center gap-3 border border-brand-200 rounded-xl p-3 bg-white">
+                      <img src={flyerPreview} alt="Flyer preview" className="w-12 h-12 object-cover rounded-lg flex-shrink-0" />
+                      <span className="text-xs text-gray-700 flex-1 truncate">{flyerFile?.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => { setFlyerFile(null); setFlyerPreview(null); }}
+                        className="text-xs text-red-500 hover:text-red-700 font-semibold flex-shrink-0"
+                      >
+                        ✕ Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="block border-2 border-dashed border-brand-200 rounded-xl p-4 text-center cursor-pointer hover:border-brand-400 hover:bg-brand-50/50 transition-colors">
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png"
+                        className="sr-only"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setFlyerFile(file);
+                            setFlyerPreview(URL.createObjectURL(file));
+                          }
+                        }}
+                      />
+                      <div className="text-xl mb-1">🖼️</div>
+                      <p className="text-xs text-gray-500">Click to upload image</p>
+                      <p className="text-[10px] text-gray-400 mt-0.5">JPG, PNG — max 5 MB</p>
+                    </label>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -270,6 +312,13 @@ export default function AdminNotificationsPage() {
                   </p>
                   <p className="text-xs text-gray-500 mt-1 line-clamp-1">{n.body}</p>
                 </div>
+                {n.imageUrl && (
+                  <img
+                    src={n.imageUrl}
+                    alt="Flyer"
+                    className="w-10 h-10 object-cover rounded-lg flex-shrink-0 border border-gray-100"
+                  />
+                )}
                 <div className="flex items-center gap-2 flex-shrink-0">
                   {n.isSent ? (
                     <span className="text-[10px] font-bold bg-brand-100 text-brand-700 px-2.5 py-1 rounded-full">Sent</span>

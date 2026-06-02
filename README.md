@@ -100,6 +100,29 @@ All tests are unit tests — no database or Redis required (mocked).
 
 ---
 
+## Default Admin Credentials
+
+These accounts are created by `npx prisma db seed` (runs `backend/prisma/seed.ts`).
+
+> ⚠️ Change all passwords immediately after first login in production.
+
+| Role | Name | User ID | Password |
+|------|------|---------|----------|
+| System Admin | System Administrator | `NACOS/ADMIN/2024/001` | `Admin@12345` |
+| HOD | Head of Department | `NACOS/ADMIN/2024/002` | `Hod@Nacos2026` |
+| Examinations Officer | Examinations Officer | `NACOS/ADMIN/2024/003` | `Exams@Nacos2026` |
+| Test Student | John Adebayo Okonkwo | `NACOS/CSC/2024/001` | `Student@12345` |
+
+**Login URL:** `http://localhost:3000/auth/login`
+
+Course Adviser accounts are created via the Super Admins panel (HOD only) or by running:
+```bash
+cd backend
+npx ts-node prisma/seed-hod.ts --email <admin-email>
+```
+
+---
+
 ## 📁 Project Structure
 
 ```

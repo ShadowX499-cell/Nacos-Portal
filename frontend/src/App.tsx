@@ -38,6 +38,8 @@ import SuperAdminsPage from './pages/admin/SuperAdminsPage';
 import AuditLogsPage from './pages/admin/AuditLogsPage';
 import AcademicCalendarPage from './pages/admin/AcademicCalendarPage';
 import RevenuePage from './pages/admin/RevenuePage';
+import AdminRegistrationsPage from './pages/admin/AdminRegistrationsPage';
+import ActivityLogPage from './pages/admin/ActivityLogPage';
 
 // Student pages
 import StudentDashboard from './pages/student/StudentDashboard';
@@ -97,6 +99,8 @@ export default function App() {
             <Route path="/admin/audit-logs"     element={<AuditLogsPage />} />
             <Route path="/admin/academic"       element={<AcademicCalendarPage />} />
             <Route path="/admin/revenue"        element={<RevenuePage />} />
+            <Route path="/admin/registrations" element={<AdminRegistrationsPage />} />
+            <Route path="/admin/activity" element={<ActivityLogPage />} />
           </Route>
         </Route>
 

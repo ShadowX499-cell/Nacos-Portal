@@ -13,7 +13,9 @@ export const createNotificationRules = [
     .if(body('target').equals('level'))
     .isIn(['L100', 'L200', 'L300', 'L400'])
     .withMessage('targetLevel must be L100, L200, L300, or L400 when target is level'),
-  body('send').isBoolean().withMessage('send must be a boolean'),
+  body('send')
+    .custom((v) => v === true || v === false || v === 'true' || v === 'false')
+    .withMessage('send must be a boolean'),
 ];
 
 export const listNotificationsRules = [

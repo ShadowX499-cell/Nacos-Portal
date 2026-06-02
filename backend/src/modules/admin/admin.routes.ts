@@ -31,6 +31,7 @@ import {
   listNotifications,
   sendNotification,
   deleteNotification,
+  notifImageUpload,
 } from '../notifications/notifications-admin.controller';
 import { body } from 'express-validator';
 
@@ -66,7 +67,7 @@ router.patch('/users/:id', photoUpload.single('photo'), validate(updateUserRules
 // ── Notifications ─────────────────────────────────────────────────────────────
 
 /** POST /api/v1/admin/notifications */
-router.post('/notifications', validate(createNotificationRules), createNotification);
+router.post('/notifications', notifImageUpload.single('image'), validate(createNotificationRules), createNotification);
 
 /** GET  /api/v1/admin/notifications */
 router.get('/notifications', validate(listNotificationsRules), listNotifications);

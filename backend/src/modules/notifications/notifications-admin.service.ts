@@ -9,6 +9,7 @@ export interface AdminNotification {
   type: string;
   target: string;
   targetLevel: string | null;
+  imageUrl: string | null;
   isSent: boolean;
   recipientCount: number;
   createdAt: string;
@@ -22,6 +23,7 @@ export interface CreateNotificationDto {
   target: NotificationTarget;
   targetLevel?: Level;
   send: boolean;
+  imageUrl?: string;
 }
 
 export class AdminNotificationsService {
@@ -43,6 +45,7 @@ export class AdminNotificationsService {
         isSent: dto.send,
         sentAt: dto.send ? new Date() : null,
         createdById: adminId,
+        imageUrl: dto.imageUrl ?? null,
       },
     });
 
@@ -126,6 +129,7 @@ export class AdminNotificationsService {
     n: {
       id: string; title: string; body: string; type: NotificationType;
       target: NotificationTarget; targetLevel: Level | null;
+      imageUrl: string | null;
       isSent: boolean; sentAt: Date | null; createdAt: Date;
     },
     recipientCount: number
@@ -137,6 +141,7 @@ export class AdminNotificationsService {
       type: n.type,
       target: n.target,
       targetLevel: n.targetLevel,
+      imageUrl: n.imageUrl,
       isSent: n.isSent,
       recipientCount,
       createdAt: n.createdAt.toISOString(),
